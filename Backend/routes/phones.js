@@ -2,9 +2,10 @@ const express = require("express");
 const router = express();
 const productModel = require("../models/Products");
 const isLoggedIn = require("../utils/isLoggedIn");
-router.get("/", async (req, res) => {
+
+router.get("/", isLoggedIn, async (req, res) => {
   try {
-    const phones = await productModel.find({ productType: "phones" });
+    const phones = await productModel.find({ productType: "phone" });
     return res.render("Phones", { phones });
   } catch (error) {
     console.error("Error fetching phones:", error);
