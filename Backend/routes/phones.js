@@ -6,6 +6,7 @@ const isLoggedIn = require("../utils/isLoggedIn");
 router.get("/", isLoggedIn, async (req, res) => {
   try {
     const phones = await productModel.find({ productType: "phone" });
+    console.log("done");
     return res.render("Phones", { phones });
   } catch (error) {
     console.error("Error fetching phones:", error);
