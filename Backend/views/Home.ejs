@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="script-src 'self' https://vercel.live https://cdn.tailwindcss.com;"
+    />
+    <link rel="stylesheet" href="/stylesheets/Home.css" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div class="h-full w-full bg-zinc-800 text-white">
+      <h1 class="text-white text-4xl font-bold text-center">
+        Manipulate Items
+      </h1>
+      <div class="flex items-center justify-evenly w-full text-4xl mt-32">
+        <div class="flex items-center justify-center gap-8">
+          <div class="flex flex-col items-center justify-center">
+            <h1 class="font-semibold pb-4">Normal Sellings</h1>
+            <a
+              href="/products/addProduct"
+              class="p-2 bg-orange-600 rounded-lg font-semibold text-zinc-800 border-4 border-black"
+              ><button>Add Items</button></a
+            >
+          </div>
+
+          <div class="flex flex-col items-center justify-center">
+            <h1 class="font-semibold pb-4">Phones</h1>
+            <a
+              href="/phones"
+              class="p-2 bg-orange-600 rounded-lg font-semibold text-zinc-800 border-4 border-black"
+              ><button>Phones</button></a
+            >
+          </div>
+          <div class="flex flex-col items-center justify-center">
+            <h1 class="font-semibold pb-4">Laptops</h1>
+            <a
+              href="/laptops"
+              class="p-2 bg-orange-600 rounded-lg font-semibold text-zinc-800 border-4 border-black"
+              ><button>Laptops</button></a
+            >
+          </div>
+          <div class="flex flex-col items-center justify-center">
+            <h1 class="font-semibold pb-4">Tablets</h1>
+            <a
+              href="/tablets"
+              class="p-2 bg-orange-600 rounded-lg font-semibold text-zinc-800 border-4 border-black"
+              ><button>Tablets</button></a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script src="https://cdn.tailwindcss.com"></script>
+</html>

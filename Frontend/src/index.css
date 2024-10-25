@@ -1,0 +1,102 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+}
+
+::selection {
+  background-color: rgba(255, 68, 0, 0.822);
+  color: black;
+}
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+  color: #001;
+  background-color: white;
+}
+
+.hidescroller::-webkit-scrollbar {
+  display: none;
+}
+
+.underline-animations {
+  position: relative;
+}
+
+.underline-animations:hover {
+  color: #000000;
+}
+
+.underline-animations::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 3px;
+  width: auto;
+  background-color: #92dde7;
+}
+
+.underline-animations:hover::after {
+  animation: grow 0.6s ease-in-out forwards;
+}
+
+.underline-animation {
+  position: relative;
+}
+
+.underline-animation:hover {
+  color: #6ee7bbe7;
+}
+
+.underline-animation::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  width: 0;
+  background-color: #cfd3e0;
+}
+
+.underline-animation:hover::after {
+  animation: grow 0.6s ease-in-out forwards;
+}
+
+@keyframes grow {
+  0% {
+    width: 0;
+    left: 0;
+  }
+  50% {
+    width: 100%;
+    left: 0;
+  }
+  100% {
+    width: 0%;
+    left: 100%;
+  }
+}
+
+.stroke {
+  color: transparent;
+  text-shadow: 10px -10px 20px purple, -10px 10px 10px red;
+  -webkit-text-stroke: 2px black;
+}
+
+.stroke:hover {
+  -webkit-text-stroke: none;
+  text-shadow: 10px -10px 20px red, -10px 10px 10px purple;
+  color: purple;
+}
+
+.border-gradient {
+  border: 3px dashed rgba(204, 201, 201, 0.801);
+  border-radius: 20px;
+}

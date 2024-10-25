@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My App</title>
+  </head>
+  <body>
+    <div class="p-4 text-black h-full w-full bg-zinc-700">
+      <form
+        method="post"
+        action="/products/addProduct"
+        enctype="multipart/form-data"
+      >
+        <h1 class="text-4xl">Data Entry</h1>
+
+        <div class="mt-12 flex flex-col gap-2 w-[25%] bg-sky-600 p-4">
+          <select
+            name="productType"
+            class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
+          >
+            <option value="" class="">Select the device type</option>
+            <option value="phone">Phone</option>
+            <option value="laptop">Laptop</option>
+            <option value="tablet">Tablet</option>
+          </select>
+          <select
+            name="popularity"
+            class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
+          >
+            <option value="" class="">Select the device popularity</option>
+            <option value="popular">Popular</option>
+            <option value="average">Average</option>
+            <option value="not popular">Not popular</option>
+          </select>
+          <input
+            type="text"
+            class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
+            placeholder="Product Name"
+            name="name"
+          />
+          <input
+            type="file"
+            class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
+            placeholder="Product Image"
+            name="image"
+          />
+          <input
+            type="text"
+            class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
+            placeholder="Product Price-1"
+            name="price1"
+          />
+          <input
+            type="text"
+            class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
+            placeholder="Product Price-2"
+            name="price2"
+          />
+          <input
+            type="text"
+            class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
+            placeholder="Product Price-3"
+            name="price3"
+          />
+          <div class="flex flex-col gap-2 items-center justify-center">
+            <h1 class="text-xl font-semibold tracking-wide">BODY</h1>
+            <input
+              type="text"
+              class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
+              placeholder="Dimension"
+              name="dimension"
+            />
+            <input
+              type="text"
+              class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
+              placeholder="Build"
+              name="build"
+            />
+            <input
+              type="text"
+              class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
+              placeholder="Weight"
+              name="weight"
+            />
+          </div>
+          <div class="flex flex-col gap-2 items-center justify-center">
+            <h1 class="text-xl font-semibold tracking-wide">DISPLAY</h1>
+            <input
+              type="text"
+              class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
+              placeholder="DisplayType"
+              name="dtype"
+            />
+            <input
+              type="text"
+              class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
+              placeholder="Size"
+              name="size"
+            />
+            <input
+              type="text"
+              class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
+              placeholder="Resolution"
+              name="resolution"
+            />
+          </div>
+          <div class="flex flex-col gap-2 items-center justify-center">
+            <h1 class="text-xl font-semibold tracking-wide">PLATFORM</h1>
+            <input
+              type="text"
+              class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
+              placeholder="OS"
+              name="os"
+            />
+            <input
+              type="text"
+              class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
+              placeholder="Processor"
+              name="processor"
+            />
+            <input
+              type="text"
+              class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
+              placeholder="GPU"
+              name="graphics"
+            />
+          </div>
+          <div class="flex flex-col gap-2 items-center justify-center">
+            <h1 class="text-xl font-semibold tracking-wide">MEMORY</h1>
+            <input
+              type="text"
+              class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
+              placeholder="RAM-1"
+              name="ram1"
+            />
+            <input
+              type="text"
+              class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
+              placeholder="RAM-2"
+              name="ram2"
+            />
+            <input
+              type="text"
+              class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
+              placeholder="RAM-3"
+              name="ram3"
+            />
+            <input
+              type="text"
+              class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
+              placeholder="Storage-1"
+              name="storage1"
+            />
+            <input
+              type="text"
+              class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
+              placeholder="Storage-2"
+              name="storage2"
+            />
+            <input
+              type="text"
+              class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
+              placeholder="Storage-3"
+              name="storage3"
+            />
+          </div>
+          <div class="flex flex-col gap-2 items-center justify-center">
+            <h1 class="text-xl font-semibold tracking-wide">BATTERY</h1>
+            <input
+              type="text"
+              class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
+              placeholder="Capacity"
+              name="capacity"
+            />
+            <input
+              type="text"
+              class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
+              placeholder="Charging"
+              name="charging"
+            />
+          </div>
+          <div class="flex flex-col gap-2 items-center justify-center">
+            <h1 class="text-xl font-semibold tracking-wide">NETWORKS</h1>
+            <input
+              type="text"
+              class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
+              placeholder="wi-Fi"
+              name="wifi"
+            />
+            <input
+              type="text"
+              class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
+              placeholder="Bluetooth"
+              name="bluetooth"
+            />
+          </div>
+          <div class="flex flex-col gap-2 items-center justify-center">
+            <h1 class="text-xl font-semibold tracking-wide">PORTS</h1>
+            <input
+              type="text"
+              class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
+              placeholder="Type C"
+              name="typec"
+            />
+            <input
+              type="text"
+              class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
+              placeholder="USB A"
+              name="usba"
+            />
+            <input
+              type="text"
+              class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
+              placeholder="Ethernet"
+              name="ethernet"
+            />
+            <input
+              type="text"
+              class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
+              placeholder="HDMI"
+              name="hdmi"
+            />
+            <input
+              type="text"
+              class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
+              placeholder="Audio Jack"
+              name="audiojack"
+            />
+          </div>
+
+          <div class="flex flex-col items-center justify-center gap-2">
+            <h1 class="text-xl font-semibold tracking-wide">CAMERA</h1>
+            <input
+              type="text"
+              class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
+              placeholder="Main Camera"
+              name="maincamera"
+            />
+            <input
+              type="text"
+              class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
+              placeholder="Front Camera"
+              name="frontcamera"
+            />
+            <input
+              type="text"
+              class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
+              placeholder="Video"
+              name="video"
+            />
+          </div>
+          <div class="flex flex-col items-center justify-center gap-2">
+            <h1 class="text-lg font-semibold">Description of product</h1>
+            <textarea
+              type="text"
+              class="outline-none resize-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold h-52"
+              placeholder="Blog"
+              name="blog"
+            ></textarea>
+          </div>
+
+          <div class="flex gap-2 items-center justify-center">
+            <input
+              type="submit"
+              value="Submit"
+              class="bg-orange-600 p-2 rounded-xl font-semibold text-lg outline-none"
+            />
+            <input
+              type="reset"
+              value="Reset"
+              class="bg-orange-600 p-2 rounded-xl font-semibold text-lg outline-none"
+            />
+          </div>
+        </div>
+      </form>
+    </div>
+  </body>
+  <script src="https://cdn.tailwindcss.com"></script>
+</html>
