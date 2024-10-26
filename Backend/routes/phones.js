@@ -9,13 +9,13 @@ router.get("/", isLoggedIn, async (req, res) => {
     console.log("done");
     return res.render("Phones", { phones });
   } catch (error) {
-    console.error("Error fetching phones:", error);
+    console.log("Error fetching phones:", error);
     return res.status(500).send("Internal Server Error");
   }
 });
 
 router.get("/test", (req, res) => {
-  res.render("Test"); // Create a simple test.ejs file to see if rendering works
+  res.render("Test");
 });
 
 module.exports = router;
