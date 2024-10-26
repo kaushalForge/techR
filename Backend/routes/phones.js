@@ -15,7 +15,7 @@ router.get("/", isLoggedIn, async (req, res) => {
 });
 
 router.get("/test", (req, res) => {
-  res.render("test"); // Create a simple test.ejs file to see if rendering works
+  res.render("Test"); // Create a simple test.ejs file to see if rendering works
 });
 
 module.exports = router;
