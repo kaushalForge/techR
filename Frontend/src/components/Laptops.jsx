@@ -118,7 +118,7 @@ function Laptops() {
                         laptop.productType === "laptop" && (
                           <div
                             key={index}
-                            className="border-2 border-zinc-500 shadow-lg shadow-indigo-600 rounded-xl overflow-hidden p-2 md:flex flex-row w-full"
+                            className="border-2 border-zinc-500 shadow-lg shadow-indigo-600 rounded-xl overflow-hidden p-2 md:flex flex-row w-full items-center justify-center"
                           >
                             <Link
                               to={`/${laptop.productType}/${laptop.name
@@ -182,7 +182,7 @@ function Laptops() {
                         laptop.productType === "laptop" && (
                           <div
                             key={index}
-                            className="border-2 border-purple-600 shadow-lg shadow-purple-600 rounded-xl overflow-hidden p-2 md:flex flex-row w-full"
+                            className="border-2 border-purple-600 shadow-lg shadow-purple-600 rounded-xl overflow-hidden p-2 md:flex flex-row w-full items-center justify-center"
                           >
                             <Link
                               to={`/${laptop.productType}/${laptop.name
@@ -246,7 +246,7 @@ function Laptops() {
                         laptop.productType === "laptop" && (
                           <div
                             key={index}
-                            className="border-2 border-orange-600 shadow-lg shadow-orange-600 rounded-xl overflow-hidden p-2 md:flex flex-row w-full"
+                            className="border-2 border-orange-600 shadow-lg shadow-orange-600 rounded-xl overflow-hidden p-2 md:flex flex-row w-full items-center justify-center"
                           >
                             <Link
                               to={`/${laptop.productType}/${laptop.name
@@ -310,7 +310,7 @@ function Laptops() {
                         laptop.productType === "laptop" && (
                           <div
                             key={index}
-                            className="border-2 border-sky-600 shadow-lg shadow-sky-600 rounded-xl overflow-hidden p-2 md:flex flex-row w-full"
+                            className="border-2 border-sky-600 shadow-lg shadow-sky-600 rounded-xl overflow-hidden p-2 md:flex flex-row w-full items-center justify-center"
                           >
                             <Link
                               to={`/${laptop.productType}/${laptop.name
