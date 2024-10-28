@@ -159,7 +159,7 @@ function LaptopBlog() {
                   </h2>
                   <button
                     onClick={handleSpecsChange}
-                    className="bg-black p-1 text-orange-500 overflow-hidden rounded-lg"
+                    class="px-6 py-3 text-white font-semibold bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-indigo-500 hover:to-blue-500 focus:ring-4 focus:ring-blue-300 rounded-lg shadow-md transition-all duration-200"
                   >
                     Switch Variant
                   </button>
