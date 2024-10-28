@@ -226,7 +226,13 @@ function LaptopBlog() {
                           {index + 1}
                         </div>
                         <div className="flex-1 text-center py-2">
-                          {`${ram}/${finalStorage[index] || ""}`}
+                          {`${(ram || "")
+                            .replace(/\s+/g, "")
+                            .replace(/(B).*/i, "B")}/${(
+                            finalStorage[index] || ""
+                          )
+                            .replace(/\s+/g, "")
+                            .replace(/(B).*/i, "B")}`}
                         </div>
                         <div className="flex-1 text-center py-2">
                           {finalPrice[index] || ""}
