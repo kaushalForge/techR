@@ -13,7 +13,7 @@ router.get("/phone", async (req, res) => {
       price:
         item.price && item.price.length > 0 && item.price[0].length > 0
           ? item.price[0][0]
-          : "$...",
+          : item.price[0],
     }));
     res.json(formattedData);
   } catch (error) {
@@ -33,7 +33,7 @@ router.get("/laptop", async (req, res) => {
       price:
         item.price && item.price.length > 0 && item.price[0].length > 0
           ? item.price[0][0]
-          : "$...",
+          : item.price[0],
     }));
     res.json(formattedData);
   } catch (error) {
@@ -52,7 +52,7 @@ router.get("/tablet", async (req, res) => {
       price:
         item.price && item.price.length > 0 && item.price[0].length > 0
           ? item.price[0][0]
-          : "$...",
+          : item.price[0],
     }));
     res.json(formattedData);
   } catch (error) {
@@ -93,7 +93,7 @@ router.get("/targetgamer", async (req, res) => {
       price:
         item.price && item.price.length > 0 && item.price[0].length > 0
           ? item.price[0][0]
-          : "$...",
+          : item.price[0],
     }));
     res.json(formattedData);
   } catch (error) {
@@ -114,7 +114,7 @@ router.get("/targetprofessional", async (req, res) => {
       price:
         item.price && item.price.length > 0 && item.price[0].length > 0
           ? item.price[0][0]
-          : "$...",
+          : item.price[0],
     }));
     res.json(formattedData);
   } catch (error) {
@@ -135,7 +135,7 @@ router.get("/targetstudents", async (req, res) => {
       price:
         item.price && item.price.length > 0 && item.price[0].length > 0
           ? item.price[0][0]
-          : "$...",
+          : item.price[0],
     }));
     res.json(formattedData);
   } catch (error) {
@@ -156,7 +156,7 @@ router.get("/targetnormalusage", async (req, res) => {
       price:
         item.price && item.price.length > 0 && item.price[0].length > 0
           ? item.price[0][0]
-          : "$...",
+          : item.price[0],
     }));
     res.json(formattedData);
   } catch (error) {
@@ -175,7 +175,7 @@ router.get("/mostpopular", async (req, res) => {
       price:
         item.price && item.price.length > 0 && item.price[0].length > 0
           ? item.price[0][0]
-          : "$...",
+          : item.price[0],
     }));
     res.json(formattedData);
   } catch (error) {
@@ -194,7 +194,7 @@ router.get("/popularity", async (req, res) => {
       price:
         item.price && item.price.length > 0 && item.price[0].length > 0
           ? item.price[0][0]
-          : "$...",
+          : item.price[0],
     }));
     res.json(formattedData);
   } catch (error) {
@@ -213,7 +213,7 @@ router.get("/mostsold", async (req, res) => {
       price:
         item.price && item.price.length > 0 && item.price[0].length > 0
           ? item.price[0][0]
-          : "$...",
+          : item.price[0],
     }));
     res.json(formattedData);
   } catch (error) {
@@ -232,7 +232,7 @@ router.get("/budget", async (req, res) => {
       price:
         item.price && item.price.length > 0 && item.price[0].length > 0
           ? item.price[0][0]
-          : "$...",
+          : item.price[0],
     }));
     res.json(formattedData);
   } catch (error) {
@@ -251,7 +251,7 @@ router.get("/midrange", async (req, res) => {
       price:
         item.price && item.price.length > 0 && item.price[0].length > 0
           ? item.price[0][0]
-          : "$...",
+          : item.price[0],
     }));
     res.json(formattedData);
   } catch (error) {
@@ -270,7 +270,7 @@ router.get("/flagship", async (req, res) => {
       price:
         item.price && item.price.length > 0 && item.price[0].length > 0
           ? item.price[0][0]
-          : "$...",
+          : item.price[0],
     }));
     res.json(formattedData);
   } catch (error) {
@@ -289,7 +289,7 @@ router.get("/recommended", async (req, res) => {
       price:
         item.price && item.price.length > 0 && item.price[0].length > 0
           ? item.price[0][0]
-          : "$...",
+          : item.price[0],
     }));
     res.json(formattedData);
   } catch (error) {
