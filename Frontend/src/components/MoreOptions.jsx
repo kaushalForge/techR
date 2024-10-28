@@ -16,12 +16,10 @@ const filterProducts = async (url) => {
 };
 
 function MoreOptions() {
-  // Define URLs from environment variables
   const flagshipURL = import.meta.env.VITE_FLAGSHIP_URL;
   const midrangeURL = import.meta.env.VITE_MIDRANGE_URL;
   const budgetURL = import.meta.env.VITE_BUDGET_URL;
 
-  // Fetch product data using React Query
   const { isLoading: loadingBudget, data: budget = [] } = useQuery(
     ["budget", budgetURL],
     () => filterProducts(budgetURL),
@@ -66,13 +64,12 @@ function MoreOptions() {
             <h1 className="text-sm font-medium text-gray-800 truncate">
               {item.name}
             </h1>
-            <p className="text-lg text-black font-bold mt-1">{item.price1}</p>
+            <p className="text-lg text-black font-bold mt-1">{item.price}</p>
           </div>
         </div>
       </Link>
     ));
   };
-
   return (
     <div className="p-6 bg-gradient-to-b from-gray-50 to-gray-100 min-h-screen">
       {isLoading ? (

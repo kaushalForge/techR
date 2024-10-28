@@ -123,7 +123,6 @@
         </div>
         
 
-          <!-- General Product Details -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <input
               type="text"
@@ -181,100 +180,765 @@
               placeholder="Operation System"
               value="<%= find.os %>"
             />
+
+      
+  <div class="flex flex-col">
+
+    <div id="processorlist">
+      <div id="processorContainer" class="flex flex-col gap-4">
+          <% if (find.processor && find.processor.length > 0) { %>
+              <% find.processor.forEach((processorSet, index) => { %>
+                  <div class="processor-group flex flex-col gap-4" data-index="<%= index %>">
+                      <h3>Processor Options <%=index+1%>:</h3>
+                      <div class="grid grid-cols-2 gap-2 mt-2">
+                        
+                          <% processorSet.forEach((processor) => { %>
+                              <div class="flex items-center gap-2">
+                                  <input
+                                      type="text"
+                                      name="processor[<%= index %>][]" 
+                                      class="processor outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold processor-input"
+                                      placeholder="Processor Option"
+                                      value="<%= processor %>"
+                                  />
+                                  <button
+                                      type="button"
+                                      class="remove-processor-option bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-md"
+                                      onclick="removeProcessorOption(this)">&times;</button>
+                              </div>
+                          <% }); %>
+                      </div>
+                      <div class="mt-4 flex flex-col bg-zinc-600 text-white px-4 py-3 rounded-lg shadow-lg">
+                          <div class="cursor-pointer bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center" onclick="addProcessorOption(this)">
+                              Add Processor Option
+                          </div>
+                          <div class="cursor-pointer bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center mt-2" onclick="removeProcessorContainer(this)">
+                              Remove Processor Container
+                          </div>
+                      </div>
+                  </div>
+              <% }); %>
+          <% } else { %>
+              <div class="processor-group flex flex-col gap-4" data-index="0">
+                  <h3>Processor Options 1:</h3>
+                  <div class="flex items-center gap-2 mt-2">
+                      <input
+                          type="text"
+                          name="processor[0][]"
+                          class="processor outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold processor-input"
+                          placeholder="Processor Option"
+                          value=""
+                      />
+                      <button
+                          type="button"
+                          class="remove-processor-option bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-md"
+                          onclick="removeProcessorOption(this)">&times;</button>
+                  </div>
+                  <div class="mt-4 flex flex-col bg-zinc-600 text-white px-4 py-3 rounded-lg shadow-lg">
+                      <div class="cursor-pointer bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center" onclick="addProcessorOption(this)">
+                          Add Processor Option
+                      </div>
+                      <div class="cursor-pointer bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center mt-2" onclick="removeProcessorContainer(this)">
+                          Remove Processor Container
+                      </div>
+                  </div>
+              </div>
+          <% } %>
+      </div>  
+  
+      <div class="mt-4 flex flex-col md:flex-row md:space-x-4 bg-zinc-600 text-white px-4 py-3 rounded-lg shadow-lg">
+          <div id="addProcessorField" class="cursor-pointer bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center" onclick="createProcessorDiv('processorContainer')">
+              Add Processor Container
+          </div>
+      </div>
+    </div>
+  
+    <div id="graphicslist">
+      <div id="graphicsContainer" class="flex flex-col gap-4">
+          <% if (find.graphic && find.graphic.length > 0) { %>
+              <% find.graphic.forEach((graphicsSet, index) => { %>
+                  <div class="graphic-group flex flex-col gap-4" data-index="<%= index %>">
+                      <h3>Graphic Options <%= index+1%>:</h3>
+                      <div class="grid grid-cols-2 gap-2 mt-2">
+                        <% if (Array.isArray(graphicsSet)) { %>
+                            <% graphicsSet.forEach((graphics) => { %>
+                                <div class="flex items-center gap-2">
+                                    <input
+                                        type="text"
+                                        name="graphic[<%= index %>][]" 
+                                        class="graphic outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold graphic-input"
+                                        placeholder="Graphic Option"
+                                        value="<%= graphics %>"
+                                    />
+                                    <button
+                                        type="button"
+                                        class="remove-graphic-option bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-md"
+                                        onclick="removeGraphicOption(this)">&times;</button>
+                                </div>
+                            <% }); %>
+                        <% } %>
+                        
+                      </div>
+                      <div class="mt-4 flex flex-col bg-zinc-600 text-white px-4 py-3 rounded-lg shadow-lg">
+                          <div class="cursor-pointer bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center" onclick="addGraphicOption(this)">
+                              Add Graphic Option
+                          </div>
+                          <div class="cursor-pointer bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center mt-2" onclick="removeGraphicContainer(this)">
+                              Remove Graphic Container
+                          </div>
+                      </div>
+                  </div>
+              <% }); %>
+          <% } else { %>
+              <div class="graphic-group flex flex-col gap-4" data-index="0">
+                  <h3>Graphic Options 1:</h3>
+                  <div class="flex items-center gap-2 mt-2">
+                      <input
+                          type="text"
+                          name="graphic[0][]"
+                          class="graphic outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold graphic-input"
+                          placeholder="Graphic Option"
+                          value=""
+                      />
+                      <button
+                          type="button"
+                          class="remove-graphic-option bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-md"
+                          onclick="removeGraphicOption(this)">&times;</button>
+                  </div>
+                  <div class="mt-4 flex flex-col bg-zinc-600 text-white px-4 py-3 rounded-lg shadow-lg">
+                      <div class="cursor-pointer bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center" onclick="addGraphicOption(this)">
+                          Add Graphic Option
+                      </div>
+                      <div class="cursor-pointer bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center mt-2" onclick="removeGraphicContainer(this)">
+                          Remove Graphic Container
+                      </div>
+                  </div>
+              </div>
+          <% } %>
+      </div>
+  
+      <div class="mt-4 flex flex-col md:flex-row md:space-x-4 bg-zinc-600 text-white px-4 py-3 rounded-lg shadow-lg">
+          <div id="addGraphicsField" class="cursor-pointer bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center" onclick="createGraphicsDiv('graphicsContainer')">
+              Add Graphics Container
+          </div>
+      </div>
+  </div>
+  
+    <div id="pricelist">
+          <div id="priceContainer" class="flex flex-col gap-4">
+              <% if (find.price && find.price.length > 0) { %>
+                  <% find.price.forEach((priceSet, index) => { %>
+                      <div class="price-group flex flex-col gap-4" data-index="<%= index %>">
+                          <h3>Price Options:</h3>
+                          <div class="grid grid-cols-2 gap-2 mt-2">
+                              <% priceSet.forEach((price) => { %>
+                                  <div class="flex items-center gap-2">
+                                      <input
+                                          type="text"
+                                          name="price[<%= index %>][]" 
+                                          class="price outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold price-input"
+                                          placeholder="Price Option ($)"
+                                          value="<%= price %>"
+                                      />
+                                      <button
+                                          type="button"
+                                          class="remove-price-option bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-md"
+                                          onclick="removePriceOption(this)">&times;</button>
+                                  </div>
+                              <% }); %>
+                          </div>
+                          <div class="mt-4 flex flex-col bg-zinc-600 text-white px-4 py-3 rounded-lg shadow-lg">
+                              <div class="cursor-pointer bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center" onclick="addPriceOption(this)">
+                                  Add Price Option
+                              </div>
+                              <div class="cursor-pointer bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center mt-2" onclick="removePriceContainer(this)">
+                                  Remove Price Container
+                              </div>
+                          </div>
+                      </div>
+                  <% }); %>
+              <% } else { %>
+                  <div class="price-group flex flex-col gap-4" data-index="0">
+                      <h3>Price Options:</h3>
+                      <div class="flex items-center gap-2 mt-2">
+                          <input
+                              type="text"
+                              name="price[0][]"
+                              class="price outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold price-input"
+                              placeholder="Price Option ($)"
+                              value=""
+                          />
+                          <button
+                              type="button"
+                              class="remove-price-option bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-md"
+                              onclick="removePriceOption(this)">&times;</button>
+                      </div>
+                      <div class="mt-4 flex flex-col bg-zinc-600 text-white px-4 py-3 rounded-lg shadow-lg">
+                          <div class="cursor-pointer bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center" onclick="addPriceOption(this)">
+                              Add Price Option
+                          </div>
+                          <div class="cursor-pointer bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center mt-2" onclick="removePriceContainer(this)">
+                              Remove Price Container
+                          </div>
+                      </div>
+                  </div>
+              <% } %>
+          </div>  
+      
+          <div class="mt-4 flex flex-col md:flex-row md:space-x-4 bg-zinc-600 text-white px-4 py-3 rounded-lg shadow-lg">
+              <div id="addPriceField" class="cursor-pointer bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center" onclick="createPriceDiv('priceContainer')">
+                  Add Price Container
+              </div>
+          </div>
+    </div>
+
+    <div id="ramlist">
+        <div id="ramContainer" class="flex flex-col gap-4">
+            <% if (find.ram && find.ram.length > 0) { %>
+                <% find.ram.forEach((ramSet, index) => { %>
+                    <div class="ram-group flex flex-col gap-4" data-index="<%= index %>">
+                        <h3>RAM Options:</h3>
+                        <div class="grid grid-cols-2 gap-2 mt-2">
+                            <% ramSet.forEach((ram) => { %>
+                                <div class="flex items-center gap-2">
+                                    <input
+                                        type="text"
+                                        name="ram[<%= index %>][]" 
+                                        class="ram outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold ram-input"
+                                        placeholder="RAM Option (GB)"
+                                        value="<%= ram %>"
+                                    />
+                                    <button
+                                        type="button"
+                                        class="remove-ram-option bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-md"
+                                        onclick="removeRamOption(this)">&times;</button>
+                                </div>
+                            <% }); %>
+                        </div>
+                        <div class="mt-4 flex flex-col bg-zinc-600 text-white px-4 py-3 rounded-lg shadow-lg">
+                            <div class="cursor-pointer bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center" onclick="addRamOption(this)">
+                                Add RAM Option
+                            </div>
+                            <div class="cursor-pointer bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center mt-2" onclick="removeRamContainer(this)">
+                                Remove RAM Container
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+            <% } else { %>
+                <div class="ram-group flex flex-col gap-4" data-index="0">
+                    <h3>RAM Options:</h3>
+                    <div class="flex items-center gap-2 mt-2">
+                        <input
+                            type="text"
+                            name="ram[0][]"
+                            class="ram outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold ram-input"
+                            placeholder="RAM Option (GB)"
+                            value=""
+                        />
+                        <button
+                            type="button"
+                            class="remove-ram-option bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-md"
+                            onclick="removeRamOption(this)">&times;</button>
+                    </div>
+                    <div class="mt-4 flex flex-col bg-zinc-600 text-white px-4 py-3 rounded-lg shadow-lg">
+                        <div class="cursor-pointer bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center" onclick="addRamOption(this)">
+                            Add RAM Option
+                        </div>
+                        <div class="cursor-pointer bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center mt-2" onclick="removeRamContainer(this)">
+                            Remove RAM Container
+                        </div>
+                    </div>
+                </div>
+            <% } %>
+        </div>  
+    
+        <div class="mt-4 flex flex-col md:flex-row md:space-x-4 bg-zinc-600 text-white px-4 py-3 rounded-lg shadow-lg">
+            <div id="addRamField" class="cursor-pointer bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center" onclick="createRamDiv('ramContainer')">
+                Add RAM Container
+            </div>
+        </div>
+    </div>
+
+    <div id="storagelist">
+      <div id="storageContainer" class="flex flex-col gap-4">
+          <% if (find.storage && find.storage.length > 0) { %>
+              <% find.storage.forEach((storageSet, index) => { %>
+                  <div class="storage-group flex flex-col gap-4" data-index="<%= index %>">
+                      <h3>Storage Options:</h3>
+                      <div class="grid grid-cols-2 gap-2 mt-2">
+                          <% storageSet.forEach((storage) => { %>
+                              <div class="flex items-center gap-2">
+                                  <input
+                                      type="text"
+                                      name="storage[<%= index %>][]" 
+                                      class="storage outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold storage-input"
+                                      placeholder="Storage Option (GB)"
+                                      value="<%= storage %>"
+                                  />
+                                  <button
+                                      type="button"
+                                      class="remove-storage-option bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-md"
+                                      onclick="removeStorageOption(this)">&times;</button>
+                              </div>
+                          <% }); %>
+                      </div>
+                      <div class="mt-4 flex flex-col bg-zinc-600 text-white px-4 py-3 rounded-lg shadow-lg">
+                          <div class="cursor-pointer bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center" onclick="addStorageOption(this)">
+                              Add Storage Option
+                          </div>
+                          <div class="cursor-pointer bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center mt-2" onclick="removeStorageContainer(this)">
+                              Remove Storage Container
+                          </div>
+                      </div>
+                  </div>
+              <% }); %>
+          <% } else { %>
+              <div class="storage-group flex flex-col gap-4" data-index="0">
+                  <h3>Storage Options:</h3>
+                  <div class="flex items-center gap-2 mt-2">
+                      <input
+                          type="text"
+                          name="storage[0][]"
+                          class="storage outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold storage-input"
+                          placeholder="Storage Option (GB)"
+                          value=""
+                      />
+                      <button
+                          type="button"
+                          class="remove-storage-option bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-md"
+                          onclick="removeStorageOption(this)">&times;</button>
+                  </div>
+                  <div class="mt-4 flex flex-col bg-zinc-600 text-white px-4 py-3 rounded-lg shadow-lg">
+                      <div class="cursor-pointer bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center" onclick="addStorageOption(this)">
+                          Add Storage Option
+                      </div>
+                      <div class="cursor-pointer bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center mt-2" onclick="removeStorageContainer(this)">
+                          Remove Storage Container
+                      </div>
+                  </div>
+              </div>
+          <% } %>
+      </div>  
+  
+      <div class="mt-4 flex flex-col md:flex-row md:space-x-4 bg-zinc-600 text-white px-4 py-3 rounded-lg shadow-lg">
+          <div id="addStorageField" class="cursor-pointer bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center" onclick="createStorageDiv('storageContainer')">
+              Add Storage Container
+          </div>
+      </div>
+    </div>
+
+  </div>          
+   
+      <script>
+    function createProcessorDiv(containerId) {
+        const mainContainer = document.getElementById(containerId);
+        const newIndex = mainContainer.children.length;
+
+        const newGroup = document.createElement('div');
+        newGroup.className = 'processor-group flex flex-col gap-4';
+        newGroup.setAttribute('data-index', newIndex);
+        newGroup.innerHTML = `
+            <h3>Processor Options:</h3>
+            <div class="grid grid-cols-2 gap-2 mt-2">
+                <div class="flex items-center gap-2">
+                    <input
+                        type="text"
+                        name="processor[${newIndex}][]"
+                        class="processor outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold processor-input"
+                        placeholder="Processor Option"
+                    />
+                    <button
+                        type="button"
+                        class="remove-processor-option bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-md"
+                        onclick="removeProcessorOption(this)">&times;</button>
+                </div>
+            </div>
+            <div class="mt-4 flex flex-col bg-zinc-600 text-white px-4 py-3 rounded-lg shadow-lg">
+                <div class="cursor-pointer bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center" onclick="addProcessorOption(this)">
+                    Add Processor Option
+                </div>
+                <div class="cursor-pointer bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center mt-2" onclick="removeProcessorContainer(this)">
+                    Remove Processor Container
+                </div>
+            </div>
+        `;
+
+        mainContainer.appendChild(newGroup);
+    }
+
+    function addProcessorOption(button) {
+        const group = button.closest('.processor-group');
+        const newIndex = group.dataset.index;
+        const newInput = document.createElement('div');
+        newInput.className = 'flex items-center gap-2 mt-2';
+        newInput.innerHTML = `
+        <div class="flex gap-1 items-center justify-center w-full mb-2">
             <input
-              type="text"
-              name="processor"
-              class="outline-none rounded-lg bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold"
-              placeholder="Product Processor"
-              value="<%= find.processor %>"
+                type="text"
+                name="processor[${newIndex}][]"
+                class="processor outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold processor-input"
+                placeholder="Processor Option"
             />
+            <button
+                type="button"
+                class="remove-processor-option bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-md"
+                onclick="removeProcessorOption(this)">&times;</button>
+        </div>`;
 
-            <!-- RAM Fields -->
-            <div class="flex flex-col space-y-2">
-              <label class="text-white font-semibold">RAM:</label>
-              <input
-                type="text"
-                name="ram1"
-                class="outline-none rounded-lg bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold"
-                placeholder="RAM 1"
-                value="<%= find.ram1 %>"
-              />
-              <input
-                type="text"
-                name="ram2"
-                class="outline-none rounded-lg bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold"
-                placeholder="RAM 2"
-                value="<%= find.ram2 %>"
-              />
-              <input
-                type="text"
-                name="ram3"
-                class="outline-none rounded-lg bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold"
-                placeholder="RAM 3"
-                value="<%= find.ram3 %>"
-              />
+        const buttonContainer = group.querySelector('.mt-4.flex');
+        buttonContainer.insertBefore(newInput, buttonContainer.firstChild);
+    }
+
+    function removeProcessorOption(button) {
+        const processorInputContainer = button.parentElement; 
+        if (processorInputContainer.querySelector('input').value === "") {
+            processorInputContainer.remove();
+        }
+    }
+
+    function removeProcessorContainer(button) {
+        const group = button.closest('.processor-group');
+        const processorInputs = group.querySelectorAll('input[type="text"]');
+
+        const allEmpty = Array.from(processorInputs).every(input => input.value.trim() === "");
+
+        if (allEmpty) {
+            group.remove();
+        } else {
+            alert("Cannot remove this processor group because it contains non-empty processor options.");
+        }
+    }
+      </script>
+
+      <script>
+  function createGraphicsDiv(containerId) {
+      const mainContainer = document.getElementById(containerId);
+      const newIndex = mainContainer.children.length;
+
+      const newGroup = document.createElement('div');
+      newGroup.className = 'graphic-group flex flex-col gap-4';
+      newGroup.setAttribute('data-index', newIndex);
+      newGroup.innerHTML = `
+          <h3>Graphic Options:</h3>
+          <div class="grid grid-cols-2 gap-2 mt-2">
+              <div class="flex items-center gap-2">
+                  <input
+                      type="text"
+                      name="graphic[${newIndex}][]"
+                      class="graphic outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold graphic-input"
+                      placeholder="Graphic Option"
+                  />
+                  <button
+                      type="button"
+                      class="remove-graphic-option bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-md"
+                      onclick="removeGraphicOption(this)">&times;</button>
+              </div>
+          </div>
+          <div class="mt-4 flex flex-col bg-zinc-600 text-white px-4 py-3 rounded-lg shadow-lg">
+              <div class="cursor-pointer bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center" onclick="addGraphicOption(this)">
+                  Add Graphic Option
+              </div>
+              <div class="cursor-pointer bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center mt-2" onclick="removeGraphicContainer(this)">
+                  Remove Graphic Container
+              </div>
+          </div>
+      `;
+
+      mainContainer.appendChild(newGroup);
+  }
+
+  function addGraphicOption(button) {
+      const group = button.closest('.graphic-group');
+      const newIndex = group.dataset.index;
+      const newInput = document.createElement('div');
+      newInput.className = 'flex items-center gap-2 mt-2';
+      newInput.innerHTML = `
+      <div class="flex gap-1 items-center justify-center w-full mb-2">
+          <input
+              type="text"
+              name="graphic[${newIndex}][]"
+              class="graphic outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold graphic-input"
+              placeholder="Graphic Option"
+          />
+          <button
+              type="button"
+              class="remove-graphic-option bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-md"
+              onclick="removeGraphicOption(this)">&times;</button>
+      </div>`;
+
+      const buttonContainer = group.querySelector('.mt-4.flex');
+      buttonContainer.insertBefore(newInput, buttonContainer.firstChild);
+  }
+
+  function removeGraphicOption(button) {
+      const graphicInputContainer = button.parentElement; 
+      if (graphicInputContainer.querySelector('input').value === "") {
+          graphicInputContainer.remove();
+      }
+  }
+
+  function removeGraphicContainer(button) {
+      const group = button.closest('.graphic-group');
+      const graphicInputs = group.querySelectorAll('input[type="text"]');
+
+      const allEmpty = Array.from(graphicInputs).every(input => input.value.trim() === "");
+
+      if (allEmpty) {
+          group.remove();
+      } else {
+          alert("Cannot remove this graphic group because it contains non-empty graphic options.");
+      }
+  }
+      </script>
+
+      <script>
+          function createPriceDiv(containerId) {
+              const mainContainer = document.getElementById(containerId);
+              const newIndex = mainContainer.children.length;
+      
+              const newGroup = document.createElement('div');
+              newGroup.className = 'price-group flex flex-col gap-4';
+              newGroup.setAttribute('data-index', newIndex);
+              newGroup.innerHTML = `
+                  <h3>Price Options:</h3>
+                  <div class="grid grid-cols-2 gap-2 mt-2">
+                      <div class="flex items-center gap-2">
+                          <input
+                              type="text"
+                              name="price[${newIndex}][]"
+                              class="price outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold price-input"
+                              placeholder="Price Option ($)"
+                          />
+                          <button
+                              type="button"
+                              class="remove-price-option bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-md"
+                              onclick="removePriceOption(this)">&times;</button>
+                      </div>
+                  </div>
+                  <div class="mt-4 flex flex-col bg-zinc-600 text-white px-4 py-3 rounded-lg shadow-lg">
+                      <div class="cursor-pointer bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center" onclick="addPriceOption(this)">
+                          Add Price Option
+                      </div>
+                      <div class="cursor-pointer bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center mt-2" onclick="removePriceContainer(this)">
+                          Remove Price Container
+                      </div>
+                  </div>
+              `;
+      
+              mainContainer.appendChild(newGroup);
+          }
+      
+          function addPriceOption(button) {
+              const group = button.closest('.price-group');
+              const newIndex = group.dataset.index;
+              const newInput = document.createElement('div');
+              newInput.className = 'flex items-center gap-2 mt-2';
+              newInput.innerHTML = `
+              <div class="flex gap-1 items-center justify-center w-full mb-2">
+                  <input
+                      type="text"
+                      name="price[${newIndex}][]"
+                      class="price outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold price-input"
+                      placeholder="Price Option ($)"
+                  />
+                  <button
+                      type="button"
+                      class="remove-price-option bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-md"
+                      onclick="removePriceOption(this)">&times;</button>
+              </div>`;
+              // Insert the new input above the "Add Price Option" button
+              const buttonContainer = group.querySelector('.mt-4.flex');
+              buttonContainer.insertBefore(newInput, buttonContainer.firstChild);
+          }
+      
+          function removePriceOption(button) {
+              const priceInputContainer = button.parentElement; 
+              if (priceInputContainer.querySelector('input').value === "") {
+                  priceInputContainer.remove();
+              }
+          }
+      
+          function removePriceContainer(button) {
+              const group = button.closest('.price-group');
+              const priceInputs = group.querySelectorAll('input[type="text"]');
+              
+              // Check if all price inputs are empty
+              const allEmpty = Array.from(priceInputs).every(input => input.value.trim() === "");
+      
+              if (allEmpty) {
+                  group.remove();
+              } else {
+                  alert("Cannot remove this price group because it contains non-empty price options.");
+              }
+          }
+      </script>
+      
+      <script>
+        function createRamDiv(containerId) {
+            const mainContainer = document.getElementById(containerId);
+            const newIndex = mainContainer.children.length;
+    
+            const newGroup = document.createElement('div');
+            newGroup.className = 'ram-group flex flex-col gap-4';
+            newGroup.setAttribute('data-index', newIndex);
+            newGroup.innerHTML = `
+                <h3>RAM Options:</h3>
+                <div class="grid grid-cols-2 gap-2 mt-2">
+                    <div class="flex items-center gap-2">
+                        <input
+                            type="text"
+                            name="ram[${newIndex}][]"
+                            class="ram outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold ram-input"
+                            placeholder="RAM Option (GB)"
+                        />
+                        <button
+                            type="button"
+                            class="remove-ram-option bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-md"
+                            onclick="removeRamOption(this)">&times;</button>
+                    </div>
+                </div>
+                <div class="mt-4 flex flex-col bg-zinc-600 text-white px-4 py-3 rounded-lg shadow-lg">
+                    <div class="cursor-pointer bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center" onclick="addRamOption(this)">
+                        Add RAM Option
+                    </div>
+                    <div class="cursor-pointer bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center mt-2" onclick="removeRamContainer(this)">
+                        Remove RAM Container
+                    </div>
+                </div>
+            `;
+    
+            mainContainer.appendChild(newGroup);
+        }
+    
+        function addRamOption(button) {
+            const group = button.closest('.ram-group');
+            const newIndex = group.dataset.index;
+    
+            const newInput = document.createElement('div');
+            newInput.className = 'flex items-center gap-2 mt-2';
+            newInput.innerHTML = `
+                <input
+                    type="text"
+                    name="ram[${newIndex}][]"
+                    class="ram outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold ram-input"
+                    placeholder="RAM Option (GB)"
+                />
+                <button
+                    type="button"
+                    class="remove-ram-option bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-md"
+                    onclick="removeRamOption(this)">&times;</button>
+            `;
+    
+            const buttonContainer = group.querySelector('.mt-4.flex');
+            buttonContainer.insertBefore(newInput, buttonContainer.firstChild);
+        }
+    
+        function removeRamOption(button) {
+            const ramInputContainer = button.parentElement.parentElement; 
+            if (ramInputContainer.querySelector('input').value === "") {
+                ramInputContainer.remove();
+            }
+        }
+    
+        function removeRamContainer(button) {
+            const group = button.closest('.ram-group');
+            const ramInputs = group.querySelectorAll('input[type="text"]');
+    
+            const allEmpty = Array.from(ramInputs).every(input => input.value.trim() === "");
+    
+            if (allEmpty) {
+                group.remove();
+            } else {
+                alert("Cannot remove this RAM group because it contains non-empty RAM options.");
+            }
+        }
+    </script>
+    
+    
+      <script>
+    function createStorageDiv(containerId) {
+        const mainContainer = document.getElementById(containerId);
+        const newIndex = mainContainer.children.length;
+
+        const newGroup = document.createElement('div');
+        newGroup.className = 'storage-group flex flex-col gap-4';
+        newGroup.setAttribute('data-index', newIndex);
+        newGroup.innerHTML = `
+            <h3>Storage Options:</h3>
+            <div class="grid grid-cols-2 gap-2 mt-2">
+                <div class="flex items-center gap-2">
+                    <input
+                        type="text"
+                        name="storage[${newIndex}][]"
+                        class="storage outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold storage-input"
+                        placeholder="Storage Option (GB)"
+                    />
+                    <button
+                        type="button"
+                        class="remove-storage-option bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-md"
+                        onclick="removeStorageOption(this)">&times;</button>
+                </div>
             </div>
-
-            <!-- Storage Fields -->
-            <div class="flex flex-col space-y-2">
-              <label class="text-white font-semibold">Storage:</label>
-              <input
-                type="text"
-                name="storage1"
-                class="outline-none rounded-lg bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold"
-                placeholder="Storage 1"
-                value="<%= find.storage1 %>"
-              />
-              <input
-                type="text"
-                name="storage2"
-                class="outline-none rounded-lg bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold"
-                placeholder="Storage 2"
-                value="<%= find.storage2 %>"
-              />
-              <input
-                type="text"
-                name="storage3"
-                class="outline-none rounded-lg bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold"
-                placeholder="Storage 3"
-                value="<%= find.storage3 %>"
-              />
+            <div class="mt-4 flex flex-col bg-zinc-600 text-white px-4 py-3 rounded-lg shadow-lg">
+                <div class="cursor-pointer bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center" onclick="addStorageOption(this)">
+                    Add Storage Option
+                </div>
+                <div class="cursor-pointer bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center mt-2" onclick="removeStorageContainer(this)">
+                    Remove Storage Container
+                </div>
             </div>
+        `;
 
-            <!-- Price Fields -->
-            <div class="flex flex-col space-y-2">
-              <label class="text-white font-semibold">Price:</label>
-              <input
-                type="text"
-                name="price1"
-                class="outline-none rounded-lg bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold"
-                placeholder="Price 1"
-                value="<%= find.price1 %>"
-              />
-              <input
-                type="text"
-                name="price2"
-                class="outline-none rounded-lg bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold"
-                placeholder="Price 2"
-                value="<%= find.price2 %>"
-              />
-              <input
-                type="text"
-                name="price3"
-                class="outline-none rounded-lg bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold"
-                placeholder="Price 3"
-                value="<%= find.price3 %>"
-              />
-            </div>
+        mainContainer.appendChild(newGroup);
+    }
 
-            <!-- Additional Fields -->
+    function addStorageOption(button) {
+        const group = button.closest('.storage-group');
+        const newIndex = group.dataset.index;
+        const newInput = document.createElement('div');
+        newInput.className = 'flex items-center gap-2 mt-2';
+        newInput.innerHTML = `
+        <div class="flex gap-1 items-center justify-center w-full mb-2">
             <input
-              type="text"
-              name="graphics"
-              class="outline-none rounded-lg bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold"
-              placeholder="Product Graphics Card"
-              value="<%= find.graphics %>"
+                type="text"
+                name="storage[${newIndex}][]"
+                class="storage outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold storage-input"
+                placeholder="Storage Option (GB)"
             />
+            <button
+                type="button"
+                class="remove-storage-option bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-md"
+                onclick="removeStorageOption(this)">&times;</button>
+        </div>`;
+
+        // Insert the new input above the "Add Storage Option" button
+        const buttonContainer = group.querySelector('.mt-4.flex');
+        buttonContainer.insertBefore(newInput, buttonContainer.firstChild);
+    }
+
+    function removeStorageOption(button) {
+        const storageInputContainer = button.parentElement; 
+        if (storageInputContainer.querySelector('input').value === "") {
+            storageInputContainer.remove();
+        }
+    }
+
+    function removeStorageContainer(button) {
+        const group = button.closest('.storage-group');
+        const storageInputs = group.querySelectorAll('input[type="text"]');
+
+        const allEmpty = Array.from(storageInputs).every(input => input.value.trim() === "");
+
+        if (allEmpty) {
+            group.remove();
+        } else {
+            alert("Cannot remove this storage group because it contains non-empty storage options.");
+        }
+    }
+      </script>
+
+      
             <input
               type="text"
               name="capacity"
@@ -384,122 +1048,74 @@
             ><%= find.blog %></textarea>
           </div>
 
-          <div class="bg-stone-700 p-4 rounded-lg">
-            <h1 class="text-white text-2xl mb-4">Add Product Descriptions</h1>
-            <div id="descriptionContainer">
-              <% if (find.descriptions && find.descriptions.length > 0) { %>
-                <% find.descriptions.forEach((desc, index) => { %>
-                  <div class="description-section mt-4">
-                    <label class="block text-white font-semibold mb-1 text-lg">Heading <%= index + 1 %>:</label>
-                    <textarea
-                      name="heading[]"
-                      class="w-full outline-none resize-none rounded-lg bg-zinc-500 text-white px-3 py-2 h-10 placeholder:text-zinc-300/80 placeholder:font-semibold"
-                      placeholder="Heading"
-                    ><%= desc.heading %></textarea>
-          
-                    <textarea
-                      name="detail[]"
-                      class="w-full outline-none resize-none rounded-lg bg-zinc-500 text-white px-3 py-2 h-40 placeholder:text-zinc-300/80 placeholder:font-semibold"
-                      placeholder="Details"
-                    ><%= desc.detail %></textarea>
-          
-                    <textarea
-                      name="descriptionimage[]"
-                      class="w-full outline-none resize-none rounded-lg bg-zinc-500 text-white px-3 py-2 h-40 placeholder:text-zinc-300/80 placeholder:font-semibold"
-                      placeholder="Image URL"
-                    ><%= desc.descriptionimage %></textarea>
+          <div class="bg-stone-700 p-4 rounded-lg w-full">
+            <h1 class="text-white text-2xl mb-4 w-full">Add Product Descriptions</h1>
+            <div id="descContainer" class="w-full">
+              <div id="descFields" class="flex flex-col gap-8 w-full">
+                  <% if (find.descriptions && find.descriptions.length > 0) { %>
+                      <% find.descriptions.forEach((desc, index) => { %>
+                          <div class="mt-4 descGroup flex flex-col gap-4">
+                            <h1 class="bg-black font-semibold text-orange-600 px-2 py-1 rounded-lg text-lg">Description <%= index+1 %></h1>
+                              <input
+                                  type="text"
+                                  name="heading[<%= index %>]"
+                                  class="descr outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold"
+                                  placeholder="Product Heading"
+                                  value="<%= desc.heading %>"
+                              />
+                              <input
+                                  type="text"
+                                  name="detail[<%= index %>]"
+                                  class="descr outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold"
+                                  placeholder="Product Detail"
+                                  value="<%= desc.detail %>"
+                              />
+                              <input
+                                  type="text"
+                                  name="descriptionimage[<%= index %>]"
+                                  class="descr outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold"
+                                  placeholder="Product Image URL"
+                                  value="<%= desc.descriptionimage %>"
+                              />
+                          </div>
+                      <% }); %>
+                  <% } else { %>
+                      <div class="mt-4 descGroup flex flex-col gap-4">
+                          <input
+                              type="text"
+                              name="heading[]"
+                              class="descr outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold"
+                              placeholder="Product Heading"
+                          />
+                          <input
+                              type="text"
+                              name="detail[]"
+                              class="descr outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold"
+                              placeholder="Product Detail"
+                          />
+                          <input
+                              type="text"
+                              name="descriptionimage[]"
+                              class="descr outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold"
+                              placeholder="Product Image URL"
+                          />
+                      </div>
+                  <% } %>
+              </div>
+              <div class="flex flex-col md:flex-row md:space-x-4 bg-zinc-500 text-white px-3 py-2 rounded-lg mt-4">
+                  <div id="addField" class="mt-2 cursor-pointer bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg"
+                      onclick="createDescBox('descFields')">
+                      Add Field
                   </div>
-                <% }); %>
-              <% } else { %>
-                <div class="description-section">
-                  <label class="block text-white font-semibold mb-1 text-lg">Heading 1:</label>
-                  <textarea
-                    name="heading[]"
-                    class="w-full outline-none resize-none rounded-lg bg-zinc-500 text-white px-3 py-2 h-10 placeholder:text-zinc-300/80 placeholder:font-semibold"
-                    placeholder="Heading"
-                  ></textarea>
-          
-                  <textarea
-                    name="detail[]"
-                    class="w-full outline-none resize-none rounded-lg bg-zinc-500 text-white px-3 py-2 h-40 placeholder:text-zinc-300/80 placeholder:font-semibold"
-                    placeholder="Details"
-                  ></textarea>
-                  <textarea
-                    name="descriptionimage[]"
-                    class="w-full outline-none resize-none rounded-lg bg-zinc-500 text-white px-3 py-2 h-40 placeholder:text-zinc-300/80 placeholder:font-semibold"
-                    placeholder="Image URL"
-                  ></textarea>
-                </div>
-              <% } %>
+                  <div id="removeProcessor" class="mt-2 cursor-pointer bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg"
+                      onclick="removeDescBox('descFields', 'descr')">
+                      Remove Empty Fields
+                  </div>
+              </div>
             </div>
-          
-            <button
-              id="addDescriptionBtn"
-              type="button"
-              class="mt-4 bg-blue-500 text-white font-semibold px-4 py-2 rounded-lg hover:bg-blue-600"
-            >
-              Add Description
-            </button>
-          
-            <button
-              id="removeDescriptionBtn"
-              type="button"
-              class="mt-2 bg-red-500 text-white font-semibold px-4 py-2 rounded-lg hover:bg-red-600"
-            >
-              Remove Empty Descriptions
-            </button>
-          
-            <script>
-              const descriptionContainer = document.getElementById('descriptionContainer');
-              const addDescriptionBtn = document.getElementById('addDescriptionBtn');
-              const removeDescriptionBtn = document.getElementById('removeDescriptionBtn');
-          
-              let descriptionCount = <%= find.descriptions.length > 0 ? find.descriptions.length : 1 %>;
-          
-              addDescriptionBtn.addEventListener('click', function () {
-                descriptionCount++;
-          
-                const newSection = document.createElement('div');
-                newSection.classList.add('description-section', 'mt-4');
-          
-                newSection.innerHTML = `
-                  <label class="block text-white font-semibold mb-1 text-lg">Heading ${descriptionCount}:</label>
-                  <textarea
-                    name="heading[]"
-                    class="w-full outline-none resize-none rounded-lg bg-zinc-500 text-white px-3 py-2 h-10 placeholder:text-zinc-300/80 placeholder:font-semibold"
-                    placeholder="Heading"
-                  ></textarea>
-          
-                  <textarea
-                    name="detail[]"
-                    class="w-full outline-none resize-none rounded-lg bg-zinc-500 text-white px-3 py-2 h-40 placeholder:text-zinc-300/80 placeholder:font-semibold"
-                    placeholder="Details"
-                  ></textarea>
-          
-                  <textarea
-                    name="descriptionimage[]"
-                    class="w-full outline-none resize-none rounded-lg bg-zinc-500 text-white px-3 py-2 h-40 placeholder:text-zinc-300/80 placeholder:font-semibold"
-                    placeholder="Image URL"
-                  ></textarea>
-                `;
-          
-                descriptionContainer.appendChild(newSection);
-              });
-          
-              removeDescriptionBtn.addEventListener('click', function () {
-                const sections = descriptionContainer.querySelectorAll('.description-section');
-                sections.forEach(section => {
-                  const headingTextarea = section.querySelector('textarea[name="heading[]"]');
-                  const detailTextarea = section.querySelector('textarea[name="detail[]"]');
-                  const imageTextarea = section.querySelector('textarea[name="descriptionimage[]"]');
-          
-                  if (headingTextarea.value.trim() === '' && detailTextarea.value.trim() === '' && imageTextarea.value.trim() === '') {
-                    section.remove();
-                  }
-                });
-              });
-            </script>
-          
+            
+            </div>
+
             <div class="flex gap-4 justify-center mt-6">
               <input
                 type="submit"
@@ -518,7 +1134,79 @@
     <% } else { %>
       <p class="text-center text-lg text-white">Product not found.</p>
     <% } %>
+
+    
   </div>
+
+  <script>
+  const createInputBox = (divName, inputType, fieldClassName, name) => {
+    const div = document.getElementById(divName);
+    const newDiv = document.createElement('div');
+    const input = document.createElement('input');
+    input.type = inputType;
+    input.name = name;
+    input.className = `${fieldClassName} outline-none w-full rounded-lg bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold`;
+    input.placeholder = `Add ${name}`;
+    newDiv.appendChild(input);
+    div.appendChild(newDiv);
+};
+
+const removeInputBox = (mainDivName, inputClass) => {
+    const div = document.getElementById(mainDivName);
+    const inputs = div.querySelectorAll(`.${inputClass}`); 
+
+    inputs.forEach(input => {
+        if (input.value === "") {
+            input.parentElement.remove();
+        }
+    });
+};
+const createDescBox = (divName) => {
+    const div = document.getElementById(divName);
+    const newGroup = document.createElement('div');
+    newGroup.className = "mt-4 descGroup";
+
+    const index = div.querySelectorAll('.descGroup').length + 1;
+
+    newGroup.innerHTML = `
+        <div class="bg-black font-semibold text-orange-600 px-2 py-1 rounded-lg text-lg mb-4 w-full">Description ${index}</div>
+        <input
+            type="text"
+            name="heading[]"
+            class="descr outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold mb-2"
+            placeholder="Product Heading"
+        />
+        <input
+            type="text"
+            name="detail[]"
+            class="descr outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold mb-2"
+            placeholder="Product Detail"
+        />
+        <input
+            type="text"
+            name="descriptionimage[]"
+            class="descr outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold"
+            placeholder="Product Image URL"
+        />
+    `;
+
+    div.appendChild(newGroup);
+};
+
+const removeDescBox = (mainDivName, inputClass) => {
+    const div = document.getElementById(mainDivName);
+    const groups = div.querySelectorAll('.descGroup');
+
+    groups.forEach(group => {
+        const inputs = group.querySelectorAll(`.${inputClass}`);
+        const allEmpty = Array.from(inputs).every(input => input.value.trim() === ''); 
+
+        if (allEmpty) {
+            group.remove();
+        }
+    });
+};
+</script>
 </body>
 <script src="https://cdn.tailwindcss.com"></script>
 </html>

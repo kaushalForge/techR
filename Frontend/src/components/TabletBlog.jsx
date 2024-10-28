@@ -1,13 +1,14 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useQuery } from "react-query";
 import { Helmet, HelmetProvider } from "react-helmet-async";
+import { toast } from "react-toastify";
 import CircularLoader from "../CircularLoader";
 import SideBar from "./SideBar";
 import MoreOptions from "./MoreOptions";
 
-const fetchtargetTablets = async (targetURL, navigate) => {
+const fetchTargetTablets = async (targetURL, navigate) => {
   try {
     const response = await axios.get(targetURL);
     if (typeof response.data === "object" && response.data !== null) {
@@ -31,34 +32,15 @@ function TabletBlog() {
   const navigate = useNavigate();
   const targettabletURL = import.meta.env.VITE_TARGETTABLET_URL;
   const { itname } = useParams();
+  const [indexChanger, setIndexChanger] = useState(0);
   const targetURL = `${targettabletURL}/${itname}`;
   const { data: targettablets = {}, isLoading: isLoadingTarget } = useQuery(
     ["targettablets", targetURL],
-    () => fetchtargetTablets(targetURL, navigate),
+    () => fetchTargetTablets(targetURL, navigate),
     {
       staleTime: 1000 * 60 * 5,
     }
   );
-
-  const rows = [
-    {
-      ram: targettablets.ram1,
-      storage: targettablets.storage1,
-      price: targettablets.price1,
-    },
-    targettablets.ram2 && {
-      ram: targettablets.ram2,
-      storage: targettablets.storage2,
-      price: targettablets.price2,
-    },
-    targettablets.ram3 && {
-      ram: targettablets.ram3,
-      storage: targettablets.storage3,
-      price: targettablets.price3,
-    },
-  ]
-    .filter(Boolean)
-    .filter((row) => row.ram && row.storage && row.price);
 
   const InfoSection = ({ label, value }) => (
     <div className="flex justify-between items-start sm:items-center w-full bg-white p-2 border border-gray-200 rounded-md shadow-sm hover:shadow-md transition duration-300 ease-in-out">
@@ -73,6 +55,49 @@ function TabletBlog() {
       </span>
     </div>
   );
+
+  const [finalPrice, setFinalPrice] = useState([]);
+  const [finalRam, setFinalRam] = useState([]);
+  const [finalStorage, setFinalStorage] = useState([]);
+  const [finalProcessor, setFinalProcessor] = useState([]);
+  const [finalGraphic, setFinalGraphic] = useState([]);
+
+  useEffect(() => {
+    const rows = {
+      price: targettablets.price || [],
+      ram: targettablets.ram || [],
+      storage: targettablets.storage || [],
+      processor: targettablets.processor || [],
+      graphic: targettablets.graphic || [],
+    };
+
+    const processAndSet = (property, setter, index) => {
+      if (rows[property].length > index) {
+        const processedElements = rows[property][index].map(
+          (element) => element
+        );
+        setter(processedElements);
+      }
+    };
+
+    processAndSet("price", setFinalPrice, indexChanger);
+    processAndSet("ram", setFinalRam, indexChanger);
+    processAndSet("storage", setFinalStorage, indexChanger);
+    processAndSet("processor", setFinalProcessor, indexChanger);
+    processAndSet("graphic", setFinalGraphic, indexChanger);
+  }, [targettablets, indexChanger]);
+
+  function handleSpecsChange() {
+    setIndexChanger(
+      (prevIndex) => (prevIndex + 1) % targettablets.storage.length
+    );
+
+    toast.success("Configuration Changed!", {
+      position: "top-center",
+      autoClose: 500,
+    });
+  }
+
   return (
     <HelmetProvider>
       <div className="flex flex-col items-center justify-center p-4">
@@ -96,7 +121,7 @@ function TabletBlog() {
           {!isLoadingTarget ? (
             <div className="flex-1 p-4 bg-white rounded-lg shadow-md">
               <h1
-                className={`underline-animations text-2xl mt-2 inline-block w-auto font-semibold cursor-pointer ${
+                className={`underline-animations text-2xl mt-2 inline-block w-auto font-bold cursor-pointer ${
                   targettablets.mostpopular === "true"
                     ? "text-red-600"
                     : "text-gray-900"
@@ -106,7 +131,9 @@ function TabletBlog() {
               </h1>
               <p className="text-gray-600 text-sm md:text-sm my-2">
                 Explore the{" "}
-                {targettablets.item_categorie === "flagship" ? "outstanding " : "great "}
+                {targettablets.item_categorie === "flagship"
+                  ? "outstanding "
+                  : "great "}
                 features of this tablet that make it a great choice for your
                 needs.
               </p>
@@ -126,9 +153,11 @@ function TabletBlog() {
                 {targettablets.blog || "..."}
               </div>
               <div className="py-4 border-t-2 w-full">
-                <h2 className="underline-animations text-xl font-bold w-auto inline-block mb-3">
-                  {targettablets.name + " "}Specifications
-                </h2>
+                <div className="flex items-center justify-between mb-2">
+                  <h2 className="underline-animations text-xl font-bold w-auto inline-block mb-3">
+                    {targettablets.name + " "}Specifications
+                  </h2>
+                </div>
 
                 <div className="flex flex-col space-y-2">
                   {[
@@ -141,8 +170,15 @@ function TabletBlog() {
                     { label: "Front Camera", value: targettablets.frontcamera },
                     { label: "Video", value: targettablets.video },
                     { label: "OS", value: targettablets.os },
-                    { label: "Processor", value: targettablets.processor },
-                    { label: "Graphics", value: targettablets.graphics },
+                    {
+                      label: "Processor",
+                      value:
+                        finalProcessor.length > 0 ? finalProcessor[0] : null,
+                    },
+                    {
+                      label: "Graphics",
+                      value: finalGraphic.length > 0 ? finalGraphic[0] : null,
+                    },
                     { label: "Capacity", value: targettablets.capacity },
                     { label: "Charging", value: targettablets.charging },
                     { label: "Wi-Fi", value: targettablets.wifi },
@@ -158,25 +194,24 @@ function TabletBlog() {
                   ))}
                 </div>
               </div>
-
-              {rows.length > 0 && (
-                <div className="py-4">
-                  <h2 className="underline-animations inline-block w-auto text-lg font-bold uppercase lg:text-xl">
-                    Pricing
-                  </h2>
-                  <div className="overflow-hidden rounded-lg border border-gray-400 mt-2 shadow-lg">
-                    <div className="flex bg-gray-800 text-white">
-                      <div className="flex-1 text-center font-bold py-2 border-b border-gray-600">
-                        S.N
-                      </div>
-                      <div className="flex-1 text-center font-bold py-2 border-b border-gray-600">
-                        OPTIONS
-                      </div>
-                      <div className="flex-1 text-center font-bold py-2 border-b border-gray-600">
-                        PRICE
-                      </div>
+              <div className="py-4">
+                <h2 className="underline-animations inline-block w-auto text-lg font-bold uppercase lg:text-xl">
+                  Pricing
+                </h2>
+                <div className="overflow-hidden rounded-lg border border-gray-400 mt-2 shadow-lg">
+                  <div className="flex bg-gray-800 text-white">
+                    <div className="flex-1 text-center font-bold py-2 border-b border-gray-600">
+                      S.N
                     </div>
-                    {rows.map((row, index) => (
+                    <div className="flex-1 text-center font-bold py-2 border-b border-gray-600">
+                      OPTIONS
+                    </div>
+                    <div className="flex-1 text-center font-bold py-2 border-b border-gray-600">
+                      PRICE
+                    </div>
+                  </div>
+                  <div className="flex flex-col">
+                    {finalRam.map((ram, index) => (
                       <div
                         key={index}
                         className="flex border-t border-gray-300 hover:bg-[#f7e2ff] transition-colors"
@@ -184,15 +219,17 @@ function TabletBlog() {
                         <div className="flex-1 text-center py-2">
                           {index + 1}
                         </div>
-                        <div className="flex-1 text-center py-2">{`${row.ram}/${row.storage}`}</div>
                         <div className="flex-1 text-center py-2">
-                          {row.price}
+                          {`${ram}/${finalStorage[index] || ""}`}
+                        </div>
+                        <div className="flex-1 text-center py-2">
+                          {finalPrice[index] || ""}
                         </div>
                       </div>
                     ))}
                   </div>
                 </div>
-              )}
+              </div>
 
               <div className="py-4">
                 {targettablets?.descriptions?.map((item, index) => (

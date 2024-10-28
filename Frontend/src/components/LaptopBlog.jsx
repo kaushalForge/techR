@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useQuery } from "react-query";
 import { Helmet, HelmetProvider } from "react-helmet-async";
+import { toast } from "react-toastify";
 import CircularLoader from "../CircularLoader";
 import SideBar from "./SideBar";
 import MoreOptions from "./MoreOptions";
@@ -31,6 +32,7 @@ function LaptopBlog() {
   const navigate = useNavigate();
   const targetlaptopURL = import.meta.env.VITE_TARGETLAPTOP_URL;
   const { itname } = useParams();
+  const [indexChanger, setIndexChanger] = useState(0);
   const targetURL = `${targetlaptopURL}/${itname}`;
   const { data: targetlaptops = {}, isLoading: isLoadingTarget } = useQuery(
     ["targetlaptops", targetURL],
@@ -39,26 +41,6 @@ function LaptopBlog() {
       staleTime: 1000 * 60 * 5,
     }
   );
-
-  const rows = [
-    {
-      ram: targetlaptops.ram1,
-      storage: targetlaptops.storage1,
-      price: targetlaptops.price1,
-    },
-    targetlaptops.ram2 && {
-      ram: targetlaptops.ram2,
-      storage: targetlaptops.storage2,
-      price: targetlaptops.price2,
-    },
-    targetlaptops.ram3 && {
-      ram: targetlaptops.ram3,
-      storage: targetlaptops.storage3,
-      price: targetlaptops.price3,
-    },
-  ]
-    .filter(Boolean)
-    .filter((row) => row.ram && row.storage && row.price);
 
   const InfoSection = ({ label, value }) => (
     <div className="flex justify-between items-start sm:items-center w-full bg-white p-2 border border-gray-200 rounded-md shadow-sm hover:shadow-md transition duration-300 ease-in-out">
@@ -73,6 +55,49 @@ function LaptopBlog() {
       </span>
     </div>
   );
+
+  const [finalPrice, setFinalPrice] = useState([]);
+  const [finalRam, setFinalRam] = useState([]);
+  const [finalStorage, setFinalStorage] = useState([]);
+  const [finalProcessor, setFinalProcessor] = useState([]);
+  const [finalGraphic, setFinalGraphic] = useState([]);
+
+  useEffect(() => {
+    const rows = {
+      price: targetlaptops.price || [],
+      ram: targetlaptops.ram || [],
+      storage: targetlaptops.storage || [],
+      processor: targetlaptops.processor || [],
+      graphic: targetlaptops.graphic || [],
+    };
+
+    const processAndSet = (property, setter, index) => {
+      if (rows[property].length > index) {
+        const processedElements = rows[property][index].map(
+          (element) => element
+        );
+        setter(processedElements);
+      }
+    };
+
+    processAndSet("price", setFinalPrice, indexChanger);
+    processAndSet("ram", setFinalRam, indexChanger);
+    processAndSet("storage", setFinalStorage, indexChanger);
+    processAndSet("processor", setFinalProcessor, indexChanger);
+    processAndSet("graphic", setFinalGraphic, indexChanger);
+  }, [targetlaptops, indexChanger]);
+
+  function handleSpecsChange() {
+    setIndexChanger(
+      (prevIndex) => (prevIndex + 1) % targetlaptops.storage.length
+    );
+
+    toast.success("Configuration Changed!", {
+      position: "top-center",
+      autoClose: 500,
+    });
+  }
+
   return (
     <HelmetProvider>
       <div className="flex flex-col items-center justify-center p-4">
@@ -128,9 +153,17 @@ function LaptopBlog() {
                 {targetlaptops.blog || "..."}
               </div>
               <div className="py-4 border-t-2 w-full">
-                <h2 className="underline-animations text-xl font-bold w-auto inline-block mb-3">
-                  {targetlaptops.name + " "}Specifications
-                </h2>
+                <div className="flex items-center justify-between mb-2">
+                  <h2 className="underline-animations text-xl font-bold w-auto inline-block mb-3">
+                    {targetlaptops.name + " "}Specifications
+                  </h2>
+                  <button
+                    onClick={handleSpecsChange}
+                    className="bg-black p-1 text-orange-500 overflow-hidden rounded-lg"
+                  >
+                    Switch Variant
+                  </button>
+                </div>
 
                 <div className="flex flex-col space-y-2">
                   {[
@@ -143,8 +176,15 @@ function LaptopBlog() {
                     { label: "Front Camera", value: targetlaptops.frontcamera },
                     { label: "Video", value: targetlaptops.video },
                     { label: "OS", value: targetlaptops.os },
-                    { label: "Processor", value: targetlaptops.processor },
-                    { label: "Graphics", value: targetlaptops.graphics },
+                    {
+                      label: "Processor",
+                      value:
+                        finalProcessor.length > 0 ? finalProcessor[0] : null,
+                    },
+                    {
+                      label: "Graphics",
+                      value: finalGraphic.length > 0 ? finalGraphic[0] : null,
+                    },
                     { label: "Capacity", value: targetlaptops.capacity },
                     { label: "Charging", value: targetlaptops.charging },
                     { label: "Wi-Fi", value: targetlaptops.wifi },
@@ -160,25 +200,24 @@ function LaptopBlog() {
                   ))}
                 </div>
               </div>
-
-              {rows.length > 0 && (
-                <div className="py-4">
-                  <h2 className="underline-animations inline-block w-auto text-lg font-bold uppercase lg:text-xl">
-                    Pricing
-                  </h2>
-                  <div className="overflow-hidden rounded-lg border border-gray-400 mt-2 shadow-lg">
-                    <div className="flex bg-gray-800 text-white">
-                      <div className="flex-1 text-center font-bold py-2 border-b border-gray-600">
-                        S.N
-                      </div>
-                      <div className="flex-1 text-center font-bold py-2 border-b border-gray-600">
-                        OPTIONS
-                      </div>
-                      <div className="flex-1 text-center font-bold py-2 border-b border-gray-600">
-                        PRICE
-                      </div>
+              <div className="py-4">
+                <h2 className="underline-animations inline-block w-auto text-lg font-bold uppercase lg:text-xl">
+                  Pricing
+                </h2>
+                <div className="overflow-hidden rounded-lg border border-gray-400 mt-2 shadow-lg">
+                  <div className="flex bg-gray-800 text-white">
+                    <div className="flex-1 text-center font-bold py-2 border-b border-gray-600">
+                      S.N
                     </div>
-                    {rows.map((row, index) => (
+                    <div className="flex-1 text-center font-bold py-2 border-b border-gray-600">
+                      OPTIONS
+                    </div>
+                    <div className="flex-1 text-center font-bold py-2 border-b border-gray-600">
+                      PRICE
+                    </div>
+                  </div>
+                  <div className="flex flex-col">
+                    {finalRam.map((ram, index) => (
                       <div
                         key={index}
                         className="flex border-t border-gray-300 hover:bg-[#f7e2ff] transition-colors"
@@ -186,15 +225,17 @@ function LaptopBlog() {
                         <div className="flex-1 text-center py-2">
                           {index + 1}
                         </div>
-                        <div className="flex-1 text-center py-2">{`${row.ram}/${row.storage}`}</div>
                         <div className="flex-1 text-center py-2">
-                          {row.price}
+                          {`${ram}/${finalStorage[index] || ""}`}
+                        </div>
+                        <div className="flex-1 text-center py-2">
+                          {finalPrice[index] || ""}
                         </div>
                       </div>
                     ))}
                   </div>
                 </div>
-              )}
+              </div>
 
               <div className="py-4">
                 {targetlaptops?.descriptions?.map((item, index) => (

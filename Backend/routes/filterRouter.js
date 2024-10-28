@@ -10,7 +10,10 @@ router.get("/phone", async (req, res) => {
       blog: item.blog,
       image: item.image,
       productType: item.productType,
-      price1: item.price1,
+      price:
+        item.price && item.price.length > 0 && item.price[0].length > 0
+          ? item.price[0][0]
+          : "$...",
     }));
     res.json(formattedData);
   } catch (error) {
@@ -21,12 +24,16 @@ router.get("/phone", async (req, res) => {
 router.get("/laptop", async (req, res) => {
   try {
     const laptop = await productModel.find({ productType: "laptop" });
+    console.log(laptop);
     const formattedData = laptop.map((item) => ({
       name: item.name,
       blog: item.blog,
       image: item.image,
       productType: item.productType,
-      price1: item.price1,
+      price:
+        item.price && item.price.length > 0 && item.price[0].length > 0
+          ? item.price[0][0]
+          : "$...",
     }));
     res.json(formattedData);
   } catch (error) {
@@ -42,7 +49,10 @@ router.get("/tablet", async (req, res) => {
       blog: item.blog,
       image: item.image,
       productType: item.productType,
-      price1: item.price1,
+      price:
+        item.price && item.price.length > 0 && item.price[0].length > 0
+          ? item.price[0][0]
+          : "$...",
     }));
     res.json(formattedData);
   } catch (error) {
@@ -53,12 +63,16 @@ router.get("/tablet", async (req, res) => {
 router.get("/latest", async (req, res) => {
   try {
     const latest = await productModel.find({ latest: true });
+    console.log(latest);
     const formattedData = latest.map((item) => ({
       name: item.name,
       blog: item.blog,
       image: item.image,
       productType: item.productType,
-      price1: item.price1,
+      price:
+        item.price && item.price.length > 0 && item.price[0].length > 0
+          ? item.price[0][0]
+          : null,
     }));
     res.json(formattedData);
   } catch (error) {
@@ -76,7 +90,10 @@ router.get("/targetgamer", async (req, res) => {
       blog: item.blog,
       image: item.image,
       productType: item.productType,
-      price1: item.price1,
+      price:
+        item.price && item.price.length > 0 && item.price[0].length > 0
+          ? item.price[0][0]
+          : "$...",
     }));
     res.json(formattedData);
   } catch (error) {
@@ -94,7 +111,10 @@ router.get("/targetprofessional", async (req, res) => {
       blog: item.blog,
       image: item.image,
       productType: item.productType,
-      price1: item.price1,
+      price:
+        item.price && item.price.length > 0 && item.price[0].length > 0
+          ? item.price[0][0]
+          : "$...",
     }));
     res.json(formattedData);
   } catch (error) {
@@ -112,7 +132,10 @@ router.get("/targetstudents", async (req, res) => {
       blog: item.blog,
       image: item.image,
       productType: item.productType,
-      price1: item.price1,
+      price:
+        item.price && item.price.length > 0 && item.price[0].length > 0
+          ? item.price[0][0]
+          : "$...",
     }));
     res.json(formattedData);
   } catch (error) {
@@ -130,7 +153,10 @@ router.get("/targetnormalusage", async (req, res) => {
       blog: item.blog,
       image: item.image,
       productType: item.productType,
-      price1: item.price1,
+      price:
+        item.price && item.price.length > 0 && item.price[0].length > 0
+          ? item.price[0][0]
+          : "$...",
     }));
     res.json(formattedData);
   } catch (error) {
@@ -146,7 +172,10 @@ router.get("/mostpopular", async (req, res) => {
       blog: item.blog,
       image: item.image,
       productType: item.productType,
-      price1: item.price1,
+      price:
+        item.price && item.price.length > 0 && item.price[0].length > 0
+          ? item.price[0][0]
+          : "$...",
     }));
     res.json(formattedData);
   } catch (error) {
@@ -162,7 +191,10 @@ router.get("/popularity", async (req, res) => {
       blog: item.blog,
       image: item.image,
       productType: item.productType,
-      price1: item.price1,
+      price:
+        item.price && item.price.length > 0 && item.price[0].length > 0
+          ? item.price[0][0]
+          : "$...",
     }));
     res.json(formattedData);
   } catch (error) {
@@ -178,7 +210,10 @@ router.get("/mostsold", async (req, res) => {
       blog: item.blog,
       image: item.image,
       productType: item.productType,
-      price1: item.price1,
+      price:
+        item.price && item.price.length > 0 && item.price[0].length > 0
+          ? item.price[0][0]
+          : "$...",
     }));
     res.json(formattedData);
   } catch (error) {
@@ -194,7 +229,10 @@ router.get("/budget", async (req, res) => {
       blog: item.blog,
       image: item.image,
       productType: item.productType,
-      price1: item.price1,
+      price:
+        item.price && item.price.length > 0 && item.price[0].length > 0
+          ? item.price[0][0]
+          : "$...",
     }));
     res.json(formattedData);
   } catch (error) {
@@ -210,7 +248,10 @@ router.get("/midrange", async (req, res) => {
       blog: item.blog,
       image: item.image,
       productType: item.productType,
-      price1: item.price1,
+      price:
+        item.price && item.price.length > 0 && item.price[0].length > 0
+          ? item.price[0][0]
+          : "$...",
     }));
     res.json(formattedData);
   } catch (error) {
@@ -226,7 +267,10 @@ router.get("/flagship", async (req, res) => {
       blog: item.blog,
       image: item.image,
       productType: item.productType,
-      price1: item.price1,
+      price:
+        item.price && item.price.length > 0 && item.price[0].length > 0
+          ? item.price[0][0]
+          : "$...",
     }));
     res.json(formattedData);
   } catch (error) {
@@ -242,7 +286,10 @@ router.get("/recommended", async (req, res) => {
       blog: item.blog,
       image: item.image,
       productType: item.productType,
-      price1: item.price1,
+      price:
+        item.price && item.price.length > 0 && item.price[0].length > 0
+          ? item.price[0][0]
+          : "$...",
     }));
     res.json(formattedData);
   } catch (error) {

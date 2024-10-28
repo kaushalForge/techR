@@ -1,13 +1,14 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useQuery } from "react-query";
 import { Helmet, HelmetProvider } from "react-helmet-async";
+import { toast } from "react-toastify";
 import CircularLoader from "../CircularLoader";
 import SideBar from "./SideBar";
 import MoreOptions from "./MoreOptions";
 
-const fetchtargetPhones = async (targetURL, navigate) => {
+const fetchtargetPhone = async (targetURL, navigate) => {
   try {
     const response = await axios.get(targetURL);
     if (typeof response.data === "object" && response.data !== null) {
@@ -31,34 +32,15 @@ function PhoneBlog() {
   const navigate = useNavigate();
   const targetphoneURL = import.meta.env.VITE_TARGETPHONE_URL;
   const { itname } = useParams();
+  const [indexChanger, setIndexChanger] = useState(0);
   const targetURL = `${targetphoneURL}/${itname}`;
-  const { data: targetphones = {}, isLoading: isLoadingTarget } = useQuery(
-    ["targetphones", targetURL],
-    () => fetchtargetPhones(targetURL, navigate),
+  const { data: targetphone = {}, isLoading: isLoadingTarget } = useQuery(
+    ["targetphone", targetURL],
+    () => fetchtargetPhone(targetURL, navigate),
     {
       staleTime: 1000 * 60 * 5,
     }
   );
-
-  const rows = [
-    {
-      ram: targetphones.ram1,
-      storage: targetphones.storage1,
-      price: targetphones.price1,
-    },
-    targetphones.ram2 && {
-      ram: targetphones.ram2,
-      storage: targetphones.storage2,
-      price: targetphones.price2,
-    },
-    targetphones.ram3 && {
-      ram: targetphones.ram3,
-      storage: targetphones.storage3,
-      price: targetphones.price3,
-    },
-  ]
-    .filter(Boolean)
-    .filter((row) => row.ram && row.storage && row.price);
 
   const InfoSection = ({ label, value }) => (
     <div className="flex justify-between items-start sm:items-center w-full bg-white p-2 border border-gray-200 rounded-md shadow-sm hover:shadow-md transition duration-300 ease-in-out">
@@ -73,20 +55,63 @@ function PhoneBlog() {
       </span>
     </div>
   );
+
+  const [finalPrice, setFinalPrice] = useState([]);
+  const [finalRam, setFinalRam] = useState([]);
+  const [finalStorage, setFinalStorage] = useState([]);
+  const [finalProcessor, setFinalProcessor] = useState([]);
+  const [finalGraphic, setFinalGraphic] = useState([]);
+
+  useEffect(() => {
+    const rows = {
+      price: targetphone.price || [],
+      ram: targetphone.ram || [],
+      storage: targetphone.storage || [],
+      processor: targetphone.processor || [],
+      graphic: targetphone.graphic || [],
+    };
+
+    const processAndSet = (property, setter, index) => {
+      if (rows[property].length > index) {
+        const processedElements = rows[property][index].map(
+          (element) => element
+        );
+        setter(processedElements);
+      }
+    };
+
+    processAndSet("price", setFinalPrice, indexChanger);
+    processAndSet("ram", setFinalRam, indexChanger);
+    processAndSet("storage", setFinalStorage, indexChanger);
+    processAndSet("processor", setFinalProcessor, indexChanger);
+    processAndSet("graphic", setFinalGraphic, indexChanger);
+  }, [targetphone, indexChanger]);
+
+  function handleSpecsChange() {
+    setIndexChanger(
+      (prevIndex) => (prevIndex + 1) % targetphone.storage.length
+    );
+
+    toast.success("Configuration Changed!", {
+      position: "top-center",
+      autoClose: 500,
+    });
+  }
+
   return (
     <HelmetProvider>
       <div className="flex flex-col items-center justify-center p-4">
         <Helmet>
           <title>
-            {targetphones.name
-              ? `${targetphones.name} - Specifications`
+            {targetphone.name
+              ? `${targetphone.name} - Specifications`
               : "TechR"}
           </title>
           <meta
             name="description"
             content={
-              targetphones.name
-                ? `${targetphones.name} - Specifications`
+              targetphone.name
+                ? `${targetphone.name} - Specifications`
                 : "TechR"
             }
           />
@@ -96,25 +121,27 @@ function PhoneBlog() {
           {!isLoadingTarget ? (
             <div className="flex-1 p-4 bg-white rounded-lg shadow-md">
               <h1
-                className={`underline-animations text-2xl mt-2 inline-block w-auto font-semibold cursor-pointer ${
-                  targetphones.mostpopular === "true"
+                className={`underline-animations text-2xl mt-2 inline-block w-auto font-bold cursor-pointer ${
+                  targetphone.mostpopular === "true"
                     ? "text-red-600"
                     : "text-gray-900"
                 } transition duration-300 ease-in-out`}
               >
-                {targetphones.name || "..."}
+                {targetphone.name || "..."}
               </h1>
               <p className="text-gray-600 text-sm md:text-sm my-2">
                 Explore the{" "}
-                {targetphones.item_categorie === "flagship" ? "outstanding " : "great "}
+                {targetphone.item_categorie === "flagship"
+                  ? "outstanding "
+                  : "great "}
                 features of this tablet that make it a great choice for your
                 needs.
               </p>
               <div className="flex justify-center py-4">
-                {targetphones.image ? (
+                {targetphone.image ? (
                   <img
-                    src={targetphones.image}
-                    alt={targetphones.name}
+                    src={targetphone.image}
+                    alt={targetphone.name}
                     className="max-h-72 object-contain"
                     loading="lazy"
                   />
@@ -123,32 +150,41 @@ function PhoneBlog() {
                 )}
               </div>
               <div className="text-gray-700 text-sm font-semibold md:text-sm py-2 text-justify mb-4">
-                {targetphones.blog || "..."}
+                {targetphone.blog || "..."}
               </div>
               <div className="py-4 border-t-2 w-full">
-                <h2 className="underline-animations text-xl font-bold w-auto inline-block mb-3">
-                  {targetphones.name + " "}Specifications
-                </h2>
+                <div className="flex items-center justify-between mb-2">
+                  <h2 className="underline-animations text-xl font-bold w-auto inline-block mb-3">
+                    {targetphone.name + " "}Specifications
+                  </h2>
+                </div>
 
                 <div className="flex flex-col space-y-2">
                   {[
-                    { label: "Dimension", value: targetphones.dimension },
-                    { label: "Build", value: targetphones.build },
-                    { label: "Weight", value: targetphones.weight },
-                    { label: "Type", value: targetphones.dtype },
-                    { label: "Size", value: targetphones.size },
-                    { label: "Resolution", value: targetphones.resolution },
-                    { label: "Front Camera", value: targetphones.frontcamera },
-                    { label: "Video", value: targetphones.video },
-                    { label: "OS", value: targetphones.os },
-                    { label: "Processor", value: targetphones.processor },
-                    { label: "Graphics", value: targetphones.graphics },
-                    { label: "Capacity", value: targetphones.capacity },
-                    { label: "Charging", value: targetphones.charging },
-                    { label: "Wi-Fi", value: targetphones.wifi },
-                    { label: "Bluetooth", value: targetphones.bluetooth },
-                    { label: "Type-C", value: targetphones.typec },
-                    { label: "Audio Jack", value: targetphones.audiojack },
+                    { label: "Dimension", value: targetphone.dimension },
+                    { label: "Build", value: targetphone.build },
+                    { label: "Weight", value: targetphone.weight },
+                    { label: "Type", value: targetphone.dtype },
+                    { label: "Size", value: targetphone.size },
+                    { label: "Resolution", value: targetphone.resolution },
+                    { label: "Front Camera", value: targetphone.frontcamera },
+                    { label: "Video", value: targetphone.video },
+                    { label: "OS", value: targetphone.os },
+                    {
+                      label: "Processor",
+                      value:
+                        finalProcessor.length > 0 ? finalProcessor[0] : null,
+                    },
+                    {
+                      label: "Graphics",
+                      value: finalGraphic.length > 0 ? finalGraphic[0] : null,
+                    },
+                    { label: "Capacity", value: targetphone.capacity },
+                    { label: "Charging", value: targetphone.charging },
+                    { label: "Wi-Fi", value: targetphone.wifi },
+                    { label: "Bluetooth", value: targetphone.bluetooth },
+                    { label: "Type-C", value: targetphone.typec },
+                    { label: "Audio Jack", value: targetphone.audiojack },
                   ].map((spec, index) => (
                     <InfoSection
                       key={index}
@@ -158,25 +194,24 @@ function PhoneBlog() {
                   ))}
                 </div>
               </div>
-
-              {rows.length > 0 && (
-                <div className="py-4">
-                  <h2 className="underline-animations inline-block w-auto text-lg font-bold uppercase lg:text-xl">
-                    Pricing
-                  </h2>
-                  <div className="overflow-hidden rounded-lg border border-gray-400 mt-2 shadow-lg">
-                    <div className="flex bg-gray-800 text-white">
-                      <div className="flex-1 text-center font-bold py-2 border-b border-gray-600">
-                        S.N
-                      </div>
-                      <div className="flex-1 text-center font-bold py-2 border-b border-gray-600">
-                        OPTIONS
-                      </div>
-                      <div className="flex-1 text-center font-bold py-2 border-b border-gray-600">
-                        PRICE
-                      </div>
+              <div className="py-4">
+                <h2 className="underline-animations inline-block w-auto text-lg font-bold uppercase lg:text-xl">
+                  Pricing
+                </h2>
+                <div className="overflow-hidden rounded-lg border border-gray-400 mt-2 shadow-lg">
+                  <div className="flex bg-gray-800 text-white">
+                    <div className="flex-1 text-center font-bold py-2 border-b border-gray-600">
+                      S.N
                     </div>
-                    {rows.map((row, index) => (
+                    <div className="flex-1 text-center font-bold py-2 border-b border-gray-600">
+                      OPTIONS
+                    </div>
+                    <div className="flex-1 text-center font-bold py-2 border-b border-gray-600">
+                      PRICE
+                    </div>
+                  </div>
+                  <div className="flex flex-col">
+                    {finalRam.map((ram, index) => (
                       <div
                         key={index}
                         className="flex border-t border-gray-300 hover:bg-[#f7e2ff] transition-colors"
@@ -184,18 +219,20 @@ function PhoneBlog() {
                         <div className="flex-1 text-center py-2">
                           {index + 1}
                         </div>
-                        <div className="flex-1 text-center py-2">{`${row.ram}/${row.storage}`}</div>
                         <div className="flex-1 text-center py-2">
-                          {row.price}
+                          {`${ram}/${finalStorage[index] || ""}`}
+                        </div>
+                        <div className="flex-1 text-center py-2">
+                          {finalPrice[index] || ""}
                         </div>
                       </div>
                     ))}
                   </div>
                 </div>
-              )}
+              </div>
 
               <div className="py-4">
-                {targetphones?.descriptions?.map((item, index) => (
+                {targetphone?.descriptions?.map((item, index) => (
                   <div key={index} className="py-2 flex flex-col gap-2">
                     {item.heading && (
                       <h1 className="text-lg md:text-xl font-bold">

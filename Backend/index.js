@@ -4,6 +4,8 @@ const app = express();
 const cors = require("cors");
 const path = require("path");
 const cookieParser = require("cookie-parser");
+const bodyParser = require("body-parser");
+
 const compression = require("compression");
 const sitemapRoute = require("./sitemap-generator");
 
@@ -30,6 +32,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(cookieParser());
 app.use(compression());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 const homeRouter = require("../Backend/routes/app");
 const addProductRouter = require("../Backend/routes/addProduct");

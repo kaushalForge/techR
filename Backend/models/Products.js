@@ -50,44 +50,39 @@ const productSchema = new mongoose.Schema({
     type: String,
   },
   size: {
-    type: String,
+    type: [],
   },
   resolution: {
     type: String,
   },
-
-  ram1: {
-    type: String,
+  ram: {
+    type: [[String]],
+    default: [],
   },
-  ram2: {
-    type: String,
+  storage: {
+    type: [[String]],
+    default: [],
   },
-  ram3: {
-    type: String,
-  },
-  storage1: {
-    type: String,
-  },
-  storage2: {
-    type: String,
-  },
-  storage3: {
-    type: String,
+  price: {
+    type: [[String]],
+    default: [],
   },
   os: {
-    type: String,
+    type: [],
   },
   processor: {
-    type: String,
+    type: [[String]],
+    default: [],
   },
-  graphics: {
-    type: String,
+  graphic: {
+    type: [[String]],
+    default: [],
   },
   capacity: {
-    type: String,
+    type: [],
   },
   charging: {
-    type: String,
+    type: [],
   },
   dimension: {
     type: String,
@@ -128,15 +123,6 @@ const productSchema = new mongoose.Schema({
   video: {
     type: String,
   },
-  price1: {
-    type: String,
-  },
-  price2: {
-    type: String,
-  },
-  price3: {
-    type: String,
-  },
   image: {
     type: String,
     required: true,
@@ -148,6 +134,7 @@ const productSchema = new mongoose.Schema({
     type: String,
   },
 });
+
 const productModel = mongoose.model("product", productSchema);
 
 module.exports = productModel;

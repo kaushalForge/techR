@@ -42,7 +42,6 @@ function SideBar() {
     staleTime: 1000 * 60 * 5,
   });
   const isLoading = loadingBudget || loadingFlagship || loadingMidrange;
-
   return (
     <>
       {isLoading ? (
@@ -80,7 +79,7 @@ function SideBar() {
                             {item.name}
                           </h1>
                           <h1 className="w-full text-center bg-black text-white rounded-b-lg">
-                            {item.price1}
+                            {item.price}
                           </h1>
                         </div>
                       )}
@@ -118,7 +117,7 @@ function SideBar() {
                             {item.name}
                           </h1>
                           <h1 className="w-full text-center bg-black text-white rounded-b-lg">
-                            {item.price1}
+                            {item.price}
                           </h1>
                         </div>
                       )}
@@ -156,7 +155,7 @@ function SideBar() {
                             {item.name}
                           </h1>
                           <h1 className="w-full text-center bg-black text-white rounded-b-lg">
-                            {item.price1}
+                            {item.price}
                           </h1>
                         </div>
                       )}

@@ -4,7 +4,6 @@ const cloudinary = require("cloudinary");
 module.exports.modifyProducts = async (req, res) => {
   try {
     const id = req.params.id;
-
     let {
       latest,
       mostsold,
@@ -22,14 +21,10 @@ module.exports.modifyProducts = async (req, res) => {
       size,
       resolution,
       os,
-      processor,
-      graphics,
-      ram1,
-      ram2,
-      ram3,
-      storage1,
-      storage2,
-      storage3,
+      processor = [],
+      graphic = [],
+      ram = [],
+      storage = [],
       capacity,
       charging,
       wifi,
@@ -42,12 +37,11 @@ module.exports.modifyProducts = async (req, res) => {
       maincamera,
       frontcamera,
       video,
-      price1,
-      price2,
-      price3,
       blog,
       previousimage,
+      price = [],
     } = req.body;
+
     let imageURL = previousimage;
     if (req.file) {
       const imageBuffer = req.file.buffer;
@@ -61,7 +55,8 @@ module.exports.modifyProducts = async (req, res) => {
       );
       imageURL = result.secure_url;
     }
-    const { heading, detail, descriptionimage } = req.body;
+
+    const { heading = [], detail = [], descriptionimage = [] } = req.body;
 
     const descriptions = heading.map((item, index) => ({
       heading: heading[index],
@@ -69,6 +64,25 @@ module.exports.modifyProducts = async (req, res) => {
       descriptionimage: descriptionimage[index],
     }));
 
+    const formattedPrice = Array.isArray(price)
+      ? price.map((priceGroup) => priceGroup.map(String))
+      : [];
+
+    const formattedGraphic = Array.isArray(graphic)
+      ? graphic.map((graphicGroup) => graphicGroup.map(String))
+      : [];
+
+    const formattedRam = Array.isArray(ram)
+      ? ram.map((ramGroup) => ramGroup.map(String))
+      : [];
+
+    const formattedStorage = Array.isArray(storage)
+      ? storage.map((storageGroup) => storageGroup.map(String))
+      : [];
+
+    const formattedProcessor = Array.isArray(processor)
+      ? processor.map((processorGroup) => processorGroup.map(String))
+      : [];
 
     const updatedData = {
       latest: latest === "true" ? "true" : "false",
@@ -97,14 +111,10 @@ module.exports.modifyProducts = async (req, res) => {
         size,
         resolution,
         os,
-        processor,
-        graphics,
-        ram1,
-        ram2,
-        ram3,
-        storage1,
-        storage2,
-        storage3,
+        processor: formattedProcessor,
+        graphic: formattedGraphic,
+        ram: formattedRam,
+        storage: formattedStorage,
         capacity,
         charging,
         wifi,
@@ -117,9 +127,7 @@ module.exports.modifyProducts = async (req, res) => {
         maincamera,
         frontcamera,
         video,
-        price1,
-        price2,
-        price3,
+        price: formattedPrice,
         image: imageURL,
         blog,
       }
