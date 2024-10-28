@@ -96,7 +96,7 @@ module.exports.addProducts = async (req, res) => {
         blog,
       });
     } catch (error) {
-      console.log("Something went wrong", error);
+      res.json({ message: "something went wrond", error });
     }
   }
   res.redirect("/products/addProduct");

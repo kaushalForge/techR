@@ -46,7 +46,6 @@ module.exports.loginUser = async (req, res) => {
 
   try {
     if (!email || !password) {
-      console.log("Missing email or password");
       return res
         .status(400)
         .json({ message: "E-mail and Password are required!" });
@@ -54,7 +53,6 @@ module.exports.loginUser = async (req, res) => {
 
     const user = await userModel.findOne({ email });
     if (!user) {
-      console.log(`User not found with email: ${email}`);
       return res
         .status(401)
         .json({ message: "E-mail or Password is incorrect" });
@@ -62,13 +60,11 @@ module.exports.loginUser = async (req, res) => {
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      console.log("Incorrect password");
       return res.status(401).json({ message: "Incorrect Password" });
     }
 
     const token = generateToken(user);
     res.cookie("token", token);
-    console.log("Login successful, token generated");
     return res.redirect("/");
   } catch (error) {
     console.error("Error during login:", error);
