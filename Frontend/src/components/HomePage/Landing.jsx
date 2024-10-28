@@ -303,7 +303,7 @@ function Landing() {
                               loading="lazy"
                             />
                             <h1 className="text-center mt-2">
-                              Price:{item.price[0]}
+                              Price:{item.price}
                             </h1>
                           </Link>
                         </div>
@@ -398,7 +398,7 @@ function Landing() {
                               loading="lazy"
                             />
                             <h1 className="text-center mt-2">
-                              Price:{item.price[0]}
+                              Price:{item.price}
                             </h1>
                           </Link>
                         </div>
@@ -493,7 +493,7 @@ function Landing() {
                               loading="lazy"
                             />
                             <h1 className="text-center mt-2">
-                              Price:{item.price[0]}
+                              Price:{item.price}
                             </h1>
                           </Link>
                         </div>
