@@ -157,12 +157,6 @@ function LaptopBlog() {
                   <h2 className="underline-animations text-xl font-bold w-auto inline-block mb-3">
                     {targetlaptops.name + " "}Specifications
                   </h2>
-                  <button
-                    onClick={handleSpecsChange}
-                    class="px-6 py-3 text-white font-semibold bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-indigo-500 hover:to-blue-500 focus:ring-4 focus:ring-blue-300 rounded-lg shadow-md transition-all duration-200"
-                  >
-                    Switch Variant
-                  </button>
                 </div>
 
                 <div className="flex flex-col space-y-2">
@@ -201,9 +195,17 @@ function LaptopBlog() {
                 </div>
               </div>
               <div className="py-4">
-                <h2 className="underline-animations inline-block w-auto text-lg font-bold uppercase lg:text-xl">
-                  Pricing
-                </h2>
+                <div className="flex items-center justify-between">
+                  <h2 className="underline-animations inline-block w-auto text-lg font-bold uppercase lg:text-xl">
+                    Pricing
+                  </h2>
+                  <button
+                    onClick={handleSpecsChange}
+                    className="bg-gradient-to-r from-[#06B6D4] to-[#3B82F6] text-white font-semibold px-4 py-2 rounded-full border border-transparent hover:border-[#3B82F6] hover:bg-[#1E293B] hover:text-black transition duration-300 transform hover:scale-105 shadow-lg"
+                  >
+                    Switch Variant
+                  </button>
+                </div>
                 <div className="overflow-hidden rounded-lg border border-gray-400 mt-2 shadow-lg">
                   <div className="flex bg-gray-800 text-white">
                     <div className="flex-1 text-center font-bold py-2 border-b border-gray-600">
