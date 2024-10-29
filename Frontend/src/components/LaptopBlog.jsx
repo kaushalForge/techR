@@ -111,7 +111,7 @@ function LaptopBlog() {
             name="description"
             content={
               targetlaptops.name
-                ? `${targetlaptops.name} - Specifications`
+                ? `${targetlaptops.name} - Specifications & Details about all the variants inlucded with this categorie`
                 : "TechR"
             }
           />
