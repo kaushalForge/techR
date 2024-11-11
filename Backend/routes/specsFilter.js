@@ -3,34 +3,77 @@ const router = express();
 const productModel = require("../models/Products");
 
 router.post("/", async (req, res) => {
-  let { deviceType, processor, ram, graphics, battery, price } = req.body;
+  let { deviceType, processor, ram, graphic, battery, price } = req.body;
 
-  if (!processor && !ram && !graphics && !battery && !price) {
-    return res.json("At least one information is needed to filter!");
+  if (!processor && !ram && !graphic && !battery && !price) {
+    return res.json("At least one piece of information is needed to filter!");
+  }
+  let query = {
+    
+  };
+
+  // if (processor) {
+  //   // Check if processor is an array, and flatten it if so; otherwise, split it by whitespace
+  //   const processorArray = Array.isArray(processor)
+  //     ? processor.flat()
+  //     : processor.split(/\s+/);
+
+  //   console.log(processorArray, "flattened data"); // Debug output
+
+  //   const processorKeywords = processorArray.map(
+  //     (keyword) => new RegExp(keyword, "i")
+  //   );
+
+  //   query.processor = {
+  //     $all: processorKeywords,
+  //   };
+  // }
+
+  // for (let i = 0; i < processor.length; i++) {
+  //   for (let j = 0; j < processor.length; j++) {
+  //     console.log(processor[i][j]);
+  //   }
+  // }
+
+  // if (graphic) {
+  //   const graphicKeywords = Array.isArray(graphic)
+  //     ? graphic.flat()
+  //     : graphic.split(/\s+/);
+
+  //   query.graphic = {
+  //     $all: graphicKeywords.map((keyword) => new RegExp(keyword, "i")),
+  //   };
+  // }
+
+  // if (ram) {
+  //   const ramKeywords = Array.isArray(ram) ? ram.flat() : ram.split(/\s+/);
+
+  //   query.ram = {
+  //     $all: ramKeywords.map((keyword) => new RegExp(keyword, "i")),
+  //   };
+  // }
+
+  if (battery) {
+    query.battery = battery;
   }
 
-  let query = {};
+  // if (price) {
+  //   const priceKeywords = Array.isArray(price)
+  //     ? price.flat()
+  //     : price.split(/\s+/);
 
-  if (processor) {
-    const processorKeywords = processor.split(/\s+/);
+  //   query.price = {
+  //     $all: priceKeywords.map((keyword) => new RegExp(keyword, "i")),
+  //   };
+  // }
+  // console.log(query.processor);
 
-    query.processor = {
-      $all: processorKeywords.map((keyword) => new RegExp(keyword, "i")),
-    };
-  }
-
-  if (graphics) {
-    const graphicsKeywords = graphics.split(/\s+/);
-
-    query.graphics = {
-      $all: graphicsKeywords.map((keyword) => new RegExp(keyword, "i")),
-    };
-  }
   try {
     const devices = await productModel.find({
       productType: deviceType,
       ...query,
     });
+
     if (devices.length > 0) {
       return res.json({
         name: devices[0].name.toLowerCase().split(" ").join(""),

@@ -45,6 +45,7 @@ const ownerRouter = require("../Backend/routes/ownerRouter");
 const userRouter = require("../Backend/routes/userRouter");
 const allproductRouter = require("../Backend/routes/allproductRouter");
 const filterRouter = require("../Backend/routes/filterRouter");
+const deleteRouter = require("../Backend/routes/deleteProduct");
 const lol = require("./routes/specsFilter");
 
 app.use("/", homeRouter);
@@ -52,6 +53,7 @@ app.use("/sitemap", sitemapRoute);
 app.use("/owners", ownerRouter);
 app.use("/users", userRouter);
 app.use("/products", addProductRouter);
+app.use("/delete", deleteRouter);
 app.use("/phones", phoneRouter);
 app.use("/laptops", laptopRouter);
 app.use("/tablets", tabletRouter);

@@ -15,12 +15,8 @@ module.exports.addProducts = async (req, res) => {
     os,
     processor,
     graphics,
-    ram1,
-    ram2,
-    ram3,
-    storage1,
-    storage2,
-    storage3,
+    ram,
+    storage,
     capacity,
     charging,
     wifi,
@@ -33,15 +29,13 @@ module.exports.addProducts = async (req, res) => {
     maincamera,
     frontcamera,
     video,
-    price1,
-    price2,
-    price3,
+    price,
     blog,
   } = req.body;
 
+  if (!req.file) return res.json("No image uploaded");
   const imageBuffer = req.file.buffer;
   const image = imageBuffer.toString("base64");
-
   const result = await cloudinary.uploader.upload(
     `data:image/jpeg;base64,${image}`,
     {
@@ -71,12 +65,8 @@ module.exports.addProducts = async (req, res) => {
         os,
         processor,
         graphics,
-        ram1,
-        ram2,
-        ram3,
-        storage1,
-        storage2,
-        storage3,
+        ram,
+        storage,
         capacity,
         charging,
         wifi,
@@ -89,14 +79,12 @@ module.exports.addProducts = async (req, res) => {
         maincamera,
         frontcamera,
         video,
-        price1,
-        price2,
-        price3,
+        price,
         image: imageURL,
         blog,
       });
     } catch (error) {
-      res.json({ message: "something went wrond", error });
+      res.json({ message: "something went wrong", error });
     }
   }
   res.redirect("/products/addProduct");

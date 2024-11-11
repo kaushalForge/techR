@@ -8,51 +8,59 @@
       content="script-src 'self' https://vercel.live https://cdn.tailwindcss.com;"
     />
     <link rel="stylesheet" href="/stylesheets/Home.css" />
-    <title>Document</title>
+    <title>Delete Items</title>
   </head>
-  <body>
-    <div class="h-full w-full bg-zinc-800 text-white">
-      <h1 class="text-white text-4xl font-bold text-center">
-        Manipulate Items
-      </h1>
-      <div class="flex items-center justify-evenly w-full text-4xl mt-32">
-        <div class="flex items-center justify-center gap-8">
-          <div class="flex flex-col items-center justify-center">
-            <h1 class="font-semibold pb-4">Normal Sellings</h1>
+  <body class="bg-white text-gray-800">
+    <div class="flex flex-col h-screen justify-center items-start px-10">
+      <h1 class="text-4xl font-bold mb-4">Manipulate Items</h1>
+      <div class="flex flex-col gap-4 w-full">
+        <div class="flex flex-col items-start">
+          <h2 class="text-xl font-semibold mb-1">Normal Sellings</h2>
+          <div class="flex gap-4">
             <a
               href="/products/addProduct"
-              class="p-2 bg-orange-600 rounded-lg font-semibold text-zinc-800 border-4 border-black"
+              class="p-2 bg-orange-500 text-white rounded-lg shadow-md transition duration-300 hover:bg-orange-600 text-lg"
               ><button>Add Items</button></a
             >
+            <a
+              href="/delete/product"
+              class="p-2 bg-red-500 text-white rounded-lg shadow-md transition duration-300 hover:bg-red-600 text-lg"
+              ><button>Delete Items</button></a
+            >
           </div>
+        </div>
 
-          <div class="flex flex-col items-center justify-center">
-            <h1 class="font-semibold pb-4">Phones</h1>
+        <div class="flex flex-col items-start">
+          <h2 class="text-xl font-semibold mb-1">Update Sitemap</h2>
+          <a
+            href="/sitemap"
+            class="p-2 bg-yellow-500 text-white rounded-lg shadow-md transition duration-300 hover:bg-yellow-600 text-lg"
+            ><button>Update Sitemap</button></a
+          >
+        </div>
+
+        <div class="flex flex-col items-start">
+          <h2 class="text-xl font-semibold mb-1">Products</h2>
+          <div class="flex gap-4">
             <a
               href="/phones"
-              class="p-2 bg-orange-600 rounded-lg font-semibold text-zinc-800 border-4 border-black"
+              class="p-2 bg-blue-500 text-white rounded-lg shadow-md transition duration-300 hover:bg-blue-600 text-lg"
               ><button>Phones</button></a
             >
-          </div>
-          <div class="flex flex-col items-center justify-center">
-            <h1 class="font-semibold pb-4">Laptops</h1>
             <a
               href="/laptops"
-              class="p-2 bg-orange-600 rounded-lg font-semibold text-zinc-800 border-4 border-black"
+              class="p-2 bg-green-500 text-white rounded-lg shadow-md transition duration-300 hover:bg-green-600 text-lg"
               ><button>Laptops</button></a
             >
-          </div>
-          <div class="flex flex-col items-center justify-center">
-            <h1 class="font-semibold pb-4">Tablets</h1>
             <a
               href="/tablets"
-              class="p-2 bg-orange-600 rounded-lg font-semibold text-zinc-800 border-4 border-black"
+              class="p-2 bg-purple-500 text-white rounded-lg shadow-md transition duration-300 hover:bg-purple-600 text-lg"
               ><button>Tablets</button></a
             >
           </div>
         </div>
       </div>
     </div>
+    <script src="https://cdn.tailwindcss.com"></script>
   </body>
-  <script src="https://cdn.tailwindcss.com"></script>
 </html>

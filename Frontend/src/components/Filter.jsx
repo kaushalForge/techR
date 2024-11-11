@@ -29,7 +29,7 @@ function Filter() {
           autoClose: 4000,
         });
       }
-
+      console.log(response.data.productType, response.data.name);
       if (response.data.productType && response.data.name) {
         toast.success("Congo! You got a catch", {
           position: "top-center",

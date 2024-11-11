@@ -80,7 +80,6 @@ router.get("/", async (req, res) => {
 
     try {
       const filePath = path.join(frontendPublicDir, "sitemap.xml");
-
       fs.writeFileSync(filePath, formattedXml, "utf8");
     } catch (error) {
       console.error("Error writing file:", error);

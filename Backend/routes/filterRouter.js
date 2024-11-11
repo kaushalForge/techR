@@ -24,7 +24,6 @@ router.get("/phone", async (req, res) => {
 router.get("/laptop", async (req, res) => {
   try {
     const laptop = await productModel.find({ productType: "laptop" });
-    console.log(laptop);
     const formattedData = laptop.map((item) => ({
       name: item.name,
       blog: item.blog,
@@ -63,7 +62,6 @@ router.get("/tablet", async (req, res) => {
 router.get("/latest", async (req, res) => {
   try {
     const latest = await productModel.find({ latest: true });
-    console.log(latest);
     const formattedData = latest.map((item) => ({
       name: item.name,
       blog: item.blog,
