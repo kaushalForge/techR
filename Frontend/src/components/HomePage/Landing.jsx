@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { motion } from "framer-motion";
 import CircularLoader from "../../CircularLoader";
-import AIlanding from "./AIlanding";
+import TopTwo from "./TopTwo";
 import { CiMobile3 } from "react-icons/ci";
 import { LiaLaptopSolid } from "react-icons/lia";
 import { FaTabletAlt } from "react-icons/fa";
@@ -146,7 +146,7 @@ function Landing() {
         <Helmet>
           <title>TechR - Latest Tech News Insights, Reviews and Price</title>
         </Helmet>
-        <AIlanding />
+        <TopTwo />
         <div className="h-full min-w-full sm:min-w-0 w-auto md:max-w-[1200px]">
           <div className="lg:min-w-[1200px] lg:max-w-[1200px]">
             <h1 className="text-center text-2xl font-bold tracking-wide">

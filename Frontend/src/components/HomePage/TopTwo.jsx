@@ -6,12 +6,16 @@ import iPhone from "../../images/iPhone16promax_1.avif";
 
 const Landing = () => {
   const hotDrop1 = {
+    image:
+      "https://res.cloudinary.com/dsvlevzds/image/upload/v1728104678/n1rtqevggzkw91opb0dw.avif",
     note: "The newly launched iPhone 16 Pro Max features a stunning display and advanced performance making a perfect fit for a premium mobile experience!",
     link: "/phone/iphone16promax",
   };
   const hotDrop2 = {
-    note: "The recently unveiled Samsung Galaxy Tab S9 Ultra features an impressive 14.6-inch AMOLED screen and delivers powerful performance, ideal for enhancing productivity and providing an immersive entertainment experience!",
-    link: "/phone/lavaagni3",
+    image:
+      "https://res.cloudinary.com/dsvlevzds/image/upload/v1731343195/fsju9euc7urdhtn638tx.jpg",
+    note: "The Samsung Galaxy S25 Ultra, Samsung's most anticipated and premium release of the year is getting rumored showcasing cutting-edge innovations and solidifying its position as a flagship leader in the smartphone market.",
+    link: "/phone/samsungs25ultra",
   };
 
   const [show1, setShow1] = useState(false);
@@ -39,10 +43,7 @@ const Landing = () => {
               >
                 <div>
                   <img
-                    src={
-                      "https://res.cloudinary.com/dsvlevzds/image/upload/v1728104678/n1rtqevggzkw91opb0dw.avif" ||
-                      iPhone
-                    }
+                    src={hotDrop1.image || "Phone"}
                     alt="iPhone details"
                     className="mb-4 w-full h-full md:w-[800px] md:h-[300px] object-cover object-top"
                     loading="lazy"
@@ -95,7 +96,7 @@ const Landing = () => {
                 className="flex items-center w-full justify-center h-auto md:h-auto md:w-auto flex-col relative"
               >
                 <img
-                  src="https://res.cloudinary.com/dsvlevzds/image/upload/v1728584861/d5femsdqwtkr2huc8eei.jpg"
+                  src={hotDrop2.image || "Phone"}
                   alt="Agni details"
                   className="mb-4 w-full h-full md:w-[800px] md:h-[300px] object-cover object-top"
                   loading="lazy"
@@ -103,19 +104,38 @@ const Landing = () => {
                 {show2 && (
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="hidden lg:flex absolute right-80 top-32 justify-center w-full z-50">
-                      {["L", "a", "v", "a", "A", "g", "n", "i", "3"].map(
-                        (item, index) => (
-                          <motion.div
-                            key={index}
-                            initial={{ opacity: 0, y: 30 }}
-                            animate={{ opacity: 1, y: -10 }}
-                            transition={{ duration: 0.2, delay: index * 0.01 }}
-                            className="text-4xl text-[#00FFA3] mx-[1px]"
-                          >
-                            {item}
-                          </motion.div>
-                        )
-                      )}
+                      {[
+                        "S",
+                        "a",
+                        "m",
+                        "s",
+                        "u",
+                        "n",
+                        "g",
+                        "G",
+                        "a",
+                        "l",
+                        "a",
+                        "x",
+                        "y",
+                        "S",
+                        "2",
+                        "5",
+                        "U",
+                        "l",
+                        "t",
+                        "a",
+                      ].map((item, index) => (
+                        <motion.div
+                          key={index}
+                          initial={{ opacity: 0, y: 30 }}
+                          animate={{ opacity: 1, y: -10 }}
+                          transition={{ duration: 0.2, delay: index * 0.01 }}
+                          className="text-4xl text-[#00FFA3] mx-[1px]"
+                        >
+                          {item}
+                        </motion.div>
+                      ))}
                     </div>
                   </div>
                 )}
