@@ -32,130 +32,136 @@ const Landing = () => {
           </h2>
         </div>
       </section>
-      <section className="w-full md:px-8 flex items-center justify-center gap-2 mt-2 md:mt-4">
-        <div className="flex flex-col md:flex-row items-center w-full md:h-80 justify-center gap-2 mb-12 flex-wrap relative">
-          <div className="text-center w-full bg-no-repeat bg-center md:w-full relative">
-            <Link to={hotDrop1.link} className="outline-none w-auto">
-              <div
-                onMouseEnter={() => setShow1(true)}
-                onMouseLeave={() => setShow1(false)}
-                className="flex items-center w-full justify-center h-auto md:h-auto md:w-auto flex-col relative"
-              >
-                <div>
+      <section className="w-full md:px-8 flex items-center flex-col justify-center mt-2 md:mt-4">
+        <div className="flex items-center justify-center gap-6">
+          <div className="flex flex-col md:flex-row items-center w-full md:h-80 justify-center gap-2 mb-12 flex-wrap relative">
+            <div className="text-center w-full bg-no-repeat bg-center md:w-full relative">
+              <Link to={hotDrop1.link} className="outline-none w-auto">
+                <div
+                  onMouseEnter={() => setShow1(true)}
+                  onMouseLeave={() => setShow1(false)}
+                  className="flex items-center w-full justify-center h-auto md:h-auto md:w-auto flex-col relative"
+                >
+                  <div>
+                    <img
+                      src={hotDrop1.image || "Phone"}
+                      alt="iPhone details"
+                      className="mb-4 w-full h-full md:w-[800px] md:h-[300px] object-cover object-top"
+                      loading="lazy"
+                    />
+                  </div>
+                  {show1 && (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="hidden lg:flex absolute left-80 top-32 justify-center w-full z-50">
+                        {[
+                          "i",
+                          "P",
+                          "h",
+                          "o",
+                          "n",
+                          "e",
+                          "16",
+                          "P",
+                          "r",
+                          "o",
+                          "M",
+                          "a",
+                          "x",
+                        ].map((item, index) => (
+                          <motion.div
+                            key={index}
+                            initial={{ opacity: 0, y: 30 }}
+                            animate={{ opacity: 1, y: -10 }}
+                            transition={{ duration: 0.2, delay: index * 0.01 }}
+                            className="text-4xl text-[#00FFA3] mx-[1px]"
+                          >
+                            {item}
+                          </motion.div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </Link>
+              <div className="absolute text-xs leading-1 tracking-tighter md:text-sm bottom-4 md:bottom-[16px] w-full z-30 bg-black/60 text-white p-2">
+                <h1>{hotDrop1.note}</h1>
+              </div>
+            </div>
+          </div>
+          <div className="hidden flex-col md:flex items-center w-full md:h-80 justify-center gap-2 mb-12 flex-wrap relative">
+            <div className="text-center w-full md:w-full relative">
+              <Link to={hotDrop2.link} className="outline-none w-auto">
+                <div
+                  onMouseEnter={() => setShow2(true)}
+                  onMouseLeave={() => setShow2(false)}
+                  className="flex items-center w-full justify-center h-auto md:h-auto md:w-auto flex-col relative"
+                >
                   <img
-                    src={hotDrop1.image || "Phone"}
-                    alt="iPhone details"
+                    src={hotDrop2.image || "Phone"}
+                    alt="Agni details"
                     className="mb-4 w-full h-full md:w-[800px] md:h-[300px] object-cover object-top"
                     loading="lazy"
                   />
+                  {show2 && (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="hidden lg:flex absolute right-80 top-32 justify-center w-full z-50">
+                        {[
+                          "S",
+                          "a",
+                          "m",
+                          "s",
+                          "u",
+                          "n",
+                          "g",
+                          "G",
+                          "a",
+                          "l",
+                          "a",
+                          "x",
+                          "y",
+                          "S",
+                          "2",
+                          "5",
+                          "U",
+                          "l",
+                          "t",
+                          "a",
+                        ].map((item, index) => (
+                          <motion.div
+                            key={index}
+                            initial={{ opacity: 0, y: 30 }}
+                            animate={{ opacity: 1, y: -10 }}
+                            transition={{ duration: 0.2, delay: index * 0.01 }}
+                            className="text-4xl text-[#00FFA3] mx-[1px]"
+                          >
+                            {item}
+                          </motion.div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
-                {show1 && (
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="hidden lg:flex absolute left-80 top-32 justify-center w-full z-50">
-                      {[
-                        "i",
-                        "P",
-                        "h",
-                        "o",
-                        "n",
-                        "e",
-                        "16",
-                        "P",
-                        "r",
-                        "o",
-                        "M",
-                        "a",
-                        "x",
-                      ].map((item, index) => (
-                        <motion.div
-                          key={index}
-                          initial={{ opacity: 0, y: 30 }}
-                          animate={{ opacity: 1, y: -10 }}
-                          transition={{ duration: 0.2, delay: index * 0.01 }}
-                          className="text-4xl text-[#00FFA3] mx-[1px]"
-                        >
-                          {item}
-                        </motion.div>
-                      ))}
-                    </div>
-                  </div>
-                )}
+              </Link>
+              <div className="absolute text-xs leading-1 tracking-tighter md:text-sm bottom-4 md:bottom-[16px] w-full z-30 bg-black/60 text-white p-2">
+                <h1>{hotDrop2.note}</h1>
               </div>
-            </Link>
-            <div className="absolute text-xs leading-1 tracking-tighter md:text-sm bottom-4 md:bottom-[16px] w-full z-30 bg-black/60 text-white p-2">
-              <h1>{hotDrop1.note}</h1>
-            </div>
-          </div>
-        </div>
-        <div className="hidden flex-col md:flex items-center w-full md:h-80 justify-center gap-2 mb-12 flex-wrap relative">
-          <div className="text-center w-full md:w-full relative">
-            <Link to={hotDrop2.link} className="outline-none w-auto">
-              <div
-                onMouseEnter={() => setShow2(true)}
-                onMouseLeave={() => setShow2(false)}
-                className="flex items-center w-full justify-center h-auto md:h-auto md:w-auto flex-col relative"
-              >
-                <img
-                  src={hotDrop2.image || "Phone"}
-                  alt="Agni details"
-                  className="mb-4 w-full h-full md:w-[800px] md:h-[300px] object-cover object-top"
-                  loading="lazy"
-                />
-                {show2 && (
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="hidden lg:flex absolute right-80 top-32 justify-center w-full z-50">
-                      {[
-                        "S",
-                        "a",
-                        "m",
-                        "s",
-                        "u",
-                        "n",
-                        "g",
-                        "G",
-                        "a",
-                        "l",
-                        "a",
-                        "x",
-                        "y",
-                        "S",
-                        "2",
-                        "5",
-                        "U",
-                        "l",
-                        "t",
-                        "a",
-                      ].map((item, index) => (
-                        <motion.div
-                          key={index}
-                          initial={{ opacity: 0, y: 30 }}
-                          animate={{ opacity: 1, y: -10 }}
-                          transition={{ duration: 0.2, delay: index * 0.01 }}
-                          className="text-4xl text-[#00FFA3] mx-[1px]"
-                        >
-                          {item}
-                        </motion.div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </Link>
-            <div className="absolute text-xs leading-1 tracking-tighter md:text-sm bottom-4 md:bottom-[16px] w-full z-30 bg-black/60 text-white p-2">
-              <h1>{hotDrop2.note}</h1>
             </div>
           </div>
         </div>
 
-        <span style="z-index:20;color:#ffffff; background-color:#000000; padding:4px; margin-right:4px;">
-            Related:
-          </span>
-          <span style="text-decoration:underline; hover:color:red;">
-            <span>
+        <div
+          style={{
+            zIndex: 20,
+            color: "#ffffff",
+
+            marginRight: "4px",
+          }}
+        >
+          <span className="bg-black px-4 py-2 mr-2">Related:</span>
+          <span className="text-blue-500 hover:text-red-500 cursor-pointer">
             Top Rated Laptops for College Students in 2025
-            </span>
           </span>
-
+        </div>
       </section>
     </div>
   );

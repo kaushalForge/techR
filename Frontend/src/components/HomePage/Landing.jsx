@@ -7,10 +7,10 @@ import TopTwo from "./TopTwo";
 import { CiMobile3 } from "react-icons/ci";
 import { LiaLaptopSolid } from "react-icons/lia";
 import { FaTabletAlt } from "react-icons/fa";
-import samsumgtab from "../../images/galaxytabs9ultra.jpg";
-import acer from "../../images/acernitrov15.png";
-import Huwai from "../../images/huaweimatext.jpg";
-import asus from "../../images/Asus-ROG-Zephyrus-G14-image.jpg";
+// import samsumgtab from "../../images/galaxytabs9ultra.jpg";
+// import acer from "../../images/acernitrov15.png";
+// import Huwai from "../../images/huaweimatext.jpg";
+// import asus from "../../images/Asus-ROG-Zephyrus-G14-image.jpg";
 import axios from "axios";
 import { useQuery } from "react-query";
 const filterProducts = async (url) => {
@@ -33,22 +33,26 @@ function Landing() {
   const popular_items = [
     {
       name: "Asus ROG Zephyrus G14",
-      image: "https://res.cloudinary.com/dsvlevzds/image/upload/v1728586084/dh2saozzij8dm8bhddsf.png",
+      image:
+        "https://res.cloudinary.com/dsvlevzds/image/upload/v1728586084/dh2saozzij8dm8bhddsf.png",
       link: "/laptop/asusrogzephyrusg14",
     },
     {
       name: "Acer Nitro V15",
-      image: "https://res.cloudinary.com/dsvlevzds/image/upload/v1727536629/vfsffx0jlxn1eh4qvxvz.jpg",
+      image:
+        "https://res.cloudinary.com/dsvlevzds/image/upload/v1727536629/vfsffx0jlxn1eh4qvxvz.jpg",
       link: "/laptop/acernitrov15",
     },
     {
       name: "Huawei Mate XT",
-      image: "https://res.cloudinary.com/dsvlevzds/image/upload/v1728628332/bpo1nzdco7jnexyipug4.jpg",
+      image:
+        "https://res.cloudinary.com/dsvlevzds/image/upload/v1728628332/bpo1nzdco7jnexyipug4.jpg",
       link: "/phone/huaweimatext",
     },
     {
       name: "Galaxy Tab S9 Ultra",
-      image: "https://res.cloudinary.com/dsvlevzds/image/upload/v1727536919/qghddgp30litpw2xrnj9.jpg",
+      image:
+        "https://res.cloudinary.com/dsvlevzds/image/upload/v1727536919/qghddgp30litpw2xrnj9.jpg",
       link: "/tablet/galaxytabs9ultra",
     },
   ];
