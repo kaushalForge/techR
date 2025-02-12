@@ -18,11 +18,8 @@ cloudinary.config({
 });
 
 const frontendURL = process.env.frontendURL;
-const corsOptions = {
-  origin: frontendURL,
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true,
-};
+const corsOptions = frontendURL;
+
 
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
