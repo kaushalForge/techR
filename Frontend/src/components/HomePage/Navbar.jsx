@@ -88,7 +88,7 @@ function Navbar() {
                   onClick={() => setShow(!show)}
                 />
               )}
-              <a className="outline-none" href="https://www.techrbytes.com/">
+              <a className="outline-none" href="https://tech-r.vercel.app/">
                 <div className="flex items-center justify-start">
                   {["T", "e", "c", "h", "R"].map((item, index) => (
                     <motion.div
