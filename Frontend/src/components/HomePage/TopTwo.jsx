@@ -146,6 +146,16 @@ const Landing = () => {
             </div>
           </div>
         </div>
+
+        <span style="z-index:20;color:#ffffff; background-color:#000000; padding:4px; margin-right:4px;">
+            Related:
+          </span>
+          <span style="text-decoration:underline; hover:color:red;">
+            <span>
+            Top Rated Laptops for College Students in 2025
+            </span>
+          </span>
+
       </section>
     </div>
   );

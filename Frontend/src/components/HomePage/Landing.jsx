@@ -33,22 +33,22 @@ function Landing() {
   const popular_items = [
     {
       name: "Asus ROG Zephyrus G14",
-      image: asus,
+      image: "https://res.cloudinary.com/dsvlevzds/image/upload/v1728586084/dh2saozzij8dm8bhddsf.png",
       link: "/laptop/asusrogzephyrusg14",
     },
     {
       name: "Acer Nitro V15",
-      image: acer,
+      image: "https://res.cloudinary.com/dsvlevzds/image/upload/v1727536629/vfsffx0jlxn1eh4qvxvz.jpg",
       link: "/laptop/acernitrov15",
     },
     {
       name: "Huawei Mate XT",
-      image: Huwai,
+      image: "https://res.cloudinary.com/dsvlevzds/image/upload/v1728628332/bpo1nzdco7jnexyipug4.jpg",
       link: "/phone/huaweimatext",
     },
     {
       name: "Galaxy Tab S9 Ultra",
-      image: samsumgtab,
+      image: "https://res.cloudinary.com/dsvlevzds/image/upload/v1727536919/qghddgp30litpw2xrnj9.jpg",
       link: "/tablet/galaxytabs9ultra",
     },
   ];

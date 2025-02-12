@@ -168,6 +168,7 @@ function TabletBlog() {
                     { label: "Size", value: targettablets.size },
                     { label: "Resolution", value: targettablets.resolution },
                     { label: "Front Camera", value: targettablets.frontcamera },
+                    { label: "Main Camera", value: targettablets.maincamera },
                     { label: "Video", value: targettablets.video },
                     { label: "OS", value: targettablets.os },
                     {

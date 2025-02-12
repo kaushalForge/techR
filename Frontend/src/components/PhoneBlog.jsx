@@ -42,19 +42,19 @@ function PhoneBlog() {
     }
   );
 
-  const InfoSection = ({ label, value }) => (
-    <div className="flex justify-between items-start sm:items-center w-full bg-white p-2 border border-gray-200 rounded-md shadow-sm hover:shadow-md transition duration-300 ease-in-out">
-      <div className="flex items-center space-x-2">
-        <span className="text-blue-500 text-base">
-          <i className="fas fa-info-circle"></i>
+    const InfoSection = ({ label, value }) => (
+      <div className="flex justify-between items-start sm:items-center w-full bg-white p-2 border border-gray-200 rounded-md shadow-sm hover:shadow-md transition duration-300 ease-in-out">
+        <div className="flex items-center space-x-2">
+          <span className="text-blue-500 text-base">
+            <i className="fas fa-info-circle"></i>
+          </span>
+          <span className="text-sm font-semibold text-gray-800">{label}</span>
+        </div>
+        <span className="text-gray-900 text-sm text-right sm:text-left flex-1 sm:flex-none break-words sm:ml-4 mt-1 sm:mt-0">
+          {value || <span className="text-gray-400 italic">Not available</span>}
         </span>
-        <span className="text-sm font-semibold text-gray-800">{label}</span>
       </div>
-      <span className="text-gray-900 text-sm text-right sm:text-left flex-1 sm:flex-none break-words sm:ml-4 mt-1 sm:mt-0">
-        {value || <span className="text-gray-400 italic">Not available</span>}
-      </span>
-    </div>
-  );
+    );
 
   const [finalPrice, setFinalPrice] = useState([]);
   const [finalRam, setFinalRam] = useState([]);
@@ -168,6 +168,7 @@ function PhoneBlog() {
                     { label: "Size", value: targetphone.size },
                     { label: "Resolution", value: targetphone.resolution },
                     { label: "Front Camera", value: targetphone.frontcamera },
+                    { label: "Main Camera", value: targetphone.maincamera },
                     { label: "Video", value: targetphone.video },
                     { label: "OS", value: targetphone.os },
                     {
