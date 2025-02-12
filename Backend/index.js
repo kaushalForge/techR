@@ -17,11 +17,13 @@ cloudinary.config({
   api_secret: process.env.CLOUD_API_SECRET,
 });
 
-const frontendURL = process.env.frontendURL;
+const frontendURL1 = process.env.FRONTEND_URL_1;
+const frontendURL2 = process.env.FRONTEND_URL_2;
+
 const corsOptions = {
-  origin: frontendURL,
+  origin: [frontendURL1, frontendURL2],
   methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true,
+  allowedHeaders: ["Content-Type", "Authorization"],
 };
 
 app.set("views", path.join(__dirname, "views"));
