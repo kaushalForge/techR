@@ -20,7 +20,6 @@ cloudinary.config({
 const frontendURL = process.env.frontendURL;
 const corsOptions = frontendURL;
 
-
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 app.use(cors(corsOptions));
