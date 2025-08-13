@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "nodemon index.js"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
@@ -23,7 +23,7 @@
     "sitemap": "^8.0.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.4"
+    "nodemon": "^3.1.10"
   },
   "engines": {
     "node": "20.x"

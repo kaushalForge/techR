@@ -66,6 +66,8 @@ function Landing() {
     staleTime: 1000 * 60 * 5,
   });
 
+  console.log("latest data", latest);
+
   const {
     isLoading: loadingMostpopular,
     data: mostpopular = [],
@@ -226,60 +228,61 @@ function Landing() {
                       Newly Launched
                     </h1>
                     <div className="flex items-center justify-center gap-6 flex-col">
-                      {latest.slice(0, 4).map((item, index) => {
-                        return (
-                          <div
-                            key={index}
-                            className="border-2 border-[#79d1ec] rounded-xl overflow-hidden p-2 md:flex flex-row w-full"
-                          >
-                            <Link
-                              to={`/${item.productType}/${item.name
-                                .toLowerCase()
-                                .split(" ")
-                                .join("")}`}
-                              className="outline-none"
+                      {Array.isArray(latest) &&
+                        latest.slice(0, 4).map((item, index) => {
+                          return (
+                            <div
+                              key={index}
+                              className="border-2 border-[#79d1ec] rounded-xl overflow-hidden p-2 md:flex flex-row w-full"
                             >
-                              <div className="md:flex items-center justify-center gap-2">
-                                <div className="h-auto w-auto">
-                                  <motion.div
-                                    initial={{ y: 0 }}
-                                    animate={{ y: -2 }}
-                                    transition={{
-                                      duration: 2,
-                                      repeat: Infinity,
-                                      repeatType: "reverse",
-                                    }}
-                                    className="w-auto flex items-center justify-center bg-cover bg-center"
-                                  >
+                              <Link
+                                to={`/${item.productType}/${item.name
+                                  .toLowerCase()
+                                  .split(" ")
+                                  .join("")}`}
+                                className="outline-none"
+                              >
+                                <div className="md:flex items-center justify-center gap-2">
+                                  <div className="h-auto w-auto">
                                     <motion.div
-                                      whileHover={{
-                                        scale: 1.02,
+                                      initial={{ y: 0 }}
+                                      animate={{ y: -2 }}
+                                      transition={{
+                                        duration: 2,
+                                        repeat: Infinity,
+                                        repeatType: "reverse",
                                       }}
+                                      className="w-auto flex items-center justify-center bg-cover bg-center"
                                     >
-                                      <img
-                                        src={item.image}
-                                        alt={item.name}
-                                        className="w-full h-52 md:w-96 md:h-72 object-contain object-center"
-                                        loading="lazy"
-                                      />
+                                      <motion.div
+                                        whileHover={{
+                                          scale: 1.02,
+                                        }}
+                                      >
+                                        <img
+                                          src={item.image}
+                                          alt={item.name}
+                                          className="w-full h-52 md:w-96 md:h-72 object-contain object-center"
+                                          loading="lazy"
+                                        />
+                                      </motion.div>
                                     </motion.div>
-                                  </motion.div>
+                                  </div>
+                                  <div className="p-4 md:w-1/2 gap-4 flex items-center justify-center flex-col">
+                                    <h2 className="underline-animations text-xl text-black text-center font-extrabold">
+                                      {item.name}
+                                    </h2>
+                                    <p className="text-stone-600 border-[1px] border-stone-600/30 p-2 rounded-xl break-words text-center">
+                                      {(item.blog &&
+                                        truncateText(item.blog, 30)) ||
+                                        "No description available"}
+                                    </p>
+                                  </div>
                                 </div>
-                                <div className="p-4 md:w-1/2 gap-4 flex items-center justify-center flex-col">
-                                  <h2 className="underline-animations text-xl text-black text-center font-extrabold">
-                                    {item.name}
-                                  </h2>
-                                  <p className="text-stone-600 border-[1px] border-stone-600/30 p-2 rounded-xl break-words text-center">
-                                    {(item.blog &&
-                                      truncateText(item.blog, 30)) ||
-                                      "No description available"}
-                                  </p>
-                                </div>
-                              </div>
-                            </Link>
-                          </div>
-                        );
-                      })}
+                              </Link>
+                            </div>
+                          );
+                        })}
                     </div>
                   </div>
 
@@ -289,7 +292,7 @@ function Landing() {
                       Check out the Budget devices
                     </h1>
                     <div className="flex items-center justify-evenly gap-2 w-full p-4 flex-wrap">
-                      {budget.slice(0, 6).map((item, index) => (
+                      {Array.isArray(budget) && budget.slice(0, 6).map((item, index) => (
                         <div
                           key={index}
                           className="flex items-center justify-center flex-col gap-1"
@@ -321,7 +324,7 @@ function Landing() {
                       Most Sold of {new Date().getFullYear()}
                     </h1>
                     <div className="flex items-center justify-center gap-6 flex-col">
-                      {mostsold.slice(0, 4).map((item, index) => {
+                      {Array.isArray(mostsold) && mostsold.slice(0, 4).map((item, index) => {
                         return (
                           <div
                             key={index}
@@ -384,7 +387,7 @@ function Landing() {
                       Check out the premium midrange devices
                     </h1>
                     <div className="flex items-center justify-evenly gap-2 w-full p-4 flex-wrap">
-                      {midrange.slice(0, 6).map((item, index) => (
+                      {Array.isArray(midrange) && midrange.slice(0, 6).map((item, index) => (
                         <div
                           key={index}
                           className="flex items-center justify-center flex-col gap-1"
@@ -416,7 +419,7 @@ function Landing() {
                       Most Popular
                     </h1>
                     <div className="flex items-center justify-center gap-6 flex-col">
-                      {mostpopular.slice(0, 4).map((item, index) => {
+                      {Array.isArray(mostpopular) && mostpopular.slice(0, 4).map((item, index) => {
                         return (
                           <div
                             key={index}
@@ -479,7 +482,7 @@ function Landing() {
                       Flagship devices
                     </h1>
                     <div className="flex items-center justify-evenly gap-2 w-full p-4 flex-wrap">
-                      {flagship.slice(0, 6).map((item, index) => (
+                      {Array.isArray(flagship) && flagship.slice(0, 6).map((item, index) => (
                         <div
                           key={index}
                           className="flex items-center justify-center flex-col gap-1"
@@ -511,7 +514,7 @@ function Landing() {
                       Recommended for you
                     </h1>
                     <div className="flex items-center justify-center gap-6 flex-col">
-                      {recommended.slice(0, 4).map((item, index) => {
+                      {Array.isArray(recommended) && recommended.slice(0, 4).map((item, index) => {
                         return (
                           <div
                             key={index}

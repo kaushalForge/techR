@@ -1,0 +1,41 @@
+@import "tailwindcss";
+
+/* Define a CSS font stack with fallback order */
+.font-primary {
+  font-family: var(--font-poppins), var(--font-ubuntu),
+    var(--font-space-grotesk);
+}
+.font-poppins {
+  font-family: var(--font-poppins);
+}
+
+.font-space-grotesk {
+  font-family: var(--font-space-grotesk);
+}
+
+.font-ubuntu {
+  font-family: var(--font-ubuntu);
+}
+
+/* Main styling */
+
+.hidescroller::-webkit-scrollbar {
+  display: none;
+}
+
+.stroke {
+  color: transparent;
+  text-shadow: 10px -10px 20px purple, -10px 10px 10px red;
+  -webkit-text-stroke: 2px black;
+}
+
+.stroke:hover {
+  -webkit-text-stroke: none;
+  text-shadow: 10px -10px 20px red, -10px 10px 10px purple;
+  color: purple;
+}
+
+.border-gradient {
+  border: 3px dashed rgba(204, 201, 201, 0.801);
+  border-radius: 20px;
+}

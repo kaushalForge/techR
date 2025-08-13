@@ -37,16 +37,23 @@ const modifyRouter = require("../Backend/routes/modify");
 const phoneRouter = require("../Backend/routes/phones");
 const laptopRouter = require("../Backend/routes/laptops");
 const tabletRouter = require("../Backend/routes/tablets");
-const ownerRouter = require("../Backend/routes/ownerRouter");
+const adminRouter = require("./routes/adminRouter");
 const userRouter = require("../Backend/routes/userRouter");
-const allproductRouter = require("../Backend/routes/allproductRouter");
-const filterRouter = require("../Backend/routes/filterRouter");
+const productRouter = require("./routes/productRouter");
+const searchRouter = require("./routes/searchRouter");
 const deleteRouter = require("../Backend/routes/deleteProduct");
 const lol = require("./routes/specsFilter");
 
+// Home Route
 app.use("/", homeRouter);
+
+// Sitemap Route
 app.use("/sitemap", sitemapRoute);
-app.use("/owners", ownerRouter);
+
+// Admin Route
+app.use("/admin", adminRouter);
+
+// Other Routes
 app.use("/users", userRouter);
 app.use("/products", addProductRouter);
 app.use("/delete", deleteRouter);
@@ -54,8 +61,10 @@ app.use("/phones", phoneRouter);
 app.use("/laptops", laptopRouter);
 app.use("/tablets", tabletRouter);
 app.use("/modify", modifyRouter);
-app.use("/allproducts/api", allproductRouter);
-app.use("/product/api", filterRouter);
+
+// API routes
+app.use("/api/products", productRouter);
+app.use("/api/search", searchRouter);
 app.use("/filter", lol);
 
 const PORT = process.env.PORT || 5173;

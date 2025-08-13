@@ -55,6 +55,7 @@ function SideBar() {
               {!isLoading && <h1 className="text-2xl text-center">Flagship</h1>}
               <div className="hidescroller w-full pt-4 flex flex-col gap-8 items-center overflow-y-auto p-4 h-[550px]">
                 {!isLoading &&
+                  Array.isArray(flagship) &&
                   flagship.map((item, index) => (
                     <div
                       key={index}
@@ -93,6 +94,7 @@ function SideBar() {
               {!isLoading && <h1 className="text-2xl text-center">Midrange</h1>}
               <div className="hidescroller w-full pt-4 flex flex-col gap-8 items-center overflow-y-auto p-4 h-[570px]">
                 {!isLoading &&
+                  Array.isArray(midrange) &&
                   midrange.map((item, index) => (
                     <div
                       key={index}
@@ -131,6 +133,7 @@ function SideBar() {
               {!isLoading && <h1 className="text-2xl text-center">Budget</h1>}
               <div className="hidescroller w-full pt-4 flex flex-col gap-8 items-center overflow-y-auto p-4 h-[490px]">
                 {!isLoading &&
+                  Array.isArray(budget) &&
                   budget.map((item, index) => (
                     <div
                       key={index}

@@ -87,7 +87,9 @@ function Phones() {
     <HelmetProvider>
       <div className="min-h-screen flex flex-col justify-between">
         <Helmet>
-          <title>Best Phones of 2024 under various categories and price segments</title>
+          <title>
+            Best Phones of 2024 under various categories and price segments
+          </title>
         </Helmet>
         {isLoading ? (
           <motion.div
@@ -111,7 +113,7 @@ function Phones() {
                 </h1>
                 <div className="flex items-center justify-center gap-4 flex-col">
                   {gamingphone &&
-                    gamingphone.map(
+                    Array.isArray(gamingphone) && gamingphone.map(
                       (phone, index) =>
                         phone.productType === "phone" && (
                           <div
@@ -175,7 +177,7 @@ function Phones() {
                 </h1>
                 <div className="flex items-center justify-center gap-4 flex-col">
                   {professionalphone &&
-                    professionalphone.map(
+                    Array.isArray(professionalphone) && professionalphone.map(
                       (phone, index) =>
                         phone.productType === "phone" && (
                           <div
@@ -239,7 +241,7 @@ function Phones() {
                 </h1>
                 <div className="flex items-center justify-center gap-4 flex-col">
                   {studentsphone &&
-                    studentsphone.map(
+                    Array.isArray(studentsphone) && studentsphone.map(
                       (phone, index) =>
                         phone.productType === "phone" && (
                           <div
@@ -303,7 +305,7 @@ function Phones() {
                 </h1>
                 <div className="flex items-center justify-center gap-4 flex-col">
                   {normalusagephone &&
-                    normalusagephone.map(
+                    Array.isArray(normalusagephone) && normalusagephone.map(
                       (phone, index) =>
                         phone.productType === "phone" && (
                           <div
