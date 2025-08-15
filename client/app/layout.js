@@ -2,7 +2,6 @@ import { Space_Grotesk, Ubuntu, Poppins } from "next/font/google";
 import "./stylesheets/globals.css";
 import Navbar from "@/components/Common/Navbar";
 import { Toaster } from "sonner";
-import { ReactLenis } from "@/components/utils/lenis";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -37,10 +36,8 @@ export default function RootLayout({ children }) {
         suppressHydrationWarning
         className={`${spaceGrotesk.variable} ${ubuntu.variable} ${poppins.variable} font-primary`}
       >
-        <ReactLenis root>
-          <Toaster richColors={true} /> <Navbar />
-          {children}
-        </ReactLenis>
+        <Toaster richColors={true} /> <Navbar />
+        {children}
       </body>
     </html>
   );

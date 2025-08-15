@@ -11,10 +11,8 @@ router.get("/:searchTerm", async (req, res) => {
     });
 
     if (results.length > 0) {
-      console.log("Products found:", results);
       return res.json(results);
     } else {
-      console.log("No products found for:", searchTerm);
       return res.status(404).json({ message: "No products found" });
     }
   } catch (error) {
