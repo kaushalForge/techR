@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API = `${import.meta.env.VITE_API_BASE || "http://127.0.0.1:5000"}/api/products`;
+const API = `${import.meta.env.VITE_API_BASE}`;
 
 export const fetchProducts = async (url) => {
   const { data } = await axios.get(url);
