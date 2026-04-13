@@ -1,1212 +1,426 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/stylesheets/Home.css" />
-    <title>Modify Products</title>
-  </head>
-<body class="bg-zinc-700 text-black">
-  <div class="p-4 min-h-screen flex flex-col items-center">
-    <h1 class="text-4xl text-white mb-6">Modify Product</h1>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Modify Product | Modern Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * { font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+        body { background: #f5f7fb; letter-spacing: -0.01em; }
+        .sharp-card { background: #ffffff; border-radius: 1.25rem; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.02), 0 2px 4px rgba(0, 0, 0, 0.02), 0 0 0 1px rgba(0, 0, 0, 0.01); }
+        .sharp-input, .sharp-select, .sharp-textarea {
+            background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 0.75rem;
+            padding: 0.65rem 1rem; font-size: 0.9rem; transition: all 0.2s; box-shadow: 0 1px 1px rgba(0,0,0,0.02);
+        }
+        .sharp-input:focus, .sharp-select:focus, .sharp-textarea:focus {
+            outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
+        }
+        .sharp-radio-group { background: #f8fafc; border-radius: 0.75rem; border: 1px solid #eef2f6; padding: 0.5rem 0.75rem; }
+        .badge-light { background: #f1f5f9; color: #0f172a; border-radius: 2rem; font-size: 0.75rem; font-weight: 500; padding: 0.2rem 0.8rem; }
+        .dynamic-group { background: #ffffff; border-radius: 1rem; border: 1px solid #edf2f7; transition: all 0.1s ease; }
+        .variant-card {
+            background: #fefefe; border: 1px solid #eef2f8; border-radius: 1rem; padding: 1rem;
+            transition: all 0.2s;
+        }
+        .variant-card:hover { border-color: #cbd5e1; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
+        .label-sharp { font-weight: 600; font-size: 0.85rem; color: #1e293b; margin-bottom: 0.25rem; display: block; }
+        .section-title { font-size: 1rem; font-weight: 600; color: #0f172a; border-left: 3px solid #3b82f6; padding-left: 0.75rem; margin-bottom: 1rem; }
+        .image-preview-container { position: relative; display: inline-block; }
+        .image-preview { width: 120px; height: 120px; object-fit: cover; border-radius: 1rem; border: 2px solid #eef2f6; background: #f8fafc; }
+        .change-image-badge { position: absolute; bottom: -8px; right: -8px; background: white; border-radius: 999px; padding: 4px 8px; font-size: 0.7rem; font-weight: 500; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; }
+        .toggle-switch { position: relative; display: inline-flex; align-items: center; cursor: pointer; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+        .toggle-slider { width: 48px; height: 26px; background-color: #cbd5e1; border-radius: 34px; transition: 0.25s; position: relative; box-shadow: inset 0 1px 2px rgba(0,0,0,0.05); }
+        .toggle-slider:before { content: ""; position: absolute; height: 20px; width: 20px; left: 3px; bottom: 3px; background-color: white; border-radius: 50%; transition: 0.25s; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        input:checked + .toggle-slider { background-color: #3b82f6; }
+        input:checked + .toggle-slider:before { transform: translateX(22px); }
+        .publish-status-badge { font-size: 0.75rem; font-weight: 500; padding: 0.2rem 0.6rem; border-radius: 2rem; }
+    </style>
+</head>
+<body class="bg-[#f5f7fb] text-[#0a0c10] antialiased">
+  <%- include("Navbar") %>
+
+<div class="max-w-7xl mx-auto px-4 py-8 md:py-10">
+    <div class="flex flex-wrap items-center justify-between mb-8 gap-4">
+        <div>
+            <h1 class="text-3xl md:text-4xl font-bold tracking-tight text-slate-800">Modify product</h1>
+            <p class="text-slate-500 text-sm mt-1">Update details, linked variant sets & descriptions — clean & sharp</p>
+        </div>
+        <div class="bg-white/60 backdrop-blur-sm px-4 py-2 rounded-full border border-slate-200 shadow-sm text-xs font-mono text-slate-500">✦ Edit mode</div>
+    </div>
+
     <% if (find) { %>
-      <form method="post" action="/modify/<%= find.id %>" enctype="multipart/form-data" class="w-full max-w-4xl bg-sky-600 p-6 rounded-lg shadow-lg">
-        <div class="space-y-4">
-
-          <div class="flex flex-col md:flex-row md:space-x-4">
-            <select
-              name="productType"
-              class="outline-none rounded-lg bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold w-full md:w-1/3"
-            >
-              <option value="phone" <%= find.productType === 'phone' ? 'selected' : '' %>>Phone</option>
-              <option value="laptop" <%= find.productType === 'laptop' ? 'selected' : '' %>>Laptop</option>
-              <option value="tablet" <%= find.productType === 'tablet' ? 'selected' : '' %>>Tablet</option>
-            </select>
-
-            <select
-              name="popularity"
-              class="outline-none rounded-lg bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold w-full md:w-1/3"
-            >
-              <option value="popular" <%= find.popularity === 'popular' ? 'selected' : '' %>>Popular</option>
-              <option value="average" <%= find.popularity === 'average' ? 'selected' : '' %>>Average</option>
-              <option value="not popular" <%= find.popularity === 'not popular' ? 'selected' : '' %>>Not Popular</option>
-            </select>
-          </div>
-          <!-- boolean -->
-          <div class="flex flex-col md:flex-row md:space-x-4 bg-zinc-500 text-white px-3 py-2 rounded-lg">
-            <div>Newly Launched:</div>
-            <div class="flex items-center justify-center gap-4">
-                <label>
-                    <input type="radio" name="latest" value="true" <%= find.latest === 'true' ? 'checked' : '' %> >True
-                </label>
-                <label>
-                    <input type="radio" name="latest" value="false" <%= find.latest === 'false' ? 'checked' : '' %> >False
-                </label>
-            </div>
-        </div>
-
-        <div class="flex flex-col md:flex-row md:space-x-4 bg-zinc-500 text-white px-3 py-2 rounded-lg">
-            <div>Most Sold of 2024:</div>
-            <div class="flex items-center justify-center gap-4">
-                <label>
-                    <input type="radio" name="mostsold" value="true" <%= find.mostsold === 'true' ? 'checked' : '' %> >True
-                </label>
-                <label>
-                    <input type="radio" name="mostsold" value="false" <%= find.mostsold === 'false' ? 'checked' : '' %> >False
-                </label>
-            </div>
-        </div>
-
-        <div class="flex flex-col md:flex-row md:space-x-4 bg-zinc-500 text-white px-3 py-2 rounded-lg">
-            <div>Most Popular:</div>
-            <div class="flex items-center justify-center gap-4">
-                <label>
-                    <input type="radio" name="mostpopular" value="true" <%= find.mostpopular === 'true' ? 'checked' : '' %> >True
-                </label>
-                <label>
-                    <input type="radio" name="mostpopular" value="false" <%= find.mostpopular === 'false' ? 'checked' : '' %> >False
-                </label>
-            </div>
-        </div>
-
-        <div class="flex flex-col md:flex-row md:space-x-4 bg-zinc-500 text-white px-3 py-2 rounded-lg">
-            <div>Recommended for you:</div>
-            <div class="flex items-center justify-center gap-4">
-                <label>
-                    <input type="radio" name="recommended" value="true" <%= find.recommended === 'true' ? 'checked' : '' %> >True
-                </label>
-                <label>
-                    <input type="radio" name="recommended" value="false" <%= find.recommended === 'false' ? 'checked' : '' %> >False
-                </label>
-            </div>
-        </div>
-
-        <div class="flex flex-col md:flex-row md:space-x-4 bg-zinc-500 text-white px-3 py-2 rounded-lg">
-            <!-- <div>Budget Devices:</div> -->
-            <h1 class="whitespace-nowrap">Item catagorie:</h1>
-            <div class="flex items-center justify-evenly w-full gap-4">
-                <label>
-                Budget:
-                <input type="radio" name="item_categorie" value="budget" <%= find.item_categorie === 'budget' ? 'checked' : '' %> >
-              </label>
-                <label>
-                Midrange:
-                <input type="radio" name="item_categorie" value="midrange" <%= find.item_categorie === 'midrange' ? 'checked' : '' %> >
-              </label>
-                <label>
-                Flagship:
-                <input type="radio" name="item_categorie" value="flagship" <%= find.item_categorie === 'flagship' ? 'checked' : '' %> >
-              </label>
-            </div>
-        </div>
-       
-        <div class="flex flex-col md:flex-row md:space-x-4 bg-zinc-500 text-white px-3 py-2 rounded-lg">
-          <h1 class="whitespace-nowrap">Target Audience:</h1>
-          <div class="flex items-center justify-evenly w-full gap-4">
-            <label>
-              Gamer:
-              <input type="checkbox" name="targetaudience" value="gaming" <%= find.targetaudience.includes('gaming') ? 'checked' : '' %> >
-            </label>
-            <label>
-              Professional:
-              <input type="checkbox" name="targetaudience" value="professional" <%= find.targetaudience.includes('professional') ? 'checked' : '' %> >
-            </label>
-            <label>
-              Students:
-              <input type="checkbox" name="targetaudience" value="students" <%= find.targetaudience.includes('students') ? 'checked' : '' %> >
-            </label>
-            <label>
-              Normal Usage:
-              <input type="checkbox" name="targetaudience" value="normalusage" <%= find.targetaudience.includes('normalusage') ? 'checked' : '' %> >
-            </label>
-          </div>
-        </div>
-        
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input
-              type="text"
-              name="name"
-              class="outline-none rounded-lg bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold"
-              placeholder="Product Name"
-              value="<%= find.name %>"
-            />
-            <input
-              type="text"
-              name="dimension"
-              class="outline-none rounded-lg bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold"
-              placeholder="Dimension"
-              value="<%= find.dimension %>"
-            />
-            <input
-              type="text"
-              name="build"
-              class="outline-none rounded-lg bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold"
-              placeholder="Build"
-              value="<%= find.build %>"
-            />
-            <input
-              type="text"
-              name="weight"
-              class="outline-none rounded-lg bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold"
-              placeholder="Weight"
-              value="<%= find.weight %>"
-            />
-            <input
-              type="text"
-              name="dtype"
-              class="outline-none rounded-lg bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold"
-              placeholder="Display Type"
-              value="<%= find.dtype %>"
-            />
-            <input
-              type="text"
-              name="size"
-              class="outline-none rounded-lg bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold"
-              placeholder="Display Size"
-              value="<%= find.size %>"
-            />
-            <input
-              type="text"
-              name="resolution"
-              class="outline-none rounded-lg bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold"
-              placeholder="Display Resolution"
-              value="<%= find.resolution %>"
-            />
-            <input
-              type="text"
-              name="os"
-              class="outline-none rounded-lg bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold"
-              placeholder="Operation System"
-              value="<%= find.os %>"
-            />
-
-      
-  <div class="flex flex-col">
-
-    <div id="processorlist">
-      <div id="processorContainer" class="flex flex-col gap-4">
-          <% if (find.processor && find.processor.length > 0) { %>
-              <% find.processor.forEach((processorSet, index) => { %>
-                  <div class="processor-group flex flex-col gap-4" data-index="<%= index %>">
-                      <h3>Processor Options <%=index+1%>:</h3>
-                      <div class="grid grid-cols-2 gap-2 mt-2">
-                        
-                          <% processorSet.forEach((processor) => { %>
-                              <div class="flex items-center gap-2">
-                                  <input
-                                      type="text"
-                                      name="processor[<%= index %>][]" 
-                                      class="processor outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold processor-input"
-                                      placeholder="Processor Option"
-                                      value="<%= processor %>"
-                                  />
-                                  <button
-                                      type="button"
-                                      class="remove-processor-option bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-md"
-                                      onclick="removeProcessorOption(this)">&times;</button>
-                              </div>
-                          <% }); %>
-                      </div>
-                      <div class="mt-4 flex flex-col bg-zinc-600 text-white px-4 py-3 rounded-lg shadow-lg">
-                          <div class="cursor-pointer bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center" onclick="addProcessorOption(this)">
-                              Add Processor Option
-                          </div>
-                          <div class="cursor-pointer bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center mt-2" onclick="removeProcessorContainer(this)">
-                              Remove Processor Container
-                          </div>
-                      </div>
-                  </div>
-              <% }); %>
-          <% } else { %>
-              <div class="processor-group flex flex-col gap-4" data-index="0">
-                  <h3>Processor Options 1:</h3>
-                  <div class="flex items-center gap-2 mt-2">
-                      <input
-                          type="text"
-                          name="processor[0][]"
-                          class="processor outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold processor-input"
-                          placeholder="Processor Option"
-                          value=""
-                      />
-                      <button
-                          type="button"
-                          class="remove-processor-option bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-md"
-                          onclick="removeProcessorOption(this)">&times;</button>
-                  </div>
-                  <div class="mt-4 flex flex-col bg-zinc-600 text-white px-4 py-3 rounded-lg shadow-lg">
-                      <div class="cursor-pointer bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center" onclick="addProcessorOption(this)">
-                          Add Processor Option
-                      </div>
-                      <div class="cursor-pointer bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center mt-2" onclick="removeProcessorContainer(this)">
-                          Remove Processor Container
-                      </div>
-                  </div>
-              </div>
-          <% } %>
-      </div>  
-  
-      <div class="mt-4 flex flex-col md:flex-row md:space-x-4 bg-zinc-600 text-white px-4 py-3 rounded-lg shadow-lg">
-          <div id="addProcessorField" class="cursor-pointer bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center" onclick="createProcessorDiv('processorContainer')">
-              Add Processor Container
-          </div>
-      </div>
-    </div>
-  
-    <div id="graphicslist">
-      <div id="graphicsContainer" class="flex flex-col gap-4">
-          <% if (find.graphic && find.graphic.length > 0) { %>
-              <% find.graphic.forEach((graphicsSet, index) => { %>
-                  <div class="graphic-group flex flex-col gap-4" data-index="<%= index %>">
-                      <h3>Graphic Options <%= index+1%>:</h3>
-                      <div class="grid grid-cols-2 gap-2 mt-2">
-                        <% if (Array.isArray(graphicsSet)) { %>
-                            <% graphicsSet.forEach((graphics) => { %>
-                                <div class="flex items-center gap-2">
-                                    <input
-                                        type="text"
-                                        name="graphic[<%= index %>][]" 
-                                        class="graphic outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold graphic-input"
-                                        placeholder="Graphic Option"
-                                        value="<%= graphics %>"
-                                    />
-                                    <button
-                                        type="button"
-                                        class="remove-graphic-option bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-md"
-                                        onclick="removeGraphicOption(this)">&times;</button>
-                                </div>
-                            <% }); %>
-                        <% } %>
-                        
-                      </div>
-                      <div class="mt-4 flex flex-col bg-zinc-600 text-white px-4 py-3 rounded-lg shadow-lg">
-                          <div class="cursor-pointer bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center" onclick="addGraphicOption(this)">
-                              Add Graphic Option
-                          </div>
-                          <div class="cursor-pointer bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center mt-2" onclick="removeGraphicContainer(this)">
-                              Remove Graphic Container
-                          </div>
-                      </div>
-                  </div>
-              <% }); %>
-          <% } else { %>
-              <div class="graphic-group flex flex-col gap-4" data-index="0">
-                  <h3>Graphic Options 1:</h3>
-                  <div class="flex items-center gap-2 mt-2">
-                      <input
-                          type="text"
-                          name="graphic[0][]"
-                          class="graphic outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold graphic-input"
-                          placeholder="Graphic Option"
-                          value=""
-                      />
-                      <button
-                          type="button"
-                          class="remove-graphic-option bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-md"
-                          onclick="removeGraphicOption(this)">&times;</button>
-                  </div>
-                  <div class="mt-4 flex flex-col bg-zinc-600 text-white px-4 py-3 rounded-lg shadow-lg">
-                      <div class="cursor-pointer bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center" onclick="addGraphicOption(this)">
-                          Add Graphic Option
-                      </div>
-                      <div class="cursor-pointer bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center mt-2" onclick="removeGraphicContainer(this)">
-                          Remove Graphic Container
-                      </div>
-                  </div>
-              </div>
-          <% } %>
-      </div>
-  
-      <div class="mt-4 flex flex-col md:flex-row md:space-x-4 bg-zinc-600 text-white px-4 py-3 rounded-lg shadow-lg">
-          <div id="addGraphicsField" class="cursor-pointer bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center" onclick="createGraphicsDiv('graphicsContainer')">
-              Add Graphics Container
-          </div>
-      </div>
-  </div>
-  
-    <div id="pricelist">
-          <div id="priceContainer" class="flex flex-col gap-4">
-              <% if (find.price && find.price.length > 0) { %>
-                  <% find.price.forEach((priceSet, index) => { %>
-                      <div class="price-group flex flex-col gap-4" data-index="<%= index %>">
-                          <h3>Price Options:</h3>
-                          <div class="grid grid-cols-2 gap-2 mt-2">
-                              <% priceSet.forEach((price) => { %>
-                                  <div class="flex items-center gap-2">
-                                      <input
-                                          type="text"
-                                          name="price[<%= index %>][]" 
-                                          class="price outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold price-input"
-                                          placeholder="Price Option ($)"
-                                          value="<%= price %>"
-                                      />
-                                      <button
-                                          type="button"
-                                          class="remove-price-option bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-md"
-                                          onclick="removePriceOption(this)">&times;</button>
-                                  </div>
-                              <% }); %>
-                          </div>
-                          <div class="mt-4 flex flex-col bg-zinc-600 text-white px-4 py-3 rounded-lg shadow-lg">
-                              <div class="cursor-pointer bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center" onclick="addPriceOption(this)">
-                                  Add Price Option
-                              </div>
-                              <div class="cursor-pointer bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center mt-2" onclick="removePriceContainer(this)">
-                                  Remove Price Container
-                              </div>
-                          </div>
-                      </div>
-                  <% }); %>
-              <% } else { %>
-                  <div class="price-group flex flex-col gap-4" data-index="0">
-                      <h3>Price Options:</h3>
-                      <div class="flex items-center gap-2 mt-2">
-                          <input
-                              type="text"
-                              name="price[0][]"
-                              class="price outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold price-input"
-                              placeholder="Price Option ($)"
-                              value=""
-                          />
-                          <button
-                              type="button"
-                              class="remove-price-option bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-md"
-                              onclick="removePriceOption(this)">&times;</button>
-                      </div>
-                      <div class="mt-4 flex flex-col bg-zinc-600 text-white px-4 py-3 rounded-lg shadow-lg">
-                          <div class="cursor-pointer bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center" onclick="addPriceOption(this)">
-                              Add Price Option
-                          </div>
-                          <div class="cursor-pointer bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center mt-2" onclick="removePriceContainer(this)">
-                              Remove Price Container
-                          </div>
-                      </div>
-                  </div>
-              <% } %>
-          </div>  
-      
-          <div class="mt-4 flex flex-col md:flex-row md:space-x-4 bg-zinc-600 text-white px-4 py-3 rounded-lg shadow-lg">
-              <div id="addPriceField" class="cursor-pointer bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center" onclick="createPriceDiv('priceContainer')">
-                  Add Price Container
-              </div>
-          </div>
-    </div>
-
-    <div id="ramlist">
-        <div id="ramContainer" class="flex flex-col gap-4">
-            <% if (find.ram && find.ram.length > 0) { %>
-                <% find.ram.forEach((ramSet, index) => { %>
-                    <div class="ram-group flex flex-col gap-4" data-index="<%= index %>">
-                        <h3>RAM Options:</h3>
-                        <div class="grid grid-cols-2 gap-2 mt-2">
-                            <% ramSet.forEach((ram) => { %>
-                                <div class="flex items-center gap-2">
-                                    <input
-                                        type="text"
-                                        name="ram[<%= index %>][]" 
-                                        class="ram outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold ram-input"
-                                        placeholder="RAM Option (GB)"
-                                        value="<%= ram %>"
-                                    />
-                                    <button
-                                        type="button"
-                                        class="remove-ram-option bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-md"
-                                        onclick="removeRamOption(this)">&times;</button>
-                                </div>
-                            <% }); %>
-                        </div>
-                        <div class="mt-4 flex flex-col bg-zinc-600 text-white px-4 py-3 rounded-lg shadow-lg">
-                            <div class="cursor-pointer bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center" onclick="addRamOption(this)">
-                                Add RAM Option
-                            </div>
-                            <div class="cursor-pointer bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center mt-2" onclick="removeRamContainer(this)">
-                                Remove RAM Container
-                            </div>
-                        </div>
-                    </div>
-                <% }); %>
-            <% } else { %>
-                <div class="ram-group flex flex-col gap-4" data-index="0">
-                    <h3>RAM Options:</h3>
-                    <div class="flex items-center gap-2 mt-2">
-                        <input
-                            type="text"
-                            name="ram[0][]"
-                            class="ram outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold ram-input"
-                            placeholder="RAM Option (GB)"
-                            value=""
-                        />
-                        <button
-                            type="button"
-                            class="remove-ram-option bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-md"
-                            onclick="removeRamOption(this)">&times;</button>
-                    </div>
-                    <div class="mt-4 flex flex-col bg-zinc-600 text-white px-4 py-3 rounded-lg shadow-lg">
-                        <div class="cursor-pointer bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center" onclick="addRamOption(this)">
-                            Add RAM Option
-                        </div>
-                        <div class="cursor-pointer bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center mt-2" onclick="removeRamContainer(this)">
-                            Remove RAM Container
-                        </div>
-                    </div>
-                </div>
-            <% } %>
-        </div>  
-    
-        <div class="mt-4 flex flex-col md:flex-row md:space-x-4 bg-zinc-600 text-white px-4 py-3 rounded-lg shadow-lg">
-            <div id="addRamField" class="cursor-pointer bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center" onclick="createRamDiv('ramContainer')">
-                Add RAM Container
-            </div>
-        </div>
-    </div>
-
-    <div id="storagelist">
-      <div id="storageContainer" class="flex flex-col gap-4">
-          <% if (find.storage && find.storage.length > 0) { %>
-              <% find.storage.forEach((storageSet, index) => { %>
-                  <div class="storage-group flex flex-col gap-4" data-index="<%= index %>">
-                      <h3>Storage Options:</h3>
-                      <div class="grid grid-cols-2 gap-2 mt-2">
-                          <% storageSet.forEach((storage) => { %>
-                              <div class="flex items-center gap-2">
-                                  <input
-                                      type="text"
-                                      name="storage[<%= index %>][]" 
-                                      class="storage outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold storage-input"
-                                      placeholder="Storage Option (GB)"
-                                      value="<%= storage %>"
-                                  />
-                                  <button
-                                      type="button"
-                                      class="remove-storage-option bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-md"
-                                      onclick="removeStorageOption(this)">&times;</button>
-                              </div>
-                          <% }); %>
-                      </div>
-                      <div class="mt-4 flex flex-col bg-zinc-600 text-white px-4 py-3 rounded-lg shadow-lg">
-                          <div class="cursor-pointer bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center" onclick="addStorageOption(this)">
-                              Add Storage Option
-                          </div>
-                          <div class="cursor-pointer bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center mt-2" onclick="removeStorageContainer(this)">
-                              Remove Storage Container
-                          </div>
-                      </div>
-                  </div>
-              <% }); %>
-          <% } else { %>
-              <div class="storage-group flex flex-col gap-4" data-index="0">
-                  <h3>Storage Options:</h3>
-                  <div class="flex items-center gap-2 mt-2">
-                      <input
-                          type="text"
-                          name="storage[0][]"
-                          class="storage outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold storage-input"
-                          placeholder="Storage Option (GB)"
-                          value=""
-                      />
-                      <button
-                          type="button"
-                          class="remove-storage-option bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-md"
-                          onclick="removeStorageOption(this)">&times;</button>
-                  </div>
-                  <div class="mt-4 flex flex-col bg-zinc-600 text-white px-4 py-3 rounded-lg shadow-lg">
-                      <div class="cursor-pointer bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center" onclick="addStorageOption(this)">
-                          Add Storage Option
-                      </div>
-                      <div class="cursor-pointer bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center mt-2" onclick="removeStorageContainer(this)">
-                          Remove Storage Container
-                      </div>
-                  </div>
-              </div>
-          <% } %>
-      </div>  
-  
-      <div class="mt-4 flex flex-col md:flex-row md:space-x-4 bg-zinc-600 text-white px-4 py-3 rounded-lg shadow-lg">
-          <div id="addStorageField" class="cursor-pointer bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center" onclick="createStorageDiv('storageContainer')">
-              Add Storage Container
-          </div>
-      </div>
-    </div>
-
-  </div>          
-   
-      <script>
-    function createProcessorDiv(containerId) {
-        const mainContainer = document.getElementById(containerId);
-        const newIndex = mainContainer.children.length;
-
-        const newGroup = document.createElement('div');
-        newGroup.className = 'processor-group flex flex-col gap-4';
-        newGroup.setAttribute('data-index', newIndex);
-        newGroup.innerHTML = `
-            <h3>Processor Options:</h3>
-            <div class="grid grid-cols-2 gap-2 mt-2">
-                <div class="flex items-center gap-2">
-                    <input
-                        type="text"
-                        name="processor[${newIndex}][]"
-                        class="processor outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold processor-input"
-                        placeholder="Processor Option"
-                    />
-                    <button
-                        type="button"
-                        class="remove-processor-option bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-md"
-                        onclick="removeProcessorOption(this)">&times;</button>
-                </div>
-            </div>
-            <div class="mt-4 flex flex-col bg-zinc-600 text-white px-4 py-3 rounded-lg shadow-lg">
-                <div class="cursor-pointer bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center" onclick="addProcessorOption(this)">
-                    Add Processor Option
-                </div>
-                <div class="cursor-pointer bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center mt-2" onclick="removeProcessorContainer(this)">
-                    Remove Processor Container
-                </div>
-            </div>
-        `;
-
-        mainContainer.appendChild(newGroup);
-    }
-
-    function addProcessorOption(button) {
-        const group = button.closest('.processor-group');
-        const newIndex = group.dataset.index;
-        const newInput = document.createElement('div');
-        newInput.className = 'flex items-center gap-2 mt-2';
-        newInput.innerHTML = `
-        <div class="flex gap-1 items-center justify-center w-full mb-2">
-            <input
-                type="text"
-                name="processor[${newIndex}][]"
-                class="processor outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold processor-input"
-                placeholder="Processor Option"
-            />
-            <button
-                type="button"
-                class="remove-processor-option bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-md"
-                onclick="removeProcessorOption(this)">&times;</button>
-        </div>`;
-
-        const buttonContainer = group.querySelector('.mt-4.flex');
-        buttonContainer.insertBefore(newInput, buttonContainer.firstChild);
-    }
-
-    function removeProcessorOption(button) {
-        const processorInputContainer = button.parentElement; 
-        if (processorInputContainer.querySelector('input').value === "") {
-            processorInputContainer.remove();
-        }
-    }
-
-    function removeProcessorContainer(button) {
-        const group = button.closest('.processor-group');
-        const processorInputs = group.querySelectorAll('input[type="text"]');
-
-        const allEmpty = Array.from(processorInputs).every(input => input.value.trim() === "");
-
-        if (allEmpty) {
-            group.remove();
-        } else {
-            alert("Cannot remove this processor group because it contains non-empty processor options.");
-        }
-    }
-      </script>
-
-      <script>
-  function createGraphicsDiv(containerId) {
-      const mainContainer = document.getElementById(containerId);
-      const newIndex = mainContainer.children.length;
-
-      const newGroup = document.createElement('div');
-      newGroup.className = 'graphic-group flex flex-col gap-4';
-      newGroup.setAttribute('data-index', newIndex);
-      newGroup.innerHTML = `
-          <h3>Graphic Options:</h3>
-          <div class="grid grid-cols-2 gap-2 mt-2">
-              <div class="flex items-center gap-2">
-                  <input
-                      type="text"
-                      name="graphic[${newIndex}][]"
-                      class="graphic outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold graphic-input"
-                      placeholder="Graphic Option"
-                  />
-                  <button
-                      type="button"
-                      class="remove-graphic-option bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-md"
-                      onclick="removeGraphicOption(this)">&times;</button>
-              </div>
-          </div>
-          <div class="mt-4 flex flex-col bg-zinc-600 text-white px-4 py-3 rounded-lg shadow-lg">
-              <div class="cursor-pointer bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center" onclick="addGraphicOption(this)">
-                  Add Graphic Option
-              </div>
-              <div class="cursor-pointer bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center mt-2" onclick="removeGraphicContainer(this)">
-                  Remove Graphic Container
-              </div>
-          </div>
-      `;
-
-      mainContainer.appendChild(newGroup);
-  }
-
-  function addGraphicOption(button) {
-      const group = button.closest('.graphic-group');
-      const newIndex = group.dataset.index;
-      const newInput = document.createElement('div');
-      newInput.className = 'flex items-center gap-2 mt-2';
-      newInput.innerHTML = `
-      <div class="flex gap-1 items-center justify-center w-full mb-2">
-          <input
-              type="text"
-              name="graphic[${newIndex}][]"
-              class="graphic outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold graphic-input"
-              placeholder="Graphic Option"
-          />
-          <button
-              type="button"
-              class="remove-graphic-option bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-md"
-              onclick="removeGraphicOption(this)">&times;</button>
-      </div>`;
-
-      const buttonContainer = group.querySelector('.mt-4.flex');
-      buttonContainer.insertBefore(newInput, buttonContainer.firstChild);
-  }
-
-  function removeGraphicOption(button) {
-      const graphicInputContainer = button.parentElement; 
-      if (graphicInputContainer.querySelector('input').value === "") {
-          graphicInputContainer.remove();
-      }
-  }
-
-  function removeGraphicContainer(button) {
-      const group = button.closest('.graphic-group');
-      const graphicInputs = group.querySelectorAll('input[type="text"]');
-
-      const allEmpty = Array.from(graphicInputs).every(input => input.value.trim() === "");
-
-      if (allEmpty) {
-          group.remove();
-      } else {
-          alert("Cannot remove this graphic group because it contains non-empty graphic options.");
-      }
-  }
-      </script>
-
-      <script>
-          function createPriceDiv(containerId) {
-              const mainContainer = document.getElementById(containerId);
-              const newIndex = mainContainer.children.length;
-      
-              const newGroup = document.createElement('div');
-              newGroup.className = 'price-group flex flex-col gap-4';
-              newGroup.setAttribute('data-index', newIndex);
-              newGroup.innerHTML = `
-                  <h3>Price Options:</h3>
-                  <div class="grid grid-cols-2 gap-2 mt-2">
-                      <div class="flex items-center gap-2">
-                          <input
-                              type="text"
-                              name="price[${newIndex}][]"
-                              class="price outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold price-input"
-                              placeholder="Price Option ($)"
-                          />
-                          <button
-                              type="button"
-                              class="remove-price-option bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-md"
-                              onclick="removePriceOption(this)">&times;</button>
-                      </div>
-                  </div>
-                  <div class="mt-4 flex flex-col bg-zinc-600 text-white px-4 py-3 rounded-lg shadow-lg">
-                      <div class="cursor-pointer bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center" onclick="addPriceOption(this)">
-                          Add Price Option
-                      </div>
-                      <div class="cursor-pointer bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center mt-2" onclick="removePriceContainer(this)">
-                          Remove Price Container
-                      </div>
-                  </div>
-              `;
-      
-              mainContainer.appendChild(newGroup);
-          }
-      
-          function addPriceOption(button) {
-              const group = button.closest('.price-group');
-              const newIndex = group.dataset.index;
-              const newInput = document.createElement('div');
-              newInput.className = 'flex items-center gap-2 mt-2';
-              newInput.innerHTML = `
-              <div class="flex gap-1 items-center justify-center w-full mb-2">
-                  <input
-                      type="text"
-                      name="price[${newIndex}][]"
-                      class="price outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold price-input"
-                      placeholder="Price Option ($)"
-                  />
-                  <button
-                      type="button"
-                      class="remove-price-option bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-md"
-                      onclick="removePriceOption(this)">&times;</button>
-              </div>`;
-              // Insert the new input above the "Add Price Option" button
-              const buttonContainer = group.querySelector('.mt-4.flex');
-              buttonContainer.insertBefore(newInput, buttonContainer.firstChild);
-          }
-      
-          function removePriceOption(button) {
-              const priceInputContainer = button.parentElement; 
-              if (priceInputContainer.querySelector('input').value === "") {
-                  priceInputContainer.remove();
-              }
-          }
-      
-          function removePriceContainer(button) {
-              const group = button.closest('.price-group');
-              const priceInputs = group.querySelectorAll('input[type="text"]');
-              
-              // Check if all price inputs are empty
-              const allEmpty = Array.from(priceInputs).every(input => input.value.trim() === "");
-      
-              if (allEmpty) {
-                  group.remove();
-              } else {
-                  alert("Cannot remove this price group because it contains non-empty price options.");
-              }
-          }
-      </script>
-      
-      <script>
-        function createRamDiv(containerId) {
-            const mainContainer = document.getElementById(containerId);
-            const newIndex = mainContainer.children.length;
-    
-            const newGroup = document.createElement('div');
-            newGroup.className = 'ram-group flex flex-col gap-4';
-            newGroup.setAttribute('data-index', newIndex);
-            newGroup.innerHTML = `
-                <h3>RAM Options:</h3>
-                <div class="grid grid-cols-2 gap-2 mt-2">
-                    <div class="flex items-center gap-2">
-                        <input
-                            type="text"
-                            name="ram[${newIndex}][]"
-                            class="ram outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold ram-input"
-                            placeholder="RAM Option (GB)"
-                        />
-                        <button
-                            type="button"
-                            class="remove-ram-option bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-md"
-                            onclick="removeRamOption(this)">&times;</button>
-                    </div>
-                </div>
-                <div class="mt-4 flex flex-col bg-zinc-600 text-white px-4 py-3 rounded-lg shadow-lg">
-                    <div class="cursor-pointer bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center" onclick="addRamOption(this)">
-                        Add RAM Option
-                    </div>
-                    <div class="cursor-pointer bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center mt-2" onclick="removeRamContainer(this)">
-                        Remove RAM Container
-                    </div>
-                </div>
-            `;
-    
-            mainContainer.appendChild(newGroup);
-        }
-    
-        function addRamOption(button) {
-            const group = button.closest('.ram-group');
-            const newIndex = group.dataset.index;
-    
-            const newInput = document.createElement('div');
-            newInput.className = 'flex items-center gap-2 mt-2';
-            newInput.innerHTML = `
-                <input
-                    type="text"
-                    name="ram[${newIndex}][]"
-                    class="ram outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold ram-input"
-                    placeholder="RAM Option (GB)"
-                />
-                <button
-                    type="button"
-                    class="remove-ram-option bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-md"
-                    onclick="removeRamOption(this)">&times;</button>
-            `;
-    
-            const buttonContainer = group.querySelector('.mt-4.flex');
-            buttonContainer.insertBefore(newInput, buttonContainer.firstChild);
-        }
-    
-        function removeRamOption(button) {
-            const ramInputContainer = button.parentElement.parentElement; 
-            if (ramInputContainer.querySelector('input').value === "") {
-                ramInputContainer.remove();
-            }
-        }
-    
-        function removeRamContainer(button) {
-            const group = button.closest('.ram-group');
-            const ramInputs = group.querySelectorAll('input[type="text"]');
-    
-            const allEmpty = Array.from(ramInputs).every(input => input.value.trim() === "");
-    
-            if (allEmpty) {
-                group.remove();
-            } else {
-                alert("Cannot remove this RAM group because it contains non-empty RAM options.");
-            }
-        }
-    </script>
-    
-    
-      <script>
-    function createStorageDiv(containerId) {
-        const mainContainer = document.getElementById(containerId);
-        const newIndex = mainContainer.children.length;
-
-        const newGroup = document.createElement('div');
-        newGroup.className = 'storage-group flex flex-col gap-4';
-        newGroup.setAttribute('data-index', newIndex);
-        newGroup.innerHTML = `
-            <h3>Storage Options:</h3>
-            <div class="grid grid-cols-2 gap-2 mt-2">
-                <div class="flex items-center gap-2">
-                    <input
-                        type="text"
-                        name="storage[${newIndex}][]"
-                        class="storage outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold storage-input"
-                        placeholder="Storage Option (GB)"
-                    />
-                    <button
-                        type="button"
-                        class="remove-storage-option bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-md"
-                        onclick="removeStorageOption(this)">&times;</button>
-                </div>
-            </div>
-            <div class="mt-4 flex flex-col bg-zinc-600 text-white px-4 py-3 rounded-lg shadow-lg">
-                <div class="cursor-pointer bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center" onclick="addStorageOption(this)">
-                    Add Storage Option
-                </div>
-                <div class="cursor-pointer bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out transform hover:scale-105 text-center mt-2" onclick="removeStorageContainer(this)">
-                    Remove Storage Container
-                </div>
-            </div>
-        `;
-
-        mainContainer.appendChild(newGroup);
-    }
-
-    function addStorageOption(button) {
-        const group = button.closest('.storage-group');
-        const newIndex = group.dataset.index;
-        const newInput = document.createElement('div');
-        newInput.className = 'flex items-center gap-2 mt-2';
-        newInput.innerHTML = `
-        <div class="flex gap-1 items-center justify-center w-full mb-2">
-            <input
-                type="text"
-                name="storage[${newIndex}][]"
-                class="storage outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold storage-input"
-                placeholder="Storage Option (GB)"
-            />
-            <button
-                type="button"
-                class="remove-storage-option bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-md"
-                onclick="removeStorageOption(this)">&times;</button>
-        </div>`;
-
-        // Insert the new input above the "Add Storage Option" button
-        const buttonContainer = group.querySelector('.mt-4.flex');
-        buttonContainer.insertBefore(newInput, buttonContainer.firstChild);
-    }
-
-    function removeStorageOption(button) {
-        const storageInputContainer = button.parentElement; 
-        if (storageInputContainer.querySelector('input').value === "") {
-            storageInputContainer.remove();
-        }
-    }
-
-    function removeStorageContainer(button) {
-        const group = button.closest('.storage-group');
-        const storageInputs = group.querySelectorAll('input[type="text"]');
-
-        const allEmpty = Array.from(storageInputs).every(input => input.value.trim() === "");
-
-        if (allEmpty) {
-            group.remove();
-        } else {
-            alert("Cannot remove this storage group because it contains non-empty storage options.");
-        }
-    }
-      </script>
-
-      
-            <input
-              type="text"
-              name="capacity"
-              class="outline-none rounded-lg bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold"
-              placeholder="Battery Capacity"
-              value="<%= find.capacity %>"
-            />
-            <input
-              type="text"
-              name="charging"
-              class="outline-none rounded-lg bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold"
-              placeholder="Battery Charging"
-              value="<%= find.charging %>"
-            />
-            <input
-              type="text"
-              name="wifi"
-              class="outline-none rounded-lg bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold"
-              placeholder="Wi-Fi"
-              value="<%= find.wifi %>"
-            />
-            <input
-              type="text"
-              name="bluetooth"
-              class="outline-none rounded-lg bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold"
-              placeholder="Bluetooth"
-              value="<%= find.bluetooth %>"
-            />
-            <input
-              type="text"
-              name="typec"
-              class="outline-none rounded-lg bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold"
-              placeholder="USB Type C"
-              value="<%= find.typec %>"
-            />
-            <input
-              type="text"
-              name="usba"
-              class="outline-none rounded-lg bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold"
-              placeholder="USB Type A"
-              value="<%= find.usba %>"
-            />
-            <input
-              type="text"
-              name="ethernet"
-              class="outline-none rounded-lg bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold"
-              placeholder="Ethernet"
-              value="<%= find.ethernet %>"
-            />
-            <input
-              type="text"
-              name="hdmi"
-              class="outline-none rounded-lg bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold"
-              placeholder="HDMI"
-              value="<%= find.hdmi %>"
-            />
-            <input
-              type="text"
-              name="audiojack"
-              class="outline-none rounded-lg bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold"
-              placeholder="Audio Jack"
-              value="<%= find.audiojack %>"
-            />
-            <input
-              type="text"
-              name="maincamera"
-              class="outline-none rounded-lg bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold"
-              placeholder="Main Camera"
-              value="<%= find.maincamera %>"
-            />
-            <input
-              type="text"
-              name="frontcamera"
-              class="outline-none rounded-lg bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold"
-              placeholder="Front Camera"
-              value="<%= find.frontcamera %>"
-            />
-            <input
-              type="text"
-              name="video"
-              class="outline-none rounded-lg bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold"
-              placeholder="Video"
-              value="<%= find.video %>"
-            />
-            <input
-            type="file"
-            name="image"
-            class="outline-none rounded-lg bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold"
-            placeholder="Image URL"
-            value="<%= find.image %>"
-            />
-            <input
-              type="text"
-              name="previousimage"
-              class="outline-none rounded-lg bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold"
-              placeholder="Previous Image URL"
-              value="<%= find.image %>"
-            />
-          </div>
-
-          <div>
-            <label class="block text-white font-semibold mb-1 text-lg">Blog:</label>
-            <textarea
-              name="blog"
-              class="w-full outline-none resize-none rounded-lg bg-zinc-500 text-white px-3 py-2 h-40 placeholder:text-zinc-300/80 placeholder:font-semibold"
-              placeholder="Blog"
-            ><%= find.blog %></textarea>
-          </div>
-
-          <div class="bg-stone-700 p-4 rounded-lg w-full">
-            <h1 class="text-white text-2xl mb-4 w-full">Add Product Descriptions</h1>
-            <div id="descContainer" class="w-full">
-              <div id="descFields" class="flex flex-col gap-8 w-full">
-                  <% if (find.descriptions && find.descriptions.length > 0) { %>
-                      <% find.descriptions.forEach((desc, index) => { %>
-                          <div class="mt-4 descGroup flex flex-col gap-4">
-                            <h1 class="bg-black font-semibold text-orange-600 px-2 py-1 rounded-lg text-lg">Description <%= index+1 %></h1>
-                              <input
-                                  type="text"
-                                  name="heading[<%= index %>]"
-                                  class="descr outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold"
-                                  placeholder="Product Heading"
-                                  value="<%= desc.heading %>"
-                              />
-                              <input
-                                  type="text"
-                                  name="detail[<%= index %>]"
-                                  class="descr outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold"
-                                  placeholder="Product Detail"
-                                  value="<%= desc.detail %>"
-                              />
-                              <input
-                                  type="text"
-                                  name="descriptionimage[<%= index %>]"
-                                  class="descr outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold"
-                                  placeholder="Product Image URL"
-                                  value="<%= desc.descriptionimage %>"
-                              />
-                          </div>
-                      <% }); %>
-                  <% } else { %>
-                      <div class="mt-4 descGroup flex flex-col gap-4">
-                          <input
-                              type="text"
-                              name="heading[]"
-                              class="descr outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold"
-                              placeholder="Product Heading"
-                          />
-                          <input
-                              type="text"
-                              name="detail[]"
-                              class="descr outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold"
-                              placeholder="Product Detail"
-                          />
-                          <input
-                              type="text"
-                              name="descriptionimage[]"
-                              class="descr outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold"
-                              placeholder="Product Image URL"
-                          />
-                      </div>
-                  <% } %>
-              </div>
-              <div class="flex flex-col md:flex-row md:space-x-4 bg-zinc-500 text-white px-3 py-2 rounded-lg mt-4">
-                  <div id="addField" class="mt-2 cursor-pointer bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg"
-                      onclick="createDescBox('descFields')">
-                      Add Field
-                  </div>
-                  <div id="removeProcessor" class="mt-2 cursor-pointer bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg"
-                      onclick="removeDescBox('descFields', 'descr')">
-                      Remove Empty Fields
-                  </div>
-              </div>
-            </div>
+    <div class="sharp-card overflow-hidden">
+        <form method="post" action="/modify/<%= find.id %>" enctype="multipart/form-data" class="p-5 md:p-7 space-y-8" id="mainProductForm">
             
+            <!-- IMAGE SECTION + PUBLISH TOGGLE -->
+            <div class="flex flex-col md:flex-row gap-6 items-start md:items-center border-b border-slate-100 pb-6">
+                <div class="image-preview-container">
+                    <img id="liveImagePreview" class="image-preview" src="<%= find.image %>" alt="Product preview" onerror="this.src='https://placehold.co/400x400?text=No+Image'">
+                    <div class="change-image-badge text-slate-600 bg-white shadow-sm">Preview</div>
+                </div>
+                <div class="flex-1 space-y-2">
+                    <label class="label-sharp text-base font-semibold">Product main image</label>
+                    <div class="flex flex-wrap items-center gap-3">
+                        <input type="file" name="image" id="productImageInput" accept="image/*" class="sharp-input w-full md:w-auto flex-1" />
+                        <input type="hidden" name="previousimage" value="<%= find.image %>" />
+                        <span class="text-xs text-slate-400 bg-slate-50 px-3 py-1.5 rounded-full">JPG, PNG, WEBP</span>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-1">Select a new image to replace current. Preview updates instantly.</p>
+                </div>
+                
+                <div class="flex flex-col items-start md:items-end gap-2 bg-slate-50/80 p-3 rounded-xl border border-slate-100 min-w-[160px]">
+                    <div class="flex items-center gap-3">
+                        <span class="text-sm font-medium text-slate-700">📢 Published on frontend</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" name="isPublished" value="true" <%= (find.isPublished === true || find.isPublished === 'true') ? 'checked' : '' %> />
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="text-xs text-slate-500 flex items-center gap-1">
+                        <span id="publishStatusText" class="publish-status-badge <%= (find.isPublished === true || find.isPublished === 'true') ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700' %>">
+                            <%= (find.isPublished === true || find.isPublished === 'true') ? '● Visible' : '○ Hidden' %>
+                        </span>
+                        <span>Toggle to show/hide on store</span>
+                    </div>
+                </div>
             </div>
 
-            <div class="flex gap-4 justify-center mt-6">
-              <input
-                type="submit"
-                value="Update"
-                class="bg-orange-600 p-3 rounded-lg font-semibold text-lg cursor-pointer hover:bg-orange-700 transition"
-              />
-              <input
-                type="reset"
-                value="Reset"
-                class="bg-orange-600 p-3 rounded-lg font-semibold text-lg cursor-pointer hover:bg-orange-700 transition"
-              />
+            <!-- TOP ROWS: type & popularity -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div><label class="label-sharp">Product category</label><select name="productType" class="sharp-input w-full"><option value="phone" <%= find.productType === 'phone' ? 'selected' : '' %>>Smartphone</option><option value="laptop" <%= find.productType === 'laptop' ? 'selected' : '' %>>Laptop</option><option value="tablet" <%= find.productType === 'tablet' ? 'selected' : '' %>>Tablet</option></select></div>
+                <div><label class="label-sharp">Popularity tier</label><select name="popularity" class="sharp-input w-full"><option value="popular" <%= find.popularity === 'popular' ? 'selected' : '' %>>Popular</option><option value="average" <%= find.popularity === 'average' ? 'selected' : '' %>>Average</option><option value="not popular" <%= find.popularity === 'not popular' ? 'selected' : '' %>>Not Popular</option></select></div>
             </div>
-          </div>
-          
-      </form>
-    <% } else { %>
-      <p class="text-center text-lg text-white">Product not found.</p>
-    <% } %>
 
+            <!-- boolean badges -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="sharp-radio-group flex items-center gap-4"><span class="text-sm font-medium text-slate-700">✨ Newly Launched</span><div class="flex gap-3"><label class="flex items-center gap-1 text-sm"><input type="radio" name="latest" value="true" <%= find.latest === 'true' ? 'checked' : '' %> class="w-4 h-4 accent-blue-600"> Yes</label><label class="flex items-center gap-1 text-sm"><input type="radio" name="latest" value="false" <%= find.latest === 'false' ? 'checked' : '' %> class="w-4 h-4 accent-blue-600"> No</label></div></div>
+                <div class="sharp-radio-group flex items-center gap-4"><span class="text-sm font-medium text-slate-700">🏆 Most Sold 2024</span><div class="flex gap-3"><label><input type="radio" name="mostsold" value="true" <%= find.mostsold === 'true' ? 'checked' : '' %>> Yes</label><label><input type="radio" name="mostsold" value="false" <%= find.mostsold === 'false' ? 'checked' : '' %>> No</label></div></div>
+                <div class="sharp-radio-group flex items-center gap-4"><span class="text-sm font-medium text-slate-700">⭐ Most Popular</span><div class="flex gap-3"><label><input type="radio" name="mostpopular" value="true" <%= find.mostpopular === 'true' ? 'checked' : '' %>> Yes</label><label><input type="radio" name="mostpopular" value="false" <%= find.mostpopular === 'false' ? 'checked' : '' %>> No</label></div></div>
+                <div class="sharp-radio-group flex items-center gap-4"><span class="text-sm font-medium text-slate-700">📌 Recommended</span><div class="flex gap-3"><label><input type="radio" name="recommended" value="true" <%= find.recommended === 'true' ? 'checked' : '' %>> Yes</label><label><input type="radio" name="recommended" value="false" <%= find.recommended === 'false' ? 'checked' : '' %>> No</label></div></div>
+            </div>
+
+            <!-- item category + target audience -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="sharp-radio-group"><div class="text-sm font-semibold text-slate-700 mb-2">Item category</div><div class="flex flex-wrap gap-5"><label><input type="radio" name="item_categorie" value="budget" <%= find.item_categorie === 'budget' ? 'checked' : '' %>> Budget</label><label><input type="radio" name="item_categorie" value="midrange" <%= find.item_categorie === 'midrange' ? 'checked' : '' %>> Midrange</label><label><input type="radio" name="item_categorie" value="flagship" <%= find.item_categorie === 'flagship' ? 'checked' : '' %>> Flagship</label></div></div>
+                <div class="sharp-radio-group"><div class="text-sm font-semibold text-slate-700 mb-2">Target audience (multi)</div><div class="flex flex-wrap gap-4"><label><input type="checkbox" name="targetaudience" value="gaming" <%= (find.targetaudience && find.targetaudience.includes('gaming')) ? 'checked' : '' %>> Gaming</label><label><input type="checkbox" name="targetaudience" value="professional" <%= (find.targetaudience && find.targetaudience.includes('professional')) ? 'checked' : '' %>> Professional</label><label><input type="checkbox" name="targetaudience" value="students" <%= (find.targetaudience && find.targetaudience.includes('students')) ? 'checked' : '' %>> Students</label><label><input type="checkbox" name="targetaudience" value="normalusage" <%= (find.targetaudience && find.targetaudience.includes('normalusage')) ? 'checked' : '' %>> Normal Usage</label></div></div>
+            </div>
+
+            <!-- Base specifications -->
+            <div><div class="section-title">Base specifications</div><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"><input type="text" name="name" class="sharp-input" placeholder="Product Name" value="<%= find.name %>" /><input type="text" name="dimension" class="sharp-input" placeholder="Dimension" value="<%= find.dimension %>" /><input type="text" name="build" class="sharp-input" placeholder="Build" value="<%= find.build %>" /><input type="text" name="weight" class="sharp-input" placeholder="Weight" value="<%= find.weight %>" /><input type="text" name="dtype" class="sharp-input" placeholder="Display Type" value="<%= find.dtype %>" /><input type="text" name="size" class="sharp-input" placeholder="Display Size" value="<%= find.size %>" /><input type="text" name="resolution" class="sharp-input" placeholder="Resolution" value="<%= find.resolution %>" /><input type="text" name="os" class="sharp-input" placeholder="Operation System" value="<%= find.os %>" /></div></div>
+
+            <!-- LINKED VARIANT SETS -->
+            <div>
+                <div class="section-title flex items-center justify-between flex-wrap gap-2">
+                    <span>🔗 Linked variant sets (Price + RAM + Storage together)</span>
+                    <button type="button" id="addVariantSetBtn" class="text-sm bg-blue-50 text-blue-700 px-4 py-1.5 rounded-full font-medium hover:bg-blue-100 transition">+ Add variant set</button>
+                </div>
+                <div id="linkedVariantsContainer" class="space-y-5">
+                    <% 
+                        let priceArr = find.price || [];
+                        let ramArr = find.ram || [];
+                        let storageArr = find.storage || [];
+                        let maxVariants = Math.max(priceArr.length, ramArr.length, storageArr.length);
+                        if(maxVariants === 0) maxVariants = 1;
+                        
+                        for(let vIdx = 0; vIdx < maxVariants; vIdx++) {
+                            let priceSet = priceArr[vIdx] || [];
+                            let ramSet = ramArr[vIdx] || [];
+                            let storageSet = storageArr[vIdx] || [];
+                    %>
+                    <div class="variant-card dynamic-group" data-variant-index="<%= vIdx %>">
+                        <div class="flex justify-between items-center mb-3 border-b border-slate-100 pb-2">
+                            <h3 class="font-semibold text-slate-800 text-md flex items-center gap-2"><span class="bg-slate-100 w-6 h-6 rounded-full flex items-center justify-center text-xs"><%= vIdx+1 %></span> Variant configuration</h3>
+                            <button type="button" class="remove-variant-btn text-xs text-red-500 hover:text-red-700 bg-red-50 px-3 py-1 rounded-full transition">Remove variant</button>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                            <div><label class="label-sharp text-xs uppercase">💰 Price options ($)</label><div class="price-options-area space-y-2 mt-1"><% priceSet.forEach(pr => { %><div class="flex gap-2 items-center"><input type="text" name="price[<%= vIdx %>][]" class="sharp-input w-full text-sm" value="<%= pr %>" /><button type="button" class="remove-price-opt-btn">✕</button></div><% }); if(!priceSet.length){ %><div class="flex gap-2 items-center"><input type="text" name="price[<%= vIdx %>][]" class="sharp-input w-full text-sm" placeholder="Price" /><button class="remove-price-opt-btn">✕</button></div><% } %></div><button type="button" class="add-price-option-btn text-xs text-blue-600 mt-2">+ Add price</button></div>
+                            <div><label class="label-sharp text-xs uppercase">🧠 RAM options (GB)</label><div class="ram-options-area space-y-2 mt-1"><% ramSet.forEach(rm => { %><div class="flex gap-2 items-center"><input type="text" name="ram[<%= vIdx %>][]" class="sharp-input w-full text-sm" value="<%= rm %>" /><button class="remove-ram-opt-btn">✕</button></div><% }); if(!ramSet.length){ %><div class="flex gap-2 items-center"><input type="text" name="ram[<%= vIdx %>][]" class="sharp-input w-full text-sm" placeholder="RAM" /><button class="remove-ram-opt-btn">✕</button></div><% } %></div><button type="button" class="add-ram-option-btn text-xs text-blue-600 mt-2">+ Add RAM</button></div>
+                            <div><label class="label-sharp text-xs uppercase">💾 Storage options (GB)</label><div class="storage-options-area space-y-2 mt-1"><% storageSet.forEach(st => { %><div class="flex gap-2 items-center"><input type="text" name="storage[<%= vIdx %>][]" class="sharp-input w-full text-sm" value="<%= st %>" /><button class="remove-storage-opt-btn">✕</button></div><% }); if(!storageSet.length){ %><div class="flex gap-2 items-center"><input type="text" name="storage[<%= vIdx %>][]" class="sharp-input w-full text-sm" placeholder="Storage" /><button class="remove-storage-opt-btn">✕</button></div><% } %></div><button type="button" class="add-storage-option-btn text-xs text-blue-600 mt-2">+ Add storage</button></div>
+                        </div>
+                    </div>
+                    <% } %>
+                </div>
+            </div>
+
+            <!-- Processor and Graphics sections - FULLY FIXED with proper name indexing -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div>
+                    <div class="section-title">⚙️ Processor options</div>
+                    <div id="processorContainer" class="space-y-4">
+                        <% if (find.processor && find.processor.length) { 
+                            find.processor.forEach((procSet, idx) => { %>
+                            <div class="processor-group dynamic-group p-4" data-group-index="<%= idx %>">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="font-medium text-slate-700">Processor set <%= idx+1 %></span>
+                                    <button type="button" class="remove-proc-group-btn text-xs text-red-600 bg-red-50 px-2 py-1 rounded-full">Remove set</button>
+                                </div>
+                                <div class="proc-options-area space-y-2">
+                                    <% procSet.forEach(procValue => { %>
+                                        <div class="flex gap-2 items-center proc-option-row">
+                                            <input type="text" name="processor[<%= idx %>][]" class="sharp-input w-full" value="<%= procValue %>" />
+                                            <button type="button" class="remove-proc-opt-btn text-red-500 hover:text-red-700 p-1 rounded-full transition">✕</button>
+                                        </div>
+                                    <% }) %>
+                                </div>
+                                <button type="button" class="add-proc-opt-btn text-sm bg-slate-100 px-3 py-1 rounded-full mt-3 hover:bg-slate-200 transition">+ Add processor option</button>
+                            </div>
+                        <% }); } else { %>
+                            <div class="processor-group dynamic-group p-4" data-group-index="0">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="font-medium text-slate-700">Processor set 1</span>
+                                    <button type="button" class="remove-proc-group-btn text-xs text-red-600 bg-red-50 px-2 py-1 rounded-full">Remove set</button>
+                                </div>
+                                <div class="proc-options-area space-y-2">
+                                    <div class="flex gap-2 items-center proc-option-row">
+                                        <input type="text" name="processor[0][]" class="sharp-input w-full" placeholder="e.g., Snapdragon 8 Gen 3" />
+                                        <button type="button" class="remove-proc-opt-btn text-red-500 hover:text-red-700 p-1 rounded-full transition">✕</button>
+                                    </div>
+                                </div>
+                                <button type="button" class="add-proc-opt-btn text-sm bg-slate-100 px-3 py-1 rounded-full mt-3 hover:bg-slate-200 transition">+ Add processor option</button>
+                            </div>
+                        <% } %>
+                    </div>
+                    <button type="button" class="mt-3 text-blue-700 text-sm bg-blue-50 px-4 py-1.5 rounded-full hover:bg-blue-100 transition" id="addProcessorGroupBtn">+ Add processor container</button>
+                </div>
+                <div>
+                    <div class="section-title">🎮 Graphics options</div>
+                    <div id="graphicsContainer" class="space-y-4">
+                        <% if (find.graphic && find.graphic.length) { 
+                            find.graphic.forEach((graphSet, idx) => { %>
+                            <div class="graphic-group dynamic-group p-4" data-group-index="<%= idx %>">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="font-medium text-slate-700">Graphics set <%= idx+1 %></span>
+                                    <button type="button" class="remove-graphic-group-btn text-xs text-red-600 bg-red-50 px-2 py-1 rounded-full">Remove set</button>
+                                </div>
+                                <div class="graphic-options-area space-y-2">
+                                    <% graphSet.forEach(graphValue => { %>
+                                        <div class="flex gap-2 items-center graphic-option-row">
+                                            <input type="text" name="graphic[<%= idx %>][]" class="sharp-input w-full" value="<%= graphValue %>" />
+                                            <button type="button" class="remove-graphic-opt-btn text-red-500 hover:text-red-700 p-1 rounded-full transition">✕</button>
+                                        </div>
+                                    <% }) %>
+                                </div>
+                                <button type="button" class="add-graphic-opt-btn text-sm bg-slate-100 px-3 py-1 rounded-full mt-3 hover:bg-slate-200 transition">+ Add graphics option</button>
+                            </div>
+                        <% }); } else { %>
+                            <div class="graphic-group dynamic-group p-4" data-group-index="0">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="font-medium text-slate-700">Graphics set 1</span>
+                                    <button type="button" class="remove-graphic-group-btn text-xs text-red-600 bg-red-50 px-2 py-1 rounded-full">Remove set</button>
+                                </div>
+                                <div class="graphic-options-area space-y-2">
+                                    <div class="flex gap-2 items-center graphic-option-row">
+                                        <input type="text" name="graphic[0][]" class="sharp-input w-full" placeholder="e.g., NVIDIA RTX 4070" />
+                                        <button type="button" class="remove-graphic-opt-btn text-red-500 hover:text-red-700 p-1 rounded-full transition">✕</button>
+                                    </div>
+                                </div>
+                                <button type="button" class="add-graphic-opt-btn text-sm bg-slate-100 px-3 py-1 rounded-full mt-3 hover:bg-slate-200 transition">+ Add graphics option</button>
+                            </div>
+                        <% } %>
+                    </div>
+                    <button type="button" class="mt-3 text-blue-700 text-sm bg-blue-50 px-4 py-1.5 rounded-full hover:bg-blue-100 transition" id="addGraphicsGroupBtn">+ Add graphics container</button>
+                </div>
+            </div>
+
+            <!-- Additional ports & camera fields -->
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 pt-2"><input type="text" name="capacity" class="sharp-input" placeholder="Battery capacity" value="<%= find.capacity %>" /><input type="text" name="charging" class="sharp-input" placeholder="Charging" value="<%= find.charging %>" /><input type="text" name="wifi" class="sharp-input" placeholder="Wi-Fi" value="<%= find.wifi %>" /><input type="text" name="bluetooth" class="sharp-input" placeholder="Bluetooth" value="<%= find.bluetooth %>" /><input type="text" name="typec" class="sharp-input" placeholder="USB Type-C" value="<%= find.typec %>" /><input type="text" name="usba" class="sharp-input" placeholder="USB-A" value="<%= find.usba %>" /><input type="text" name="ethernet" class="sharp-input" placeholder="Ethernet" value="<%= find.ethernet %>" /><input type="text" name="hdmi" class="sharp-input" placeholder="HDMI" value="<%= find.hdmi %>" /><input type="text" name="audiojack" class="sharp-input" placeholder="Audio jack" value="<%= find.audiojack %>" /><input type="text" name="maincamera" class="sharp-input" placeholder="Main camera" value="<%= find.maincamera %>" /><input type="text" name="frontcamera" class="sharp-input" placeholder="Front camera" value="<%= find.frontcamera %>" /><input type="text" name="video" class="sharp-input" placeholder="Video specs" value="<%= find.video %>" /></div>
+
+            <!-- blog textarea -->
+            <div><label class="label-sharp">Blog / description (long text)</label><textarea name="blog" rows="4" class="sharp-textarea w-full"><%= find.blog %></textarea></div>
+
+            <!-- dynamic descriptions -->
+            <div><div class="section-title">📄 Detailed description blocks</div><div id="descFields" class="space-y-5"><% if (find.descriptions && find.descriptions.length) { find.descriptions.forEach((desc, idx) => { %><div class="descGroup bg-white border border-slate-100 rounded-xl p-4 shadow-sm"><div class="font-medium text-slate-800 mb-2 flex justify-between"><span>Block <%= idx+1 %></span><span class="badge-light">rich</span></div><input type="text" name="heading[]" class="sharp-input w-full mb-3" placeholder="Heading" value="<%= desc.heading %>" /><input type="text" name="detail[]" class="sharp-input w-full mb-3" placeholder="Detail text" value="<%= desc.detail %>" /><input type="text" name="descriptionimage[]" class="sharp-input w-full" placeholder="Image URL" value="<%= desc.descriptionimage %>" /></div><% }); } else { %><div class="descGroup bg-white rounded-xl p-4 border"><input type="text" name="heading[]" class="sharp-input w-full mb-2" placeholder="Heading" /><input type="text" name="detail[]" class="sharp-input w-full mb-2" placeholder="Detail" /><input type="text" name="descriptionimage[]" class="sharp-input w-full" placeholder="Image URL" /></div><% } %></div><div class="flex gap-3 mt-4"><button type="button" class="bg-slate-100 px-4 py-2 rounded-full text-sm font-medium" onclick="createDescBox()">+ Add description block</button><button type="button" class="bg-red-50 text-red-700 px-4 py-2 rounded-full text-sm" onclick="removeDescBox()">🗑 Remove empty blocks</button></div></div>
+
+            <div class="flex flex-wrap gap-5 pt-4 border-t border-slate-200">
+                <input type="submit" value="Update product" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2.5 rounded-xl shadow-sm transition cursor-pointer" />
+                <input type="reset" value="Reset form" class="bg-white border border-slate-300 text-slate-700 px-6 py-2.5 rounded-xl hover:bg-slate-50 cursor-pointer transition" />
+            </div>
+        </form>
+    </div>
+    <% } else { %><div class="sharp-card p-12 text-center"><p class="text-slate-500 text-lg">Product not found.</p></div><% } %>
+</div>
+
+<script>
+    // Live image preview
+    const imageInput = document.getElementById('productImageInput');
+    const previewImg = document.getElementById('liveImagePreview');
+    if(imageInput) {
+        imageInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if(file) { const reader = new FileReader(); reader.onload = function(ev) { previewImg.src = ev.target.result; }; reader.readAsDataURL(file); }
+        });
+    }
+
+    // Publish toggle UI
+    const publishCheckbox = document.querySelector('input[name="isPublished"]');
+    const publishStatusSpan = document.getElementById('publishStatusText');
+    if(publishCheckbox && publishStatusSpan) {
+        function updatePublishUI() {
+            if(publishCheckbox.checked) { publishStatusSpan.textContent = '● Visible'; publishStatusSpan.className = 'publish-status-badge bg-green-100 text-green-700'; }
+            else { publishStatusSpan.textContent = '○ Hidden'; publishStatusSpan.className = 'publish-status-badge bg-amber-100 text-amber-700'; }
+        }
+        publishCheckbox.addEventListener('change', updatePublishUI); updatePublishUI();
+    }
+
+    // Universal function to attach events for processor/graphics groups
+    function initProcessorGroup(group) {
+        const groupIndex = group.getAttribute('data-group-index');
+        const optionsArea = group.querySelector('.proc-options-area');
+        
+        // Add option button
+        const addBtn = group.querySelector('.add-proc-opt-btn');
+        if(addBtn) {
+            addBtn.replaceWith(addBtn.cloneNode(true));
+            const newAddBtn = group.querySelector('.add-proc-opt-btn');
+            newAddBtn.addEventListener('click', () => {
+                const newRow = document.createElement('div');
+                newRow.className = 'flex gap-2 items-center proc-option-row';
+                newRow.innerHTML = `<input type="text" name="processor[${groupIndex}][]" class="sharp-input w-full" placeholder="New processor option" /><button type="button" class="remove-proc-opt-btn text-red-500 hover:text-red-700 p-1 rounded-full transition">✕</button>`;
+                optionsArea.appendChild(newRow);
+                const rmBtn = newRow.querySelector('.remove-proc-opt-btn');
+                rmBtn.addEventListener('click', () => { if(newRow.querySelector('input').value.trim() === "") newRow.remove(); });
+            });
+        }
+        
+        // Remove individual option buttons
+        group.querySelectorAll('.remove-proc-opt-btn').forEach(btn => {
+            btn.replaceWith(btn.cloneNode(true));
+            const newBtn = group.querySelector(`.remove-proc-opt-btn[onclick]`) || group.querySelectorAll('.remove-proc-opt-btn')[group.querySelectorAll('.remove-proc-opt-btn').length - 1];
+            const btns = group.querySelectorAll('.remove-proc-opt-btn');
+            btns.forEach(b => {
+                b.removeEventListener('click', b._handler);
+                const handler = () => { const row = b.closest('.proc-option-row'); if(row && row.querySelector('input').value.trim() === "") row.remove(); };
+                b._handler = handler;
+                b.addEventListener('click', handler);
+            });
+        });
+        
+        // Remove group button
+        const removeGroupBtn = group.querySelector('.remove-proc-group-btn');
+        if(removeGroupBtn) {
+            removeGroupBtn.replaceWith(removeGroupBtn.cloneNode(true));
+            const newRemoveBtn = group.querySelector('.remove-proc-group-btn');
+            newRemoveBtn.addEventListener('click', () => {
+                const inputs = group.querySelectorAll('input');
+                if(inputs.length && [...inputs].every(i => i.value.trim() === "")) group.remove();
+                else alert("Clear all processor options first before removing the set.");
+            });
+        }
+    }
     
-  </div>
-
-  <script>
-  const createInputBox = (divName, inputType, fieldClassName, name) => {
-    const div = document.getElementById(divName);
-    const newDiv = document.createElement('div');
-    const input = document.createElement('input');
-    input.type = inputType;
-    input.name = name;
-    input.className = `${fieldClassName} outline-none w-full rounded-lg bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold`;
-    input.placeholder = `Add ${name}`;
-    newDiv.appendChild(input);
-    div.appendChild(newDiv);
-};
-
-const removeInputBox = (mainDivName, inputClass) => {
-    const div = document.getElementById(mainDivName);
-    const inputs = div.querySelectorAll(`.${inputClass}`); 
-
-    inputs.forEach(input => {
-        if (input.value === "") {
-            input.parentElement.remove();
+    function initGraphicsGroup(group) {
+        const groupIndex = group.getAttribute('data-group-index');
+        const optionsArea = group.querySelector('.graphic-options-area');
+        
+        const addBtn = group.querySelector('.add-graphic-opt-btn');
+        if(addBtn) {
+            addBtn.replaceWith(addBtn.cloneNode(true));
+            const newAddBtn = group.querySelector('.add-graphic-opt-btn');
+            newAddBtn.addEventListener('click', () => {
+                const newRow = document.createElement('div');
+                newRow.className = 'flex gap-2 items-center graphic-option-row';
+                newRow.innerHTML = `<input type="text" name="graphic[${groupIndex}][]" class="sharp-input w-full" placeholder="New graphics option" /><button type="button" class="remove-graphic-opt-btn text-red-500 hover:text-red-700 p-1 rounded-full transition">✕</button>`;
+                optionsArea.appendChild(newRow);
+                const rmBtn = newRow.querySelector('.remove-graphic-opt-btn');
+                rmBtn.addEventListener('click', () => { if(newRow.querySelector('input').value.trim() === "") newRow.remove(); });
+            });
         }
-    });
-};
-const createDescBox = (divName) => {
-    const div = document.getElementById(divName);
-    const newGroup = document.createElement('div');
-    newGroup.className = "mt-4 descGroup";
-
-    const index = div.querySelectorAll('.descGroup').length + 1;
-
-    newGroup.innerHTML = `
-        <div class="bg-black font-semibold text-orange-600 px-2 py-1 rounded-lg text-lg mb-4 w-full">Description ${index}</div>
-        <input
-            type="text"
-            name="heading[]"
-            class="descr outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold mb-2"
-            placeholder="Product Heading"
-        />
-        <input
-            type="text"
-            name="detail[]"
-            class="descr outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold mb-2"
-            placeholder="Product Detail"
-        />
-        <input
-            type="text"
-            name="descriptionimage[]"
-            class="descr outline-none rounded-lg w-full bg-zinc-500 text-white px-3 py-2 placeholder:text-zinc-300/80 placeholder:font-semibold"
-            placeholder="Product Image URL"
-        />
-    `;
-
-    div.appendChild(newGroup);
-};
-
-const removeDescBox = (mainDivName, inputClass) => {
-    const div = document.getElementById(mainDivName);
-    const groups = div.querySelectorAll('.descGroup');
-
-    groups.forEach(group => {
-        const inputs = group.querySelectorAll(`.${inputClass}`);
-        const allEmpty = Array.from(inputs).every(input => input.value.trim() === ''); 
-
-        if (allEmpty) {
-            group.remove();
+        
+        group.querySelectorAll('.remove-graphic-opt-btn').forEach(btn => {
+            btn.replaceWith(btn.cloneNode(true));
+            const btns = group.querySelectorAll('.remove-graphic-opt-btn');
+            btns.forEach(b => {
+                b.removeEventListener('click', b._handler);
+                const handler = () => { const row = b.closest('.graphic-option-row'); if(row && row.querySelector('input').value.trim() === "") row.remove(); };
+                b._handler = handler;
+                b.addEventListener('click', handler);
+            });
+        });
+        
+        const removeGroupBtn = group.querySelector('.remove-graphic-group-btn');
+        if(removeGroupBtn) {
+            removeGroupBtn.replaceWith(removeGroupBtn.cloneNode(true));
+            const newRemoveBtn = group.querySelector('.remove-graphic-group-btn');
+            newRemoveBtn.addEventListener('click', () => {
+                const inputs = group.querySelectorAll('input');
+                if(inputs.length && [...inputs].every(i => i.value.trim() === "")) group.remove();
+                else alert("Clear all graphics options first before removing the set.");
+            });
         }
+    }
+    
+    // Add new processor group
+    document.getElementById('addProcessorGroupBtn')?.addEventListener('click', () => {
+        const container = document.getElementById('processorContainer');
+        const newIdx = container.children.length;
+        const div = document.createElement('div');
+        div.className = 'processor-group dynamic-group p-4';
+        div.setAttribute('data-group-index', newIdx);
+        div.innerHTML = `
+            <div class="flex justify-between items-center mb-2"><span class="font-medium text-slate-700">Processor set ${newIdx+1}</span><button type="button" class="remove-proc-group-btn text-xs text-red-600 bg-red-50 px-2 py-1 rounded-full">Remove set</button></div>
+            <div class="proc-options-area space-y-2"><div class="flex gap-2 items-center proc-option-row"><input type="text" name="processor[${newIdx}][]" class="sharp-input w-full" placeholder="Processor option" /><button type="button" class="remove-proc-opt-btn text-red-500 hover:text-red-700 p-1 rounded-full transition">✕</button></div></div>
+            <button type="button" class="add-proc-opt-btn text-sm bg-slate-100 px-3 py-1 rounded-full mt-3 hover:bg-slate-200 transition">+ Add processor option</button>
+        `;
+        container.appendChild(div);
+        initProcessorGroup(div);
     });
-};
+    
+    // Add new graphics group
+    document.getElementById('addGraphicsGroupBtn')?.addEventListener('click', () => {
+        const container = document.getElementById('graphicsContainer');
+        const newIdx = container.children.length;
+        const div = document.createElement('div');
+        div.className = 'graphic-group dynamic-group p-4';
+        div.setAttribute('data-group-index', newIdx);
+        div.innerHTML = `
+            <div class="flex justify-between items-center mb-2"><span class="font-medium text-slate-700">Graphics set ${newIdx+1}</span><button type="button" class="remove-graphic-group-btn text-xs text-red-600 bg-red-50 px-2 py-1 rounded-full">Remove set</button></div>
+            <div class="graphic-options-area space-y-2"><div class="flex gap-2 items-center graphic-option-row"><input type="text" name="graphic[${newIdx}][]" class="sharp-input w-full" placeholder="Graphics option" /><button type="button" class="remove-graphic-opt-btn text-red-500 hover:text-red-700 p-1 rounded-full transition">✕</button></div></div>
+            <button type="button" class="add-graphic-opt-btn text-sm bg-slate-100 px-3 py-1 rounded-full mt-3 hover:bg-slate-200 transition">+ Add graphics option</button>
+        `;
+        container.appendChild(div);
+        initGraphicsGroup(div);
+    });
+    
+    // Initialize all existing groups
+    document.querySelectorAll('.processor-group').forEach(g => initProcessorGroup(g));
+    document.querySelectorAll('.graphic-group').forEach(g => initGraphicsGroup(g));
+    
+    // Linked variants logic
+    const variantsContainer = document.getElementById('linkedVariantsContainer');
+    function addVariantSet() {
+        const variantCount = variantsContainer.children.length;
+        const newDiv = document.createElement('div');
+        newDiv.className = "variant-card dynamic-group";
+        newDiv.setAttribute('data-variant-index', variantCount);
+        newDiv.innerHTML = `<div class="flex justify-between items-center mb-3 border-b border-slate-100 pb-2"><h3 class="font-semibold text-slate-800 text-md flex items-center gap-2"><span class="bg-slate-100 w-6 h-6 rounded-full flex items-center justify-center text-xs">${variantCount+1}</span> Variant configuration</h3><button type="button" class="remove-variant-btn text-xs text-red-500 hover:text-red-700 bg-red-50 px-3 py-1 rounded-full transition">Remove variant</button></div><div class="grid grid-cols-1 md:grid-cols-3 gap-5"><div><label class="label-sharp text-xs uppercase">💰 Price options ($)</label><div class="price-options-area space-y-2 mt-1"><div class="flex gap-2 items-center"><input type="text" name="price[${variantCount}][]" class="sharp-input w-full text-sm" placeholder="Price" /><button class="remove-price-opt-btn">✕</button></div></div><button type="button" class="add-price-option-btn text-xs text-blue-600 mt-2">+ Add price</button></div><div><label class="label-sharp text-xs uppercase">🧠 RAM options (GB)</label><div class="ram-options-area space-y-2 mt-1"><div class="flex gap-2 items-center"><input type="text" name="ram[${variantCount}][]" class="sharp-input w-full text-sm" placeholder="RAM" /><button class="remove-ram-opt-btn">✕</button></div></div><button type="button" class="add-ram-option-btn text-xs text-blue-600 mt-2">+ Add RAM</button></div><div><label class="label-sharp text-xs uppercase">💾 Storage options (GB)</label><div class="storage-options-area space-y-2 mt-1"><div class="flex gap-2 items-center"><input type="text" name="storage[${variantCount}][]" class="sharp-input w-full text-sm" placeholder="Storage" /><button class="remove-storage-opt-btn">✕</button></div></div><button type="button" class="add-storage-option-btn text-xs text-blue-600 mt-2">+ Add storage</button></div></div>`;
+        variantsContainer.appendChild(newDiv);
+        attachVariantEvents(newDiv);
+    }
+    function attachVariantEvents(variantDiv) {
+        variantDiv.querySelector('.remove-variant-btn')?.addEventListener('click', () => { if([...variantDiv.querySelectorAll('input')].every(i => i.value.trim() === '')) variantDiv.remove(); else alert("Clear all values first"); });
+        variantDiv.querySelector('.add-price-option-btn')?.addEventListener('click', () => addOptionToArea(variantDiv, '.price-options-area', 'price', variantDiv.dataset.variantIndex));
+        variantDiv.querySelector('.add-ram-option-btn')?.addEventListener('click', () => addOptionToArea(variantDiv, '.ram-options-area', 'ram', variantDiv.dataset.variantIndex));
+        variantDiv.querySelector('.add-storage-option-btn')?.addEventListener('click', () => addOptionToArea(variantDiv, '.storage-options-area', 'storage', variantDiv.dataset.variantIndex));
+        variantDiv.querySelectorAll('.remove-price-opt-btn, .remove-ram-opt-btn, .remove-storage-opt-btn').forEach(btn => btn.addEventListener('click', function() { const wrapper = btn.closest('.flex'); if(wrapper && wrapper.querySelector('input').value.trim() === "") wrapper.remove(); }));
+    }
+    function addOptionToArea(variantDiv, areaSelector, baseName, idx) {
+        const area = variantDiv.querySelector(areaSelector);
+        if(!area) return;
+        const newDiv = document.createElement('div'); newDiv.className = "flex gap-2 items-center";
+        newDiv.innerHTML = `<input type="text" name="${baseName}[${idx}][]" class="sharp-input w-full text-sm" placeholder="New ${baseName}" /><button type="button" class="remove-${baseName}-opt-btn">✕</button>`;
+        area.appendChild(newDiv);
+        newDiv.querySelector('button').addEventListener('click', () => { if(newDiv.querySelector('input').value.trim() === "") newDiv.remove(); });
+    }
+    document.getElementById('addVariantSetBtn')?.addEventListener('click', addVariantSet);
+    document.querySelectorAll('.variant-card').forEach(card => attachVariantEvents(card));
+    
+    // Description blocks
+    function createDescBox() { const container = document.getElementById('descFields'); const idx = container.children.length+1; const newDiv = document.createElement('div'); newDiv.className = "descGroup bg-white border border-slate-100 rounded-xl p-4 shadow-sm"; newDiv.innerHTML = `<div class="font-medium text-slate-800 mb-2">Block ${idx}</div><input type="text" name="heading[]" class="sharp-input w-full mb-3" placeholder="Heading" /><input type="text" name="detail[]" class="sharp-input w-full mb-3" placeholder="Detail" /><input type="text" name="descriptionimage[]" class="sharp-input w-full" placeholder="Image URL" />`; container.appendChild(newDiv); }
+    function removeDescBox() { document.querySelectorAll('#descFields .descGroup').forEach(group => { const inputs = group.querySelectorAll('input'); if([...inputs].every(inp => inp.value.trim() === '')) group.remove(); }); }
+    window.createDescBox = createDescBox; window.removeDescBox = removeDescBox;
 </script>
 </body>
-<script src="https://cdn.tailwindcss.com"></script>
 </html>

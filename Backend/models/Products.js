@@ -30,6 +30,10 @@ const productSchema = new mongoose.Schema({
   mostsold: {
     type: String,
   },
+  isPublished: {
+    type: Boolean,
+    default: false,
+  },
   mostpopular: {
     type: String,
   },

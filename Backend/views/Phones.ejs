@@ -1,37 +1,324 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/stylesheets/Home.css" />
-    <title>Phones</title>
-  </head>
-  <body>
-    <div class="p-4 w-full bg-zinc-900">
-      <h1 class="text-5xl text-center text-white m-4">Phone List</h1>
-      <div
-        class="flex items-center justify-evenly gap-8 flex-wrap h-full w-full"
-      >
-        <% phones.forEach(function(phone) { %>
-        <div
-          class="w-72 h-96 overflow-hidden flex items-center justify-center flex-col gap-2"
-        >
-          <img
-            src="<%= phone.image %>"
-            alt="<%= phone.name
-          %>"
-            class="object-cover object-center h-64 w-full border-2 rounded-xl"
-          />
-          <h1 class="text-white text-2xl text-center"><%= phone.name %></h1>
-          <a href="modify/<%= phone.id %>"
-            ><button class="text-white text-2xl bg-orange-600 rounded-xl p-2">
-              <h1>Modify</h1>
-            </button></a
-          >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Phones | Modern Collection</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * {
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #0a0c10 0%, #12151c 100%);
+            min-height: 100vh;
+        }
+        /* modern glass card effect */
+        .glass-card {
+            background: rgba(18, 21, 28, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+        .glass-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: rgba(249, 115, 22, 0.4);
+            box-shadow: 0 25px 40px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(249, 115, 22, 0.2);
+        }
+        /* modern gradient button */
+        .btn-modern {
+            background: linear-gradient(105deg, #f97316 0%, #ea580c 100%);
+            box-shadow: 0 8px 20px -6px rgba(249, 115, 22, 0.35);
+            transition: all 0.25s ease;
+            letter-spacing: -0.01em;
+        }
+        .btn-modern:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 24px -8px rgba(249, 115, 22, 0.55);
+            background: linear-gradient(105deg, #fb923c 0%, #f97316 100%);
+        }
+        /* image hover zoom */
+        .img-wrapper {
+            overflow: hidden;
+            border-radius: 1rem;
+        }
+        .product-img {
+            transition: transform 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+        .glass-card:hover .product-img {
+            transform: scale(1.08);
+        }
+        /* copy button style */
+        .copy-id-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.2s ease;
+            backdrop-filter: blur(4px);
+        }
+        .copy-id-btn:hover {
+            background: rgba(249, 115, 22, 0.2);
+            border-color: #f97316;
+            transform: scale(1.02);
+        }
+        .toast-notification {
+            position: fixed;
+            bottom: 28px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: #1e293b;
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(249, 115, 22, 0.5);
+            border-radius: 2rem;
+            padding: 0.75rem 1.5rem;
+            color: white;
+            font-size: 0.85rem;
+            font-weight: 500;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.25s ease, transform 0.25s ease;
+            pointer-events: none;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+            letter-spacing: -0.2px;
+        }
+        .toast-notification.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        /* page title accent */
+        .title-gradient {
+            background: linear-gradient(135deg, #ffffff 0%, #f97316 80%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            letter-spacing: -0.02em;
+        }
+        .subtitle-light {
+            font-weight: 400;
+            letter-spacing: -0.2px;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <%- include("Navbar") %>
+    
+    <div class="relative min-h-screen py-8 px-4 md:px-8">
+        <!-- Background ambient glow -->
+        <div class="absolute top-0 left-1/4 w-96 h-96 bg-orange-500/20 rounded-full blur-[100px] -z-0"></div>
+        <div class="absolute bottom-0 right-1/4 w-80 h-80 bg-blue-500/10 rounded-full blur-[100px] -z-0"></div>
+        
+        <div class="max-w-7xl mx-auto relative z-10">
+            <!-- header with modern styling -->
+            <div class="text-center mb-12 md:mb-16">
+                <h1 class="text-5xl md:text-6xl font-extrabold title-gradient mb-3 tracking-tight">
+                    Phone Collection
+                </h1>
+                <div class="flex items-center justify-center gap-2 flex-wrap">
+                    <div class="h-0.5 w-12 bg-orange-500/60 rounded-full"></div>
+                    <p class="text-white/60 text-base md:text-lg font-medium subtitle-light">
+                        premium devices • modern aesthetics
+                    </p>
+                    <div class="h-0.5 w-12 bg-orange-500/60 rounded-full"></div>
+                </div>
+                <p class="text-white/40 text-sm mt-3"><%= phones ? phones.length : 0 %> models available</p>
+            </div>
+            
+            <!-- product grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-7 md:gap-8">
+                <% phones.forEach(function(phone) { %>
+                <div class="glass-card rounded-2xl overflow-hidden flex flex-col transition-all duration-300 group">
+                    <!-- image container with zoom effect -->
+                    <div class="img-wrapper relative pt-4 px-4">
+                        <img
+                            src="<%= phone.image %>"
+                            alt="<%= phone.name %>"
+                            class="product-img w-full h-56 object-cover rounded-xl shadow-lg bg-black/30"
+                            onerror="this.src='https://placehold.co/600x400?text=No+Image'"
+                        />
+                        <!-- subtle gradient overlay on image corner -->
+                        <div class="absolute top-6 right-6 w-16 h-16 bg-gradient-to-br from-orange-500/10 to-transparent rounded-full blur-md pointer-events-none"></div>
+                    </div>
+                    
+                    <!-- content area -->
+                    <div class="p-5 flex flex-col flex-1">
+                        <div class="flex items-start justify-between gap-2 mb-2">
+                            <h2 class="text-white text-xl font-semibold tracking-tight line-clamp-1"><%= phone.name %></h2>
+                            <!-- badge for premium feel -->
+                            <div class="w-2 h-2 bg-orange-500 rounded-full shadow-glow"></div>
+                        </div>
+                        
+                        <!-- product id row with copy button - modern & minimal -->
+                        <div class="flex items-center justify-between gap-2 mt-1 mb-4">
+                            <code class="text-[11px] font-mono text-white/40 bg-white/5 px-2 py-1 rounded-md truncate max-w-[140px]">
+                                ID: <%= phone._id || phone.id %>
+                            </code>
+                            <button 
+                                onclick="copyProductId('<%= phone._id || phone.id %>', event)"
+                                class="copy-id-btn text-[11px] font-medium text-white/70 hover:text-orange-400 px-2.5 py-1 rounded-full flex items-center gap-1 transition-all"
+                                title="Copy product ID"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                                <span>Copy ID</span>
+                            </button>
+                        </div>
+                        
+                        <!-- modify button - modern gradient -->
+                        <a href="modify/<%= phone.id %>" class="mt-auto block">
+                            <button class="btn-modern w-full text-white font-semibold py-2.5 rounded-xl text-base flex items-center justify-center gap-2 transition-all">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3l4 4-7 7H10v-4l7-7z"/><path d="M4 20h16"/></svg>
+                                Modify device
+                            </button>
+                        </a>
+                    </div>
+                </div>
+                <% }); %>
+            </div>
+            
+            <!-- empty state (if no phones) -->
+            <% if (!phones || phones.length === 0) { %>
+            <div class="text-center py-20 glass-card rounded-2xl max-w-md mx-auto">
+                <div class="text-6xl mb-4 opacity-50">📱</div>
+                <p class="text-white/60 text-lg">No phones available yet.</p>
+                <p class="text-white/40 text-sm mt-2">Add devices to see them here.</p>
+            </div>
+            <% } %>
         </div>
-        <% }); %>
-      </div>
     </div>
-  </body>
-  <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Toast notification container -->
+    <div id="copyToast" class="toast-notification">
+        <span class="flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+            Product ID copied to clipboard
+        </span>
+    </div>
+
+    <script>
+        // Modern copy function with toast + fallback
+        function copyProductId(productId, event) {
+            // stop event propagation to avoid any weirdness
+            if(event) event.stopPropagation();
+            
+            if (!productId) {
+                showToast('❌ No ID found', false);
+                return;
+            }
+            
+            // Use modern clipboard API
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(productId).then(() => {
+                    showToast('✓ ID copied: ' + (productId.length > 16 ? productId.slice(0, 14) + '…' : productId), true);
+                }).catch(err => {
+                    console.warn('Clipboard error: ', err);
+                    fallbackCopy(productId);
+                });
+            } else {
+                fallbackCopy(productId);
+            }
+        }
+        
+        function fallbackCopy(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.top = '-9999px';
+            textarea.style.left = '-9999px';
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                showToast('✓ ID copied (fallback)', true);
+            } catch (err) {
+                showToast('⚠️ Manual copy failed', false);
+            }
+            document.body.removeChild(textarea);
+        }
+        
+        function showToast(message, isSuccess = true) {
+            const toast = document.getElementById('copyToast');
+            if (!toast) return;
+            
+            // update icon & message style
+            if (isSuccess) {
+                toast.innerHTML = `<span class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>${message}</span>`;
+                toast.style.borderColor = 'rgba(249, 115, 22, 0.6)';
+            } else {
+                toast.innerHTML = `<span class="flex items-center gap-2">⚠️ ${message}</span>`;
+                toast.style.borderColor = 'rgba(239, 68, 68, 0.5)';
+            }
+            
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2200);
+        }
+        
+        // Optional: add a nice ripple effect on copy buttons
+        document.querySelectorAll('.copy-id-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                // ripple effect micro-interaction
+                this.style.transform = 'scale(0.96)';
+                setTimeout(() => { if(this) this.style.transform = ''; }, 150);
+            });
+        });
+        
+        // small console note
+        console.log('✨ Modern phone grid with copy ID feature — ready');
+    </script>
+    <style>
+        /* additional micro-animations */
+        .line-clamp-1 {
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        @keyframes fadeSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .glass-card {
+            animation: fadeSlideUp 0.5s ease backwards;
+            animation-delay: calc(0.03s * var(--index, 0));
+        }
+        /* staggering effect for cards */
+        .grid > div:nth-child(1) { --index: 1; }
+        .grid > div:nth-child(2) { --index: 2; }
+        .grid > div:nth-child(3) { --index: 3; }
+        .grid > div:nth-child(4) { --index: 4; }
+        .grid > div:nth-child(5) { --index: 5; }
+        .grid > div:nth-child(6) { --index: 6; }
+        .grid > div:nth-child(7) { --index: 7; }
+        .grid > div:nth-child(8) { --index: 8; }
+        .grid > div:nth-child(9) { --index: 9; }
+        .grid > div:nth-child(10) { --index: 10; }
+        
+        .shadow-glow {
+            box-shadow: 0 0 6px #f97316;
+        }
+        /* custom scroll */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e1f2a;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #f97316;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #fdba74;
+        }
+    </style>
+</body>
 </html>

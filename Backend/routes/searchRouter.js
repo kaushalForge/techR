@@ -15,7 +15,7 @@ router.get("/", async (req, res) => {
         { name: { $regex: searchTerm, $options: "i" } },
         { item_categorie: { $regex: searchTerm, $options: "i" } },
         { productType: { $regex: searchTerm, $options: "i" } },
-        { dtype: { $regex: searchTerm, $options: "i" } }, //display type
+        { dtype: { $regex: searchTerm, $options: "i" } },
         { resolution: { $regex: searchTerm, $options: "i" } },
         { os: { $regex: searchTerm, $options: "i" } },
         { processor: { $regex: searchTerm, $options: "i" } },
@@ -27,13 +27,15 @@ router.get("/", async (req, res) => {
         { maincamera: { $regex: searchTerm, $options: "i" } },
         { frontcamera: { $regex: searchTerm, $options: "i" } },
 
-        // nested array: descriptions.detail
         { "descriptions.detail": { $regex: searchTerm, $options: "i" } },
         { "descriptions.heading": { $regex: searchTerm, $options: "i" } },
       ],
     });
 
-    return res.json(results); // always array
+    // 🔥 FINAL FILTER (your requirement)
+    const filteredResults = results.filter((p) => p.isPublished === true);
+
+    return res.json(filteredResults);
   } catch (error) {
     console.error("Error searching products:", error);
     return res.status(500).json({ message: "Server error" });

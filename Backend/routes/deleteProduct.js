@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const productModel = require("../models/Products");
+const mongoose = require("mongoose");
 
 router.get("/product", (req, res) => {
   res.render("Delete");
@@ -9,49 +10,56 @@ router.get("/product", (req, res) => {
 router.post("/product", async (req, res) => {
   const { productType, productName, productId } = req.body;
 
-  try {
-    const formattedName = productName.toLowerCase().split(" ").join("");
+  // Validate ObjectId format
+  if (!mongoose.Types.ObjectId.isValid(productId)) {
+    return res.status(400).send(`
+      <script>
+        alert('Invalid Product ID format. Please check the ID and try again.');
+        window.location.href = '/delete/product';
+      </script>
+    `);
+  }
 
-    const query = { _id: productId, name: formattedName, productType };
+  try {
+    // Don't modify the name - compare as is or handle case-insensitive
+    // Better approach: use regex for case-insensitive match or keep as is
+    const query = {
+      _id: productId,
+      productType: productType,
+    };
+
+    // Optional: Add name check for extra verification (case-insensitive)
+    if (productName && productName.trim()) {
+      query.name = { $regex: new RegExp(`^${productName.trim()}$`, "i") };
+    }
 
     const result = await productModel.deleteOne(query);
 
     if (result.deletedCount > 0) {
-      return res.redirect("/");
+      // Success - redirect with success message
+      return res.send(`
+        <script>
+          alert('✓ Product deleted successfully!');
+          window.location.href = '/';
+        </script>
+      `);
     } else {
-      return res.status(404).send("Item not found.");
+      // Not found - show error message
+      return res.status(404).send(`
+        <script>
+          alert('❌ Product not found. Please check the Product ID and Name.');
+          window.location.href = '/delete/product';
+        </script>
+      `);
     }
   } catch (error) {
     console.error("Error deleting item:", error);
-    return res.status(500).send("Error deleting item");
-  }
-});
-
-const mongoose = require("mongoose");
-const ObjectId = mongoose.Types.ObjectId;
-router.post("/product/field", async (req, res) => {
-  const { productType, productId, productField } = req.body;
-  console.log(productType, productId, productField);
-
-  try {
-    const query = { _id: new ObjectId(productId), productType };
-    console.log("Query to MongoDB:", query); // Log the query
-
-    const update = { $unset: { [productField]: "" } };
-    console.log("Update operation:", update); // Log the update operation
-
-    const result = await productModel.updateOne(query, update);
-
-    console.log("Update result:", result); // Log the result of the update
-
-    if (result.modifiedCount > 0) {
-      res.redirect("/");
-    } else {
-      return res.status(404).send("Field not found or no documents matched.");
-    }
-  } catch (error) {
-    console.error("Error deleting field:", error);
-    res.status(500).send("Error deleting field");
+    return res.status(500).send(`
+      <script>
+        alert('❌ Server error occurred while deleting. Please try again.');
+        window.location.href = '/delete/product';
+      </script>
+    `);
   }
 });
 

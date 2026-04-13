@@ -14,6 +14,7 @@ module.exports.modifyProducts = async (req, res) => {
       productType,
       popularity,
       name,
+      isPublished,
       dimension,
       build,
       weight,
@@ -51,7 +52,7 @@ module.exports.modifyProducts = async (req, res) => {
         `data:image/jpeg;base64,${image}`,
         {
           folder: "products",
-        }
+        },
       );
       imageURL = result.secure_url;
     }
@@ -89,6 +90,7 @@ module.exports.modifyProducts = async (req, res) => {
       mostsold: mostsold === "true" ? "true" : "false",
       mostpopular: mostpopular === "true" ? "true" : "false",
       recommended: recommended === "true" ? "true" : "false",
+      isPublished: isPublished === "true" ? "true" : "false",
     };
 
     await productModel.findOneAndUpdate(
@@ -103,6 +105,7 @@ module.exports.modifyProducts = async (req, res) => {
         productType,
         targetaudience,
         popularity,
+        isPublished,
         name,
         dimension,
         build,
@@ -130,7 +133,7 @@ module.exports.modifyProducts = async (req, res) => {
         price: formattedPrice,
         image: imageURL,
         blog,
-      }
+      },
     );
 
     if (productType === "phone") {

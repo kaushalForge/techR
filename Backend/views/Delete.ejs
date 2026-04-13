@@ -2,111 +2,328 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Delete Items</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <title>Delete Items | Admin Panel</title>
     <link
-      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      * {
+        font-family:
+          "Inter",
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, #0a0c10 0%, #12151c 100%);
+        min-height: 100vh;
+      }
+
+      /* Modern glass card */
+      .glass-card {
+        background: rgba(18, 21, 28, 0.75);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+      }
+
+      .glass-card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(239, 68, 68, 0.4);
+        box-shadow:
+          0 25px 40px -12px rgba(0, 0, 0, 0.5),
+          0 0 0 1px rgba(239, 68, 68, 0.2);
+      }
+
+      /* Modern input styles */
+      .modern-input,
+      .modern-select {
+        background: rgba(15, 23, 42, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 0.75rem;
+        padding: 0.75rem 1rem;
+        color: #ffffff;
+        font-size: 0.9rem;
+        transition: all 0.25s ease;
+        width: 100%;
+      }
+
+      .modern-input:focus,
+      .modern-select:focus {
+        outline: none;
+        border-color: #ef4444;
+        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+        background: rgba(15, 23, 42, 0.8);
+      }
+
+      .modern-input::placeholder {
+        color: #64748b;
+      }
+
+      /* Label styles */
+      .modern-label {
+        font-weight: 600;
+        font-size: 0.85rem;
+        color: #cbd5e1;
+        margin-bottom: 0.5rem;
+        display: block;
+        letter-spacing: 0.3px;
+      }
+
+      /* Delete button */
+      .btn-delete {
+        background: linear-gradient(105deg, #ef4444 0%, #dc2626 100%);
+        border: none;
+        border-radius: 0.75rem;
+        padding: 0.875rem 1.5rem;
+        font-weight: 700;
+        font-size: 0.95rem;
+        transition: all 0.25s ease;
+        box-shadow: 0 8px 20px -6px rgba(239, 68, 68, 0.35);
+        color: white;
+        cursor: pointer;
+        width: 100%;
+      }
+
+      .btn-delete:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 24px -8px rgba(239, 68, 68, 0.55);
+        background: linear-gradient(105deg, #f87171 0%, #ef4444 100%);
+      }
+
+      /* Title gradient */
+      .title-gradient {
+        background: linear-gradient(135deg, #ffffff 0%, #ef4444 80%);
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+        letter-spacing: -0.02em;
+      }
+
+      /* Warning box */
+      .warning-box {
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        border-radius: 1rem;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+      }
+
+      /* Custom scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: #1e1f2a;
+        border-radius: 10px;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: #ef4444;
+        border-radius: 10px;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: #f87171;
+      }
+    </style>
   </head>
-  <body class="bg-gray-100 text-gray-900">
-    <div class="container mx-auto p-6">
-      <h1 class="text-3xl font-bold mb-4">Delete Items from Database</h1>
+  <body class="antialiased">
+    <%- include("Navbar") %>
 
-      <!-- Form to delete an item -->
-      <form action="/delete/product" method="POST" class="space-y-4">
-        <div class="mb-4">
-          <label for="productType" class="block text-lg font-medium"
-            >Select Product Type:</label
+    <div class="relative min-h-screen py-12 px-4 md:px-8">
+      <!-- Background ambient glow -->
+      <div
+        class="absolute top-0 left-1/4 w-96 h-96 bg-red-500/20 rounded-full blur-[100px] -z-0"
+      ></div>
+      <div
+        class="absolute bottom-0 right-1/4 w-80 h-80 bg-orange-500/10 rounded-full blur-[100px] -z-0"
+      ></div>
+
+      <div class="max-w-2xl mx-auto relative z-10">
+        <!-- Header -->
+        <div class="text-center mb-10">
+          <h1
+            class="text-5xl md:text-6xl font-extrabold title-gradient mb-3 tracking-tight"
           >
-          <select
-            name="productType"
-            id="productType"
-            class="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-          >
-            <option value="phone">Phone</option>
-            <option value="laptop">Laptop</option>
-            <option value="tablet">Tablet</option>
-          </select>
+            Delete Items
+          </h1>
+          <div class="flex items-center justify-center gap-2 flex-wrap">
+            <div class="h-0.5 w-12 bg-red-500/60 rounded-full"></div>
+            <p class="text-white/60 text-base md:text-lg font-medium">
+              permanently remove products
+            </p>
+            <div class="h-0.5 w-12 bg-red-500/60 rounded-full"></div>
+          </div>
         </div>
 
-        <div class="mb-4">
-          <label for="productId" class="block text-lg font-medium"
-            >Enter Product ObjectId:</label
-          >
-          <input
-            type="text"
-            name="productId"
-            id="productId"
-            class="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-            required
-          />
-          <label for="productName" class="block text-lg font-medium"
-            >Enter Product Name:</label
-          >
-          <input
-            type="text"
-            name="productName"
-            id="productName"
-            class="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-            required
-          />
+        <!-- Warning Box -->
+        <div class="warning-box mb-6">
+          <div class="flex items-center gap-3 text-red-400">
+            <svg
+              class="w-6 h-6 flex-shrink-0"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+              />
+            </svg>
+            <span class="text-sm font-medium"
+              >Warning: This action cannot be undone. Please double-check the
+              product ID and name before deleting.</span
+            >
+          </div>
         </div>
 
-        <button type="submit" class="bg-red-600 text-white p-2 rounded-lg">
-          Delete Item
-        </button>
-      </form>
+        <!-- Delete Form Card -->
+        <div class="glass-card rounded-2xl p-6 md:p-8">
+          <form action="/delete/product" method="POST" class="space-y-6">
+            <!-- Product Type Selection -->
+            <div>
+              <label for="productType" class="modern-label"
+                >Product Category</label
+              >
+              <select name="productType" id="productType" class="modern-select">
+                <option value="phone" class="bg-slate-800">📱 Phone</option>
+                <option value="laptop" class="bg-slate-800">💻 Laptop</option>
+                <option value="tablet" class="bg-slate-800">📟 Tablet</option>
+              </select>
+            </div>
 
-      <div class="mt-8">
-        <h2 class="text-2xl font-bold mb-4">Delete Specific Field</h2>
-        <form action="/delete/product/field" method="POST" class="space-y-4">
-          <div class="mb-4">
-            <label for="productTypeField" class="block text-lg font-medium"
-              >Select Product Type:</label
-            >
-            <select
-              name="productType"
-              id="productTypeField"
-              class="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-            >
-              <option value="phone">Phone</option>
-              <option value="laptop">Laptop</option>
-              <option value="tablet">Tablet</option>
-            </select>
-          </div>
+            <!-- Product ID Input -->
+            <div>
+              <label for="productId" class="modern-label"
+                >Product ObjectId</label
+              >
+              <input
+                type="text"
+                name="productId"
+                id="productId"
+                class="modern-input"
+                placeholder="e.g., 65f2a1b3c4d5e6f7a8b9c0d1"
+                required
+              />
+              <p class="text-xs text-gray-500 mt-1">
+                Enter the unique ObjectId of the product
+              </p>
+            </div>
 
-          <div class="mb-4">
-            <label for="productIdField" class="block text-lg font-medium"
-              >Enter Product ObjectId:</label
-            >
-            <input
-              type="text"
-              name="productId"
-              id="productIdField"
-              class="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-              required
-            />
-          </div>
+            <!-- Product Name Input -->
+            <div>
+              <label for="productName" class="modern-label">Product Name</label>
+              <input
+                type="text"
+                name="productName"
+                id="productName"
+                class="modern-input"
+                placeholder="e.g., iPhone 15 Pro"
+                required
+              />
+              <p class="text-xs text-gray-500 mt-1">
+                Enter the exact product name for verification
+              </p>
+            </div>
 
-          <div class="mb-4">
-            <label for="productField" class="block text-lg font-medium"
-              >Enter Field to Delete:</label
-            >
-            <input
-              type="text"
-              name="productField"
-              id="productField"
-              class="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-              required
-            />
-          </div>
+            <!-- Delete Button -->
+            <button type="submit" class="btn-delete">
+              <svg
+                class="w-5 h-5 inline-block mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                />
+              </svg>
+              Permanently Delete Item
+            </button>
+          </form>
+        </div>
 
-          <button type="submit" class="bg-red-600 text-white p-2 rounded-lg">
-            Delete Field Value
-          </button>
-        </form>
+        <!-- Help Text -->
+        <div class="mt-6 text-center">
+          <p class="text-xs text-gray-500">
+            <i class="inline-block w-1 h-1 bg-gray-500 rounded-full mx-1"></i>
+            Need help finding the ObjectId? Check the product page and click
+            "Copy ID"
+            <i class="inline-block w-1 h-1 bg-gray-500 rounded-full mx-1"></i>
+          </p>
+        </div>
       </div>
     </div>
+
+    <script>
+      // Add confirmation before delete
+      const deleteForm = document.querySelector("form");
+      if (deleteForm) {
+        deleteForm.addEventListener("submit", function (e) {
+          const productId = document.getElementById("productId").value;
+          const productName = document.getElementById("productName").value;
+
+          if (!productId || !productName) {
+            e.preventDefault();
+            showToast("❌ Please fill in both Product ID and Name", false);
+            return;
+          }
+
+          const confirmed = confirm(
+            `⚠️ WARNING: Are you sure you want to delete "${productName}"?\n\nThis action cannot be undone!`,
+          );
+
+          if (!confirmed) {
+            e.preventDefault();
+          }
+        });
+      }
+
+      // Toast notification function
+      function showToast(message, isSuccess = true) {
+        // Create toast element if it doesn't exist
+        let toast = document.getElementById("customToast");
+        if (!toast) {
+          toast = document.createElement("div");
+          toast.id = "customToast";
+          toast.className =
+            "fixed bottom-8 left-1/2 transform -translate-x-1/2 translate-y-20 px-6 py-3 rounded-full text-white text-sm font-medium z-50 transition-all duration-300 opacity-0 pointer-events-none";
+          toast.style.background = "rgba(30, 41, 59, 0.95)";
+          toast.style.backdropFilter = "blur(16px)";
+          toast.style.border = "1px solid rgba(239, 68, 68, 0.5)";
+          document.body.appendChild(toast);
+        }
+
+        toast.innerHTML = message;
+        toast.style.borderColor = isSuccess
+          ? "rgba(16, 185, 129, 0.5)"
+          : "rgba(239, 68, 68, 0.5)";
+        toast.classList.remove("opacity-0", "translate-y-20");
+        toast.classList.add("opacity-100", "translate-y-0");
+
+        setTimeout(() => {
+          toast.classList.remove("opacity-100", "translate-y-0");
+          toast.classList.add("opacity-0", "translate-y-20");
+        }, 3000);
+      }
+
+      console.log("✨ Delete Items page — ready");
+    </script>
   </body>
 </html>

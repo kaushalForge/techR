@@ -2,279 +2,1076 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My App</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <title>Add Product | Modern Dashboard</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      * {
+        font-family:
+          "Inter",
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+      }
+      body {
+        background: #f5f7fb;
+        letter-spacing: -0.01em;
+      }
+      .sharp-card {
+        background: #ffffff;
+        border-radius: 1.25rem;
+        box-shadow:
+          0 8px 20px rgba(0, 0, 0, 0.02),
+          0 2px 4px rgba(0, 0, 0, 0.02),
+          0 0 0 1px rgba(0, 0, 0, 0.01);
+      }
+      .sharp-input,
+      .sharp-select,
+      .sharp-textarea {
+        background-color: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 0.75rem;
+        padding: 0.65rem 1rem;
+        font-size: 0.9rem;
+        transition: all 0.2s;
+        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.02);
+      }
+      .sharp-input:focus,
+      .sharp-select:focus,
+      .sharp-textarea:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+      }
+      .sharp-radio-group {
+        background: #f8fafc;
+        border-radius: 0.75rem;
+        border: 1px solid #eef2f6;
+        padding: 0.5rem 0.75rem;
+      }
+      .badge-light {
+        background: #f1f5f9;
+        color: #0f172a;
+        border-radius: 2rem;
+        font-size: 0.75rem;
+        font-weight: 500;
+        padding: 0.2rem 0.8rem;
+      }
+      .dynamic-group {
+        background: #ffffff;
+        border-radius: 1rem;
+        border: 1px solid #edf2f7;
+        transition: all 0.1s ease;
+      }
+      .variant-card {
+        background: #fefefe;
+        border: 1px solid #eef2f8;
+        border-radius: 1rem;
+        padding: 1rem;
+        transition: all 0.2s;
+      }
+      .variant-card:hover {
+        border-color: #cbd5e1;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+      }
+      .label-sharp {
+        font-weight: 600;
+        font-size: 0.85rem;
+        color: #1e293b;
+        margin-bottom: 0.25rem;
+        display: block;
+      }
+      .section-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #0f172a;
+        border-left: 3px solid #3b82f6;
+        padding-left: 0.75rem;
+        margin-bottom: 1rem;
+      }
+      .image-preview-container {
+        position: relative;
+        display: inline-block;
+      }
+      .image-preview {
+        width: 120px;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 1rem;
+        border: 2px solid #eef2f6;
+        background: #f8fafc;
+      }
+      .change-image-badge {
+        position: absolute;
+        bottom: -8px;
+        right: -8px;
+        background: white;
+        border-radius: 999px;
+        padding: 4px 8px;
+        font-size: 0.7rem;
+        font-weight: 500;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e2e8f0;
+      }
+    </style>
   </head>
-  <body>
-    <div class="p-4 text-black h-full w-full bg-zinc-700">
-      <form
-        method="post"
-        action="/products/addProduct"
-        enctype="multipart/form-data"
-      >
-        <h1 class="text-4xl">Data Entry</h1>
+  <body class="bg-[#f5f7fb] text-[#0a0c10] antialiased">
+    <%- include("Navbar") %>
 
-        <div class="mt-12 flex flex-col gap-2 w-[25%] bg-sky-600 p-4">
-          <select
-            name="productType"
-            class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
+    <div class="max-w-7xl mx-auto px-4 py-8 md:py-10">
+      <div class="flex flex-wrap items-center justify-between mb-8 gap-4">
+        <div>
+          <h1
+            class="text-3xl md:text-4xl font-bold tracking-tight text-slate-800"
           >
-            <option value="" class="">Select the device type</option>
-            <option value="phone">Phone</option>
-            <option value="laptop">Laptop</option>
-            <option value="tablet">Tablet</option>
-          </select>
-          <select
-            name="popularity"
-            class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
+            Add New Product
+          </h1>
+          <p class="text-slate-500 text-sm mt-1">
+            Create a new product with detailed specifications — clean & sharp
+          </p>
+        </div>
+        <div
+          class="bg-white/60 backdrop-blur-sm px-4 py-2 rounded-full border border-slate-200 shadow-sm text-xs font-mono text-slate-500"
+        >
+          ✦ Create mode
+        </div>
+      </div>
+
+      <div class="sharp-card overflow-hidden">
+        <form
+          method="post"
+          action="/products/addProduct"
+          enctype="multipart/form-data"
+          class="p-5 md:p-7 space-y-8"
+          id="mainProductForm"
+        >
+          <!-- IMAGE SECTION -->
+          <div
+            class="flex flex-col md:flex-row gap-6 items-start md:items-center border-b border-slate-100 pb-6"
           >
-            <option value="" class="">Select the device popularity</option>
-            <option value="popular">Popular</option>
-            <option value="average">Average</option>
-            <option value="not popular">Not popular</option>
-          </select>
-          <input
-            type="text"
-            class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
-            placeholder="Product Name"
-            name="name"
-          />
-          <input
-            type="file"
-            class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
-            placeholder="Product Image"
-            name="image"
-          />
-          <input
-            type="text"
-            class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
-            placeholder="Product Price-1"
-            name="price1"
-          />
-          <input
-            type="text"
-            class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
-            placeholder="Product Price-2"
-            name="price2"
-          />
-          <input
-            type="text"
-            class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
-            placeholder="Product Price-3"
-            name="price3"
-          />
-          <div class="flex flex-col gap-2 items-center justify-center">
-            <h1 class="text-xl font-semibold tracking-wide">BODY</h1>
-            <input
-              type="text"
-              class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
-              placeholder="Dimension"
-              name="dimension"
-            />
-            <input
-              type="text"
-              class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
-              placeholder="Build"
-              name="build"
-            />
-            <input
-              type="text"
-              class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
-              placeholder="Weight"
-              name="weight"
-            />
+            <div class="image-preview-container">
+              <img
+                id="liveImagePreview"
+                class="image-preview"
+                src="https://placehold.co/400x400?text=No+Image"
+                alt="Product preview"
+              />
+              <div class="change-image-badge text-slate-600 bg-white shadow-sm">
+                Preview
+              </div>
+            </div>
+            <div class="flex-1 space-y-2">
+              <label class="label-sharp text-base font-semibold"
+                >Product main image</label
+              >
+              <div class="flex flex-wrap items-center gap-3">
+                <input
+                  type="file"
+                  name="image"
+                  id="productImageInput"
+                  accept="image/*"
+                  class="sharp-input w-full md:w-auto flex-1"
+                  required
+                />
+                <span
+                  class="text-xs text-slate-400 bg-slate-50 px-3 py-1.5 rounded-full"
+                  >JPG, PNG, WEBP</span
+                >
+              </div>
+              <p class="text-xs text-slate-500 mt-1">
+                Select an image for the product. Preview updates instantly.
+              </p>
+            </div>
           </div>
-          <div class="flex flex-col gap-2 items-center justify-center">
-            <h1 class="text-xl font-semibold tracking-wide">DISPLAY</h1>
-            <input
-              type="text"
-              class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
-              placeholder="DisplayType"
-              name="dtype"
-            />
-            <input
-              type="text"
-              class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
-              placeholder="Size"
-              name="size"
-            />
-            <input
-              type="text"
-              class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
-              placeholder="Resolution"
-              name="resolution"
-            />
+
+          <!-- TOP ROWS: type & popularity -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+              <label class="label-sharp">Product category</label>
+              <select name="productType" class="sharp-input w-full" required>
+                <option value="" disabled selected>Select category</option>
+                <option value="phone">Smartphone</option>
+                <option value="laptop">Laptop</option>
+                <option value="tablet">Tablet</option>
+              </select>
+            </div>
+            <div>
+              <label class="label-sharp">Popularity tier</label>
+              <select name="popularity" class="sharp-input w-full" required>
+                <option value="" disabled selected>Select popularity</option>
+                <option value="popular">Popular</option>
+                <option value="average">Average</option>
+                <option value="not popular">Not Popular</option>
+              </select>
+            </div>
           </div>
-          <div class="flex flex-col gap-2 items-center justify-center">
-            <h1 class="text-xl font-semibold tracking-wide">PLATFORM</h1>
-            <input
-              type="text"
-              class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
-              placeholder="OS"
-              name="os"
-            />
-            <input
-              type="text"
-              class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
-              placeholder="Processor"
-              name="processor"
-            />
-            <input
-              type="text"
-              class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
-              placeholder="GPU"
-              name="graphics"
-            />
+
+          <!-- boolean badges -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="sharp-radio-group flex items-center gap-4">
+              <span class="text-sm font-medium text-slate-700"
+                >✨ Newly Launched</span
+              >
+              <div class="flex gap-3">
+                <label class="flex items-center gap-1 text-sm"
+                  ><input
+                    type="radio"
+                    name="latest"
+                    value="true"
+                    class="w-4 h-4 accent-blue-600"
+                  />
+                  Yes</label
+                ><label class="flex items-center gap-1 text-sm"
+                  ><input
+                    type="radio"
+                    name="latest"
+                    value="false"
+                    class="w-4 h-4 accent-blue-600"
+                    checked
+                  />
+                  No</label
+                >
+              </div>
+            </div>
+            <div class="sharp-radio-group flex items-center gap-4">
+              <span class="text-sm font-medium text-slate-700"
+                >🏆 Most Sold 2024</span
+              >
+              <div class="flex gap-3">
+                <label
+                  ><input type="radio" name="mostsold" value="true" />
+                  Yes</label
+                ><label
+                  ><input type="radio" name="mostsold" value="false" checked />
+                  No</label
+                >
+              </div>
+            </div>
+            <div class="sharp-radio-group flex items-center gap-4">
+              <span class="text-sm font-medium text-slate-700"
+                >⭐ Most Popular</span
+              >
+              <div class="flex gap-3">
+                <label
+                  ><input type="radio" name="mostpopular" value="true" />
+                  Yes</label
+                ><label
+                  ><input
+                    type="radio"
+                    name="mostpopular"
+                    value="false"
+                    checked
+                  />
+                  No</label
+                >
+              </div>
+            </div>
+            <div class="sharp-radio-group flex items-center gap-4">
+              <span class="text-sm font-medium text-slate-700"
+                >📌 Recommended</span
+              >
+              <div class="flex gap-3">
+                <label
+                  ><input type="radio" name="recommended" value="true" />
+                  Yes</label
+                ><label
+                  ><input
+                    type="radio"
+                    name="recommended"
+                    value="false"
+                    checked
+                  />
+                  No</label
+                >
+              </div>
+            </div>
           </div>
-          <div class="flex flex-col gap-2 items-center justify-center">
-            <h1 class="text-xl font-semibold tracking-wide">MEMORY</h1>
-            <input
-              type="text"
-              class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
-              placeholder="RAM-1"
-              name="ram1"
-            />
-            <input
-              type="text"
-              class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
-              placeholder="RAM-2"
-              name="ram2"
-            />
-            <input
-              type="text"
-              class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
-              placeholder="RAM-3"
-              name="ram3"
-            />
-            <input
-              type="text"
-              class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
-              placeholder="Storage-1"
-              name="storage1"
-            />
-            <input
-              type="text"
-              class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
-              placeholder="Storage-2"
-              name="storage2"
-            />
-            <input
-              type="text"
-              class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
-              placeholder="Storage-3"
-              name="storage3"
-            />
+
+          <!-- item category + target audience -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="sharp-radio-group">
+              <div class="text-sm font-semibold text-slate-700 mb-2">
+                Item category
+              </div>
+              <div class="flex flex-wrap gap-5">
+                <label
+                  ><input type="radio" name="item_categorie" value="budget" />
+                  Budget</label
+                ><label
+                  ><input type="radio" name="item_categorie" value="midrange" />
+                  Midrange</label
+                ><label
+                  ><input
+                    type="radio"
+                    name="item_categorie"
+                    value="flagship"
+                    checked
+                  />
+                  Flagship</label
+                >
+              </div>
+            </div>
+            <div class="sharp-radio-group">
+              <div class="text-sm font-semibold text-slate-700 mb-2">
+                Target audience (multi)
+              </div>
+              <div class="flex flex-wrap gap-4">
+                <label
+                  ><input
+                    type="checkbox"
+                    name="targetaudience"
+                    value="gaming"
+                  />
+                  Gaming</label
+                ><label
+                  ><input
+                    type="checkbox"
+                    name="targetaudience"
+                    value="professional"
+                  />
+                  Professional</label
+                ><label
+                  ><input
+                    type="checkbox"
+                    name="targetaudience"
+                    value="students"
+                  />
+                  Students</label
+                ><label
+                  ><input
+                    type="checkbox"
+                    name="targetaudience"
+                    value="normalusage"
+                  />
+                  Normal Usage</label
+                >
+              </div>
+            </div>
           </div>
-          <div class="flex flex-col gap-2 items-center justify-center">
-            <h1 class="text-xl font-semibold tracking-wide">BATTERY</h1>
+
+          <!-- Base specifications -->
+          <div>
+            <div class="section-title">Base specifications</div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <input
+                type="text"
+                name="name"
+                class="sharp-input"
+                placeholder="Product Name"
+                required
+              />
+              <input
+                type="text"
+                name="dimension"
+                class="sharp-input"
+                placeholder="Dimension"
+              />
+              <input
+                type="text"
+                name="build"
+                class="sharp-input"
+                placeholder="Build"
+              />
+              <input
+                type="text"
+                name="weight"
+                class="sharp-input"
+                placeholder="Weight"
+              />
+              <input
+                type="text"
+                name="dtype"
+                class="sharp-input"
+                placeholder="Display Type"
+              />
+              <input
+                type="text"
+                name="size"
+                class="sharp-input"
+                placeholder="Display Size"
+              />
+              <input
+                type="text"
+                name="resolution"
+                class="sharp-input"
+                placeholder="Resolution"
+              />
+              <input
+                type="text"
+                name="os"
+                class="sharp-input"
+                placeholder="Operation System"
+              />
+            </div>
+          </div>
+
+          <!-- LINKED VARIANT SETS -->
+          <div>
+            <div
+              class="section-title flex items-center justify-between flex-wrap gap-2"
+            >
+              <span
+                >🔗 Linked variant sets (Price + RAM + Storage together)</span
+              >
+              <button
+                type="button"
+                id="addVariantSetBtn"
+                class="text-sm bg-blue-50 text-blue-700 px-4 py-1.5 rounded-full font-medium hover:bg-blue-100 transition"
+              >
+                + Add variant set
+              </button>
+            </div>
+            <div id="linkedVariantsContainer" class="space-y-5">
+              <div class="variant-card dynamic-group" data-variant-index="0">
+                <div
+                  class="flex justify-between items-center mb-3 border-b border-slate-100 pb-2"
+                >
+                  <h3
+                    class="font-semibold text-slate-800 text-md flex items-center gap-2"
+                  >
+                    <span
+                      class="bg-slate-100 w-6 h-6 rounded-full flex items-center justify-center text-xs"
+                      >1</span
+                    >
+                    Variant configuration
+                  </h3>
+                  <button
+                    type="button"
+                    class="remove-variant-btn text-xs text-red-500 hover:text-red-700 bg-red-50 px-3 py-1 rounded-full transition"
+                  >
+                    Remove variant
+                  </button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                  <div>
+                    <label class="label-sharp text-xs uppercase"
+                      >💰 Price options ($)</label
+                    >
+                    <div
+                      class="price-options-area space-y-2 mt-1"
+                      data-variant="0"
+                    >
+                      <div class="flex gap-2 items-center">
+                        <input
+                          type="text"
+                          name="price[0][]"
+                          class="sharp-input w-full text-sm"
+                          placeholder="Price"
+                        /><button
+                          class="remove-price-opt-btn text-red-400 hover:text-red-600"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      class="add-price-option-btn text-xs text-blue-600 mt-2"
+                    >
+                      + Add price
+                    </button>
+                  </div>
+                  <div>
+                    <label class="label-sharp text-xs uppercase"
+                      >🧠 RAM options (GB)</label
+                    >
+                    <div
+                      class="ram-options-area space-y-2 mt-1"
+                      data-variant="0"
+                    >
+                      <div class="flex gap-2 items-center">
+                        <input
+                          type="text"
+                          name="ram[0][]"
+                          class="sharp-input w-full text-sm"
+                          placeholder="RAM"
+                        /><button
+                          class="remove-ram-opt-btn text-red-400 hover:text-red-600"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      class="add-ram-option-btn text-xs text-blue-600 mt-2"
+                    >
+                      + Add RAM
+                    </button>
+                  </div>
+                  <div>
+                    <label class="label-sharp text-xs uppercase"
+                      >💾 Storage options (GB)</label
+                    >
+                    <div
+                      class="storage-options-area space-y-2 mt-1"
+                      data-variant="0"
+                    >
+                      <div class="flex gap-2 items-center">
+                        <input
+                          type="text"
+                          name="storage[0][]"
+                          class="sharp-input w-full text-sm"
+                          placeholder="Storage"
+                        /><button
+                          class="remove-storage-opt-btn text-red-400 hover:text-red-600"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      class="add-storage-option-btn text-xs text-blue-600 mt-2"
+                    >
+                      + Add storage
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Processor and Graphics sections -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div>
+              <div class="section-title">⚙️ Processor options</div>
+              <div id="processorContainer" class="space-y-4">
+                <div
+                  class="processor-group dynamic-group p-4"
+                  data-group-index="0"
+                >
+                  <div class="flex justify-between items-center mb-2">
+                    <span class="font-medium text-slate-700"
+                      >Processor set 1</span
+                    >
+                    <button
+                      type="button"
+                      class="remove-proc-group-btn text-xs text-red-600 bg-red-50 px-2 py-1 rounded-full"
+                    >
+                      Remove set
+                    </button>
+                  </div>
+                  <div class="proc-options-area space-y-2">
+                    <div class="flex gap-2 items-center proc-option-row">
+                      <input
+                        type="text"
+                        name="processor[0][]"
+                        class="sharp-input w-full"
+                        placeholder="e.g., Snapdragon 8 Gen 3"
+                      />
+                      <button
+                        type="button"
+                        class="remove-proc-opt-btn text-red-500 hover:text-red-700 p-1 rounded-full transition"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    class="add-proc-opt-btn text-sm bg-slate-100 px-3 py-1 rounded-full mt-3 hover:bg-slate-200 transition"
+                  >
+                    + Add processor option
+                  </button>
+                </div>
+              </div>
+              <button
+                type="button"
+                class="mt-3 text-blue-700 text-sm bg-blue-50 px-4 py-1.5 rounded-full hover:bg-blue-100 transition"
+                id="addProcessorGroupBtn"
+              >
+                + Add processor container
+              </button>
+            </div>
+            <div>
+              <div class="section-title">🎮 Graphics options</div>
+              <div id="graphicsContainer" class="space-y-4">
+                <div
+                  class="graphic-group dynamic-group p-4"
+                  data-group-index="0"
+                >
+                  <div class="flex justify-between items-center mb-2">
+                    <span class="font-medium text-slate-700"
+                      >Graphics set 1</span
+                    >
+                    <button
+                      type="button"
+                      class="remove-graphic-group-btn text-xs text-red-600 bg-red-50 px-2 py-1 rounded-full"
+                    >
+                      Remove set
+                    </button>
+                  </div>
+                  <div class="graphic-options-area space-y-2">
+                    <div class="flex gap-2 items-center graphic-option-row">
+                      <input
+                        type="text"
+                        name="graphic[0][]"
+                        class="sharp-input w-full"
+                        placeholder="e.g., NVIDIA RTX 4070"
+                      />
+                      <button
+                        type="button"
+                        class="remove-graphic-opt-btn text-red-500 hover:text-red-700 p-1 rounded-full transition"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    class="add-graphic-opt-btn text-sm bg-slate-100 px-3 py-1 rounded-full mt-3 hover:bg-slate-200 transition"
+                  >
+                    + Add graphics option
+                  </button>
+                </div>
+              </div>
+              <button
+                type="button"
+                class="mt-3 text-blue-700 text-sm bg-blue-50 px-4 py-1.5 rounded-full hover:bg-blue-100 transition"
+                id="addGraphicsGroupBtn"
+              >
+                + Add graphics container
+              </button>
+            </div>
+          </div>
+
+          <!-- Additional ports & camera fields -->
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-4 pt-2">
             <input
               type="text"
-              class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
-              placeholder="Capacity"
               name="capacity"
+              class="sharp-input"
+              placeholder="Battery capacity"
             />
             <input
               type="text"
-              class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
-              placeholder="Charging"
               name="charging"
+              class="sharp-input"
+              placeholder="Charging"
             />
-          </div>
-          <div class="flex flex-col gap-2 items-center justify-center">
-            <h1 class="text-xl font-semibold tracking-wide">NETWORKS</h1>
             <input
               type="text"
-              class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
-              placeholder="wi-Fi"
               name="wifi"
+              class="sharp-input"
+              placeholder="Wi-Fi"
             />
             <input
               type="text"
-              class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
-              placeholder="Bluetooth"
               name="bluetooth"
+              class="sharp-input"
+              placeholder="Bluetooth"
             />
-          </div>
-          <div class="flex flex-col gap-2 items-center justify-center">
-            <h1 class="text-xl font-semibold tracking-wide">PORTS</h1>
             <input
               type="text"
-              class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
-              placeholder="Type C"
               name="typec"
+              class="sharp-input"
+              placeholder="USB Type-C"
             />
             <input
               type="text"
-              class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
-              placeholder="USB A"
               name="usba"
+              class="sharp-input"
+              placeholder="USB-A"
             />
             <input
               type="text"
-              class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
-              placeholder="Ethernet"
               name="ethernet"
+              class="sharp-input"
+              placeholder="Ethernet"
             />
             <input
               type="text"
-              class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
-              placeholder="HDMI"
               name="hdmi"
+              class="sharp-input"
+              placeholder="HDMI"
             />
             <input
               type="text"
-              class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
-              placeholder="Audio Jack"
               name="audiojack"
+              class="sharp-input"
+              placeholder="Audio jack"
+            />
+            <input
+              type="text"
+              name="maincamera"
+              class="sharp-input"
+              placeholder="Main camera"
+            />
+            <input
+              type="text"
+              name="frontcamera"
+              class="sharp-input"
+              placeholder="Front camera"
+            />
+            <input
+              type="text"
+              name="video"
+              class="sharp-input"
+              placeholder="Video specs"
             />
           </div>
 
-          <div class="flex flex-col items-center justify-center gap-2">
-            <h1 class="text-xl font-semibold tracking-wide">CAMERA</h1>
-            <input
-              type="text"
-              class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
-              placeholder="Main Camera"
-              name="maincamera"
-            />
-            <input
-              type="text"
-              class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
-              placeholder="Front Camera"
-              name="frontcamera"
-            />
-            <input
-              type="text"
-              class="outline-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold"
-              placeholder="Video"
-              name="video"
-            />
-          </div>
-          <div class="flex flex-col items-center justify-center gap-2">
-            <h1 class="text-lg font-semibold">Description of product</h1>
+          <!-- blog textarea -->
+          <div>
+            <label class="label-sharp">Blog / description (long text)</label>
             <textarea
-              type="text"
-              class="outline-none resize-none rounded-lg bg-zinc-500 text-white px-2 py-1 placeholder:text-zinc-300/80 placeholder:font-semibold h-52"
-              placeholder="Blog"
               name="blog"
+              rows="4"
+              class="sharp-textarea w-full"
+              placeholder="Write a detailed description of the product..."
             ></textarea>
           </div>
 
-          <div class="flex gap-2 items-center justify-center">
+          <!-- dynamic descriptions -->
+          <div>
+            <div class="section-title">📄 Detailed description blocks</div>
+            <div id="descFields" class="space-y-5">
+              <div
+                class="descGroup bg-white border border-slate-100 rounded-xl p-4 shadow-sm"
+              >
+                <div
+                  class="font-medium text-slate-800 mb-2 flex justify-between"
+                >
+                  <span>Block 1</span><span class="badge-light">rich</span>
+                </div>
+                <input
+                  type="text"
+                  name="heading[]"
+                  class="sharp-input w-full mb-3"
+                  placeholder="Heading"
+                />
+                <input
+                  type="text"
+                  name="detail[]"
+                  class="sharp-input w-full mb-3"
+                  placeholder="Detail text"
+                />
+                <input
+                  type="text"
+                  name="descriptionimage[]"
+                  class="sharp-input w-full"
+                  placeholder="Image URL"
+                />
+              </div>
+            </div>
+            <div class="flex gap-3 mt-4">
+              <button
+                type="button"
+                class="bg-slate-100 px-4 py-2 rounded-full text-sm font-medium"
+                onclick="createDescBox()"
+              >
+                + Add description block
+              </button>
+              <button
+                type="button"
+                class="bg-red-50 text-red-700 px-4 py-2 rounded-full text-sm"
+                onclick="removeDescBox()"
+              >
+                🗑 Remove empty blocks
+              </button>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap gap-5 pt-4 border-t border-slate-200">
             <input
               type="submit"
-              value="Submit"
-              class="bg-orange-600 p-2 rounded-xl font-semibold text-lg outline-none"
+              value="Add Product"
+              class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2.5 rounded-xl shadow-sm transition cursor-pointer"
             />
             <input
               type="reset"
-              value="Reset"
-              class="bg-orange-600 p-2 rounded-xl font-semibold text-lg outline-none"
+              value="Reset form"
+              class="bg-white border border-slate-300 text-slate-700 px-6 py-2.5 rounded-xl hover:bg-slate-50 cursor-pointer transition"
             />
           </div>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
+
+    <script>
+      // Live image preview
+      const imageInput = document.getElementById("productImageInput");
+      const previewImg = document.getElementById("liveImagePreview");
+      if (imageInput) {
+        imageInput.addEventListener("change", function (e) {
+          const file = e.target.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = function (ev) {
+              previewImg.src = ev.target.result;
+            };
+            reader.readAsDataURL(file);
+          }
+        });
+      }
+
+      // Processor group functions
+      function initProcessorGroup(group) {
+        const groupIndex = group.getAttribute("data-group-index");
+        const optionsArea = group.querySelector(".proc-options-area");
+
+        const addBtn = group.querySelector(".add-proc-opt-btn");
+        if (addBtn) {
+          addBtn.replaceWith(addBtn.cloneNode(true));
+          const newAddBtn = group.querySelector(".add-proc-opt-btn");
+          newAddBtn.addEventListener("click", () => {
+            const newRow = document.createElement("div");
+            newRow.className = "flex gap-2 items-center proc-option-row";
+            newRow.innerHTML = `<input type="text" name="processor[${groupIndex}][]" class="sharp-input w-full" placeholder="New processor option" /><button type="button" class="remove-proc-opt-btn text-red-500 hover:text-red-700 p-1 rounded-full transition">✕</button>`;
+            optionsArea.appendChild(newRow);
+            const rmBtn = newRow.querySelector(".remove-proc-opt-btn");
+            rmBtn.addEventListener("click", () => {
+              if (newRow.querySelector("input").value.trim() === "")
+                newRow.remove();
+            });
+          });
+        }
+
+        group.querySelectorAll(".remove-proc-opt-btn").forEach((btn) => {
+          btn.replaceWith(btn.cloneNode(true));
+          const btns = group.querySelectorAll(".remove-proc-opt-btn");
+          btns.forEach((b) => {
+            b.removeEventListener("click", b._handler);
+            const handler = () => {
+              const row = b.closest(".proc-option-row");
+              if (row && row.querySelector("input").value.trim() === "")
+                row.remove();
+            };
+            b._handler = handler;
+            b.addEventListener("click", handler);
+          });
+        });
+
+        const removeGroupBtn = group.querySelector(".remove-proc-group-btn");
+        if (removeGroupBtn) {
+          removeGroupBtn.replaceWith(removeGroupBtn.cloneNode(true));
+          const newRemoveBtn = group.querySelector(".remove-proc-group-btn");
+          newRemoveBtn.addEventListener("click", () => {
+            const inputs = group.querySelectorAll("input");
+            if (
+              inputs.length &&
+              [...inputs].every((i) => i.value.trim() === "")
+            )
+              group.remove();
+            else
+              alert(
+                "Clear all processor options first before removing the set.",
+              );
+          });
+        }
+      }
+
+      function initGraphicsGroup(group) {
+        const groupIndex = group.getAttribute("data-group-index");
+        const optionsArea = group.querySelector(".graphic-options-area");
+
+        const addBtn = group.querySelector(".add-graphic-opt-btn");
+        if (addBtn) {
+          addBtn.replaceWith(addBtn.cloneNode(true));
+          const newAddBtn = group.querySelector(".add-graphic-opt-btn");
+          newAddBtn.addEventListener("click", () => {
+            const newRow = document.createElement("div");
+            newRow.className = "flex gap-2 items-center graphic-option-row";
+            newRow.innerHTML = `<input type="text" name="graphic[${groupIndex}][]" class="sharp-input w-full" placeholder="New graphics option" /><button type="button" class="remove-graphic-opt-btn text-red-500 hover:text-red-700 p-1 rounded-full transition">✕</button>`;
+            optionsArea.appendChild(newRow);
+            const rmBtn = newRow.querySelector(".remove-graphic-opt-btn");
+            rmBtn.addEventListener("click", () => {
+              if (newRow.querySelector("input").value.trim() === "")
+                newRow.remove();
+            });
+          });
+        }
+
+        group.querySelectorAll(".remove-graphic-opt-btn").forEach((btn) => {
+          btn.replaceWith(btn.cloneNode(true));
+          const btns = group.querySelectorAll(".remove-graphic-opt-btn");
+          btns.forEach((b) => {
+            b.removeEventListener("click", b._handler);
+            const handler = () => {
+              const row = b.closest(".graphic-option-row");
+              if (row && row.querySelector("input").value.trim() === "")
+                row.remove();
+            };
+            b._handler = handler;
+            b.addEventListener("click", handler);
+          });
+        });
+
+        const removeGroupBtn = group.querySelector(".remove-graphic-group-btn");
+        if (removeGroupBtn) {
+          removeGroupBtn.replaceWith(removeGroupBtn.cloneNode(true));
+          const newRemoveBtn = group.querySelector(".remove-graphic-group-btn");
+          newRemoveBtn.addEventListener("click", () => {
+            const inputs = group.querySelectorAll("input");
+            if (
+              inputs.length &&
+              [...inputs].every((i) => i.value.trim() === "")
+            )
+              group.remove();
+            else
+              alert(
+                "Clear all graphics options first before removing the set.",
+              );
+          });
+        }
+      }
+
+      document
+        .getElementById("addProcessorGroupBtn")
+        ?.addEventListener("click", () => {
+          const container = document.getElementById("processorContainer");
+          const newIdx = container.children.length;
+          const div = document.createElement("div");
+          div.className = "processor-group dynamic-group p-4";
+          div.setAttribute("data-group-index", newIdx);
+          div.innerHTML = `
+                <div class="flex justify-between items-center mb-2"><span class="font-medium text-slate-700">Processor set ${newIdx + 1}</span><button type="button" class="remove-proc-group-btn text-xs text-red-600 bg-red-50 px-2 py-1 rounded-full">Remove set</button></div>
+                <div class="proc-options-area space-y-2"><div class="flex gap-2 items-center proc-option-row"><input type="text" name="processor[${newIdx}][]" class="sharp-input w-full" placeholder="Processor option" /><button type="button" class="remove-proc-opt-btn text-red-500 hover:text-red-700 p-1 rounded-full transition">✕</button></div></div>
+                <button type="button" class="add-proc-opt-btn text-sm bg-slate-100 px-3 py-1 rounded-full mt-3 hover:bg-slate-200 transition">+ Add processor option</button>
+            `;
+          container.appendChild(div);
+          initProcessorGroup(div);
+        });
+
+      document
+        .getElementById("addGraphicsGroupBtn")
+        ?.addEventListener("click", () => {
+          const container = document.getElementById("graphicsContainer");
+          const newIdx = container.children.length;
+          const div = document.createElement("div");
+          div.className = "graphic-group dynamic-group p-4";
+          div.setAttribute("data-group-index", newIdx);
+          div.innerHTML = `
+                <div class="flex justify-between items-center mb-2"><span class="font-medium text-slate-700">Graphics set ${newIdx + 1}</span><button type="button" class="remove-graphic-group-btn text-xs text-red-600 bg-red-50 px-2 py-1 rounded-full">Remove set</button></div>
+                <div class="graphic-options-area space-y-2"><div class="flex gap-2 items-center graphic-option-row"><input type="text" name="graphic[${newIdx}][]" class="sharp-input w-full" placeholder="Graphics option" /><button type="button" class="remove-graphic-opt-btn text-red-500 hover:text-red-700 p-1 rounded-full transition">✕</button></div></div>
+                <button type="button" class="add-graphic-opt-btn text-sm bg-slate-100 px-3 py-1 rounded-full mt-3 hover:bg-slate-200 transition">+ Add graphics option</button>
+            `;
+          container.appendChild(div);
+          initGraphicsGroup(div);
+        });
+
+      document
+        .querySelectorAll(".processor-group")
+        .forEach((g) => initProcessorGroup(g));
+      document
+        .querySelectorAll(".graphic-group")
+        .forEach((g) => initGraphicsGroup(g));
+
+      // Linked variants logic
+      const variantsContainer = document.getElementById(
+        "linkedVariantsContainer",
+      );
+      function addVariantSet() {
+        const variantCount = variantsContainer.children.length;
+        const newDiv = document.createElement("div");
+        newDiv.className = "variant-card dynamic-group";
+        newDiv.setAttribute("data-variant-index", variantCount);
+        newDiv.innerHTML = `<div class="flex justify-between items-center mb-3 border-b border-slate-100 pb-2"><h3 class="font-semibold text-slate-800 text-md flex items-center gap-2"><span class="bg-slate-100 w-6 h-6 rounded-full flex items-center justify-center text-xs">${variantCount + 1}</span> Variant configuration</h3><button type="button" class="remove-variant-btn text-xs text-red-500 hover:text-red-700 bg-red-50 px-3 py-1 rounded-full transition">Remove variant</button></div><div class="grid grid-cols-1 md:grid-cols-3 gap-5"><div><label class="label-sharp text-xs uppercase">💰 Price options ($)</label><div class="price-options-area space-y-2 mt-1"><div class="flex gap-2 items-center"><input type="text" name="price[${variantCount}][]" class="sharp-input w-full text-sm" placeholder="Price" /><button class="remove-price-opt-btn">✕</button></div></div><button type="button" class="add-price-option-btn text-xs text-blue-600 mt-2">+ Add price</button></div><div><label class="label-sharp text-xs uppercase">🧠 RAM options (GB)</label><div class="ram-options-area space-y-2 mt-1"><div class="flex gap-2 items-center"><input type="text" name="ram[${variantCount}][]" class="sharp-input w-full text-sm" placeholder="RAM" /><button class="remove-ram-opt-btn">✕</button></div></div><button type="button" class="add-ram-option-btn text-xs text-blue-600 mt-2">+ Add RAM</button></div><div><label class="label-sharp text-xs uppercase">💾 Storage options (GB)</label><div class="storage-options-area space-y-2 mt-1"><div class="flex gap-2 items-center"><input type="text" name="storage[${variantCount}][]" class="sharp-input w-full text-sm" placeholder="Storage" /><button class="remove-storage-opt-btn">✕</button></div></div><button type="button" class="add-storage-option-btn text-xs text-blue-600 mt-2">+ Add storage</button></div></div>`;
+        variantsContainer.appendChild(newDiv);
+        attachVariantEvents(newDiv);
+      }
+      function attachVariantEvents(variantDiv) {
+        variantDiv
+          .querySelector(".remove-variant-btn")
+          ?.addEventListener("click", () => {
+            if (
+              [...variantDiv.querySelectorAll("input")].every(
+                (i) => i.value.trim() === "",
+              )
+            )
+              variantDiv.remove();
+            else alert("Clear all values first");
+          });
+        variantDiv
+          .querySelector(".add-price-option-btn")
+          ?.addEventListener("click", () =>
+            addOptionToArea(
+              variantDiv,
+              ".price-options-area",
+              "price",
+              variantDiv.dataset.variantIndex,
+            ),
+          );
+        variantDiv
+          .querySelector(".add-ram-option-btn")
+          ?.addEventListener("click", () =>
+            addOptionToArea(
+              variantDiv,
+              ".ram-options-area",
+              "ram",
+              variantDiv.dataset.variantIndex,
+            ),
+          );
+        variantDiv
+          .querySelector(".add-storage-option-btn")
+          ?.addEventListener("click", () =>
+            addOptionToArea(
+              variantDiv,
+              ".storage-options-area",
+              "storage",
+              variantDiv.dataset.variantIndex,
+            ),
+          );
+        variantDiv
+          .querySelectorAll(
+            ".remove-price-opt-btn, .remove-ram-opt-btn, .remove-storage-opt-btn",
+          )
+          .forEach((btn) =>
+            btn.addEventListener("click", function () {
+              const wrapper = btn.closest(".flex");
+              if (wrapper && wrapper.querySelector("input").value.trim() === "")
+                wrapper.remove();
+            }),
+          );
+      }
+      function addOptionToArea(variantDiv, areaSelector, baseName, idx) {
+        const area = variantDiv.querySelector(areaSelector);
+        if (!area) return;
+        const newDiv = document.createElement("div");
+        newDiv.className = "flex gap-2 items-center";
+        newDiv.innerHTML = `<input type="text" name="${baseName}[${idx}][]" class="sharp-input w-full text-sm" placeholder="New ${baseName}" /><button type="button" class="remove-${baseName}-opt-btn">✕</button>`;
+        area.appendChild(newDiv);
+        newDiv.querySelector("button").addEventListener("click", () => {
+          if (newDiv.querySelector("input").value.trim() === "")
+            newDiv.remove();
+        });
+      }
+      document
+        .getElementById("addVariantSetBtn")
+        ?.addEventListener("click", addVariantSet);
+      document
+        .querySelectorAll(".variant-card")
+        .forEach((card) => attachVariantEvents(card));
+
+      // Description blocks
+      function createDescBox() {
+        const container = document.getElementById("descFields");
+        const idx = container.children.length + 1;
+        const newDiv = document.createElement("div");
+        newDiv.className =
+          "descGroup bg-white border border-slate-100 rounded-xl p-4 shadow-sm";
+        newDiv.innerHTML = `<div class="font-medium text-slate-800 mb-2">Block ${idx}</div><input type="text" name="heading[]" class="sharp-input w-full mb-3" placeholder="Heading" /><input type="text" name="detail[]" class="sharp-input w-full mb-3" placeholder="Detail" /><input type="text" name="descriptionimage[]" class="sharp-input w-full" placeholder="Image URL" />`;
+        container.appendChild(newDiv);
+      }
+      function removeDescBox() {
+        document.querySelectorAll("#descFields .descGroup").forEach((group) => {
+          const inputs = group.querySelectorAll("input");
+          if ([...inputs].every((inp) => inp.value.trim() === ""))
+            group.remove();
+        });
+      }
+      window.createDescBox = createDescBox;
+      window.removeDescBox = removeDescBox;
+    </script>
   </body>
-  <script src="https://cdn.tailwindcss.com"></script>
 </html>

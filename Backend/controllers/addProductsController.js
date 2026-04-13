@@ -2,90 +2,146 @@ const productModel = require("../models/Products");
 const cloudinary = require("cloudinary");
 
 module.exports.addProducts = async (req, res) => {
-  let {
-    productType,
-    popularity,
-    name,
-    dimension,
-    build,
-    weight,
-    dtype,
-    size,
-    resolution,
-    os,
-    processor,
-    graphics,
-    ram,
-    storage,
-    capacity,
-    charging,
-    wifi,
-    bluetooth,
-    typec,
-    usba,
-    ethernet,
-    hdmi,
-    audiojack,
-    maincamera,
-    frontcamera,
-    video,
-    price,
-    blog,
-  } = req.body;
+  try {
+    let {
+      latest,
+      mostsold,
+      mostpopular,
+      targetaudience,
+      recommended,
+      item_categorie,
+      productType,
+      popularity,
+      name,
+      isPublished,
+      dimension,
+      build,
+      weight,
+      dtype,
+      size,
+      resolution,
+      os,
+      processor = [],
+      graphic = [],
+      ram = [],
+      storage = [],
+      capacity,
+      charging,
+      wifi,
+      bluetooth,
+      typec,
+      usba,
+      ethernet,
+      hdmi,
+      audiojack,
+      maincamera,
+      frontcamera,
+      video,
+      blog,
+      price = [],
+    } = req.body;
 
-  if (!req.file) return res.json("No image uploaded");
-  const imageBuffer = req.file.buffer;
-  const image = imageBuffer.toString("base64");
-  const result = await cloudinary.uploader.upload(
-    `data:image/jpeg;base64,${image}`,
-    {
-      folder: "products",
-    }
-  );
-  imageURL = result.secure_url;
+    let imageURL = "";
+    if (req.file) {
+      const imageBuffer = req.file.buffer;
+      const image = imageBuffer.toString("base64");
 
-  if (!name || !image) {
-    return res.json({ message: "Name and image are required!" });
-  }
-  const isExist = await productModel.findOne({ name });
-  if (isExist)
-    return res.json({ message: "Either name or image already exists" });
-  else {
-    try {
-      const addItems = await productModel.create({
-        productType,
-        popularity,
-        name,
-        dimension,
-        build,
-        weight,
-        dtype,
-        size,
-        resolution,
-        os,
-        processor,
-        graphics,
-        ram,
-        storage,
-        capacity,
-        charging,
-        wifi,
-        bluetooth,
-        typec,
-        usba,
-        ethernet,
-        hdmi,
-        audiojack,
-        maincamera,
-        frontcamera,
-        video,
-        price,
-        image: imageURL,
-        blog,
-      });
-    } catch (error) {
-      res.json({ message: "something went wrong", error });
+      const result = await cloudinary.uploader.upload(
+        `data:image/jpeg;base64,${image}`,
+        {
+          folder: "products",
+        },
+      );
+      imageURL = result.secure_url;
     }
+
+    const { heading = [], detail = [], descriptionimage = [] } = req.body;
+
+    const descriptions = heading.map((item, index) => ({
+      heading: heading[index],
+      detail: detail[index],
+      descriptionimage: descriptionimage[index],
+    }));
+
+    const formattedPrice = Array.isArray(price)
+      ? price.map((priceGroup) => priceGroup.map(String))
+      : [];
+
+    const formattedGraphic = Array.isArray(graphic)
+      ? graphic.map((graphicGroup) => graphicGroup.map(String))
+      : [];
+
+    const formattedRam = Array.isArray(ram)
+      ? ram.map((ramGroup) => ramGroup.map(String))
+      : [];
+
+    const formattedStorage = Array.isArray(storage)
+      ? storage.map((storageGroup) => storageGroup.map(String))
+      : [];
+
+    const formattedProcessor = Array.isArray(processor)
+      ? processor.map((processorGroup) => processorGroup.map(String))
+      : [];
+
+    const updatedData = {
+      latest: latest === "true" ? "true" : "false",
+      mostsold: mostsold === "true" ? "true" : "false",
+      mostpopular: mostpopular === "true" ? "true" : "false",
+      recommended: recommended === "true" ? "true" : "false",
+      isPublished: isPublished === "true" ? "true" : "false",
+    };
+
+    await productModel.create({
+      latest: updatedData.latest,
+      mostsold: updatedData.mostsold,
+      mostpopular: updatedData.mostpopular,
+      recommended: updatedData.recommended,
+      descriptions,
+      item_categorie,
+      productType,
+      targetaudience,
+      popularity,
+      isPublished,
+      name,
+      dimension,
+      build,
+      weight,
+      dtype,
+      size,
+      resolution,
+      os,
+      processor: formattedProcessor,
+      graphic: formattedGraphic,
+      ram: formattedRam,
+      storage: formattedStorage,
+      capacity,
+      charging,
+      wifi,
+      bluetooth,
+      typec,
+      usba,
+      ethernet,
+      hdmi,
+      audiojack,
+      maincamera,
+      frontcamera,
+      video,
+      price: formattedPrice,
+      image: imageURL,
+      blog,
+    });
+
+    if (productType === "phone") {
+      res.redirect("/phones");
+    } else if (productType === "laptop") {
+      res.redirect("/laptops");
+    } else if (productType === "tablet") {
+      res.redirect("/tablets");
+    } else {
+      res.redirect("/");
+    }
+  } catch (error) {
+    console.error("Error adding the product:", error);
+    res.redirect("/products/addProduct");
   }
-  res.redirect("/products/addProduct");
 };

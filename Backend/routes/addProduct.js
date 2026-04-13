@@ -4,7 +4,7 @@ const upload = require("../config/multer-config");
 const { addProducts } = require("../controllers/addProductsController");
 const isLoggedIn = require("../utils/isLoggedIn");
 
-router.get("/addProduct", isLoggedIn, (req, res) => {
+router.get("/addProduct", isLoggedIn, async (req, res) => {
   res.render("addProduct");
 });
 

@@ -22,7 +22,7 @@ const handleError = (res, error, msg = "Server error") => {
 
 router.get("/", async (req, res) => {
   try {
-    const products = await productModel.find();
+    const products = await productModel.find({ isPublished: true });
     res.json(products);
   } catch (error) {
     handleError(res, error, "Error fetching products");
@@ -37,7 +37,10 @@ const TYPE_MAP = { phones: "phone", laptops: "laptop", tablets: "tablet" };
 PRODUCT_TYPES.forEach((type) => {
   router.get(`/${type}`, async (req, res) => {
     try {
-      const products = await productModel.find({ productType: TYPE_MAP[type] });
+      const products = await productModel.find({
+        isPublished: true,
+        productType: TYPE_MAP[type],
+      });
       res.json(products);
     } catch (error) {
       handleError(res, error, `Error fetching ${type}`);
@@ -45,20 +48,25 @@ PRODUCT_TYPES.forEach((type) => {
   });
 });
 
-// ─── Single Product by ID ─────────────────────────────────
+// ─── Single Product by Name ──────────────────────────────
 
 ["phone", "laptop", "tablet"].forEach((type) => {
   router.get(`/${type}/:name`, async (req, res) => {
     try {
-      // find by name (slugified) instead of _id
-      const products = await productModel.find({ productType: type });
+      const products = await productModel.find({
+        isPublished: true,
+        productType: type,
+      });
+
       const product = products.find(
         (p) =>
           p.name.toLowerCase().split(" ").join("") ===
-          req.params.name.toLowerCase(),
+          req.params.name.toLowerCase()
       );
+
       if (!product)
         return res.status(404).json({ message: `${type} not found` });
+
       res.json(product);
     } catch (error) {
       handleError(res, error, `Error fetching ${type}`);
@@ -78,7 +86,10 @@ const FLAG_ROUTES = {
 Object.entries(FLAG_ROUTES).forEach(([route, query]) => {
   router.get(`/${route}`, async (req, res) => {
     try {
-      const data = await productModel.find(query);
+      const data = await productModel.find({
+        isPublished: true,
+        ...query,
+      });
       res.json(data.map(formatProduct));
     } catch (error) {
       handleError(res, error, `Error fetching ${route}`);
@@ -93,7 +104,10 @@ const CATEGORY_ROUTES = ["budget", "midrange", "flagship"];
 CATEGORY_ROUTES.forEach((category) => {
   router.get(`/${category}`, async (req, res) => {
     try {
-      const data = await productModel.find({ item_categorie: category });
+      const data = await productModel.find({
+        isPublished: true,
+        item_categorie: category,
+      });
       res.json(data.map(formatProduct));
     } catch (error) {
       handleError(res, error, `Error fetching ${category}`);
@@ -108,7 +122,10 @@ const AUDIENCE_ROUTES = ["gaming", "professional", "students", "normalusage"];
 AUDIENCE_ROUTES.forEach((audience) => {
   router.get(`/${audience}-devices`, async (req, res) => {
     try {
-      const data = await productModel.find({ targetaudience: audience });
+      const data = await productModel.find({
+        isPublished: true,
+        targetaudience: audience,
+      });
       res.json(data.map(formatProduct));
     } catch (error) {
       handleError(res, error, `Error fetching ${audience} devices`);
@@ -120,7 +137,10 @@ AUDIENCE_ROUTES.forEach((audience) => {
 
 router.get("/popularity", async (req, res) => {
   try {
-    const data = await productModel.find({ popularity: "popular" });
+    const data = await productModel.find({
+      isPublished: true,
+      popularity: "popular",
+    });
     res.json(data.map(formatProduct));
   } catch (error) {
     handleError(res, error, "Error fetching popularity");
