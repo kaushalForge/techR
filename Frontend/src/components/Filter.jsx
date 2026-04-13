@@ -1,37 +1,283 @@
-import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 
+const OPTIONS = {
+  phone: {
+    processor: [
+      "Qualcomm Snapdragon",
+      "Qualcomm Snapdragon 8 Gen 3",
+      "MediaTek Dimensity",
+      "Apple A18 Pro",
+      "Apple A17 Pro",
+      "Apple A16 Bionic",
+      "Apple A15 Bionic",
+      "Apple A14 Bionic",
+      "Apple A13 Bionic",
+      "Samsung Exynos",
+      "Huawei Kirin",
+    ],
+    ram: ["4GB", "6GB", "8GB", "12GB", "16GB", "32GB"],
+    graphics: [
+      "Adreno",
+      "Apple integrated",
+      "Mali",
+      "PowerVR",
+      "Qualcomm Adreno",
+      "Samsung Exynos GPU",
+      "Ray Tracing GPU",
+    ],
+    battery: [
+      "1000–2000 mAh",
+      "2000–3000 mAh",
+      "3000–4000 mAh",
+      "4000–5000 mAh",
+      "5000–6000 mAh",
+      "6000–7000 mAh",
+    ],
+    price: [
+      "< $100",
+      "$100–$199",
+      "$200–$299",
+      "$300–$399",
+      "$400–$499",
+      "$500–$699",
+      "$700–$899",
+      "$900–$1,099",
+      "$1,100–$1,299",
+      "$1,300–$1,500",
+      "$1,500–$1,700",
+      "$1,700–$2,000",
+    ],
+  },
+  laptop: {
+    processor: [
+      "Intel Core i3",
+      "Intel Core i5",
+      "Intel Core i7",
+      "Intel Core i9",
+      "Intel Celeron",
+      "Intel Pentium",
+      "AMD Ryzen 3",
+      "AMD Ryzen 5",
+      "AMD Ryzen 7",
+      "AMD Ryzen 9",
+      "AMD Athlon",
+      "Apple M1",
+      "Apple M1 Pro",
+      "Apple M1 Max",
+      "Apple M2",
+      "Apple M2 Pro",
+      "Apple M2 Max",
+      "Qualcomm Snapdragon 8cx",
+    ],
+    ram: ["4GB", "8GB", "16GB", "32GB", "64GB"],
+    graphics: [
+      "Intel Iris Xe",
+      "Intel Iris Plus",
+      "AMD Radeon Graphics",
+      "AMD Radeon RX 6000",
+      "NVIDIA GTX 1650",
+      "NVIDIA GTX 1660 Ti",
+      "NVIDIA RTX 3050",
+      "NVIDIA RTX 3060",
+      "NVIDIA RTX 3070",
+      "NVIDIA RTX 3080",
+      "NVIDIA RTX 4050",
+      "NVIDIA RTX 4060",
+      "NVIDIA RTX 4070",
+      "NVIDIA RTX 4090",
+      "Apple M1",
+      "Apple M2 Integrated",
+    ],
+    battery: ["30–50 Wh", "50–70 Wh", "70–90 Wh", "90–110 Wh"],
+    price: [
+      "< $100",
+      "$100–$199",
+      "$200–$299",
+      "$300–$399",
+      "$400–$499",
+      "$500–$699",
+      "$700–$899",
+      "$900–$1,099",
+      "$1,100–$1,299",
+      "$1,300–$1,500",
+      "$1,500–$1,700",
+      "$1,700–$2,000",
+    ],
+  },
+  tablet: {
+    processor: [
+      "Qualcomm Snapdragon",
+      "Apple A-series",
+      "MediaTek Dimensity",
+      "MediaTek Helio",
+      "Exynos",
+      "NVIDIA Tegra",
+      "Intel Atom",
+      "Huawei Kirin",
+      "Rockchip",
+      "Allwinner",
+    ],
+    ram: ["2GB", "4GB", "6GB", "8GB", "12GB"],
+    graphics: ["Apple GPU", "Adreno", "Mali", "PowerVR"],
+    battery: [
+      "1000–2000 mAh",
+      "2000–3000 mAh",
+      "3000–4000 mAh",
+      "4000–5000 mAh",
+      "5000–6000 mAh",
+      "6000–7000 mAh",
+    ],
+    price: [
+      "< $100",
+      "$100–$199",
+      "$200–$299",
+      "$300–$399",
+      "$400–$499",
+      "$500–$699",
+      "$700–$899",
+      "$900–$1,099",
+      "$1,100–$1,299",
+      "$1,300–$1,500",
+      "$1,500–$1,700",
+      "$1,700–$2,000",
+    ],
+  },
+};
+
+const FILTER_LABELS = {
+  processor: "Processor",
+  ram: "RAM",
+  graphics: "Graphics",
+  battery: "Battery",
+  price: "Price Range",
+};
+
+const DEVICE_ICONS = { phone: "📱", laptop: "💻", tablet: "📲" };
+
+function ChipSelector({ options, value, onChange, disabled }) {
+  return (
+    <div className="flex flex-wrap gap-2 mt-1">
+      {options.map((opt) => (
+        <button
+          key={opt}
+          type="button"
+          disabled={disabled}
+          onClick={() => onChange(value === opt ? "" : opt)}
+          className={`px-3 py-1 rounded-full text-xs font-medium border transition-all duration-150
+            ${
+              disabled
+                ? "opacity-30 cursor-not-allowed border-gray-300 text-gray-400"
+                : value === opt
+                  ? "bg-orange-500 border-orange-500 text-white shadow-sm"
+                  : "bg-white border-gray-300 text-gray-700 hover:border-orange-400 hover:text-orange-600 cursor-pointer"
+            }`}
+        >
+          {opt}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function FilterSection({ label, options, value, onChange, disabled }) {
+  return (
+    <div className="mb-6">
+      <div className="flex items-center gap-2 mb-2">
+        <span className="text-sm font-semibold text-gray-700">{label}</span>
+        {value && (
+          <span className="bg-orange-100 text-orange-700 text-xs px-2 py-0.5 rounded-full font-medium">
+            {value}
+          </span>
+        )}
+      </div>
+      <ChipSelector
+        options={options}
+        value={value}
+        onChange={onChange}
+        disabled={disabled}
+      />
+    </div>
+  );
+}
+
+function ActiveFilters({ filters, onRemove }) {
+  const active = Object.entries(filters).filter(([, v]) => v);
+  if (!active.length) return null;
+  return (
+    <div className="flex flex-wrap gap-2 mb-4 p-3 bg-gray-50 rounded-xl border border-gray-200">
+      <span className="text-xs text-gray-500 font-medium self-center">
+        Active:
+      </span>
+      {active.map(([key, val]) => (
+        <span
+          key={key}
+          className="flex items-center gap-1 bg-orange-500 text-white text-xs px-2.5 py-1 rounded-full font-medium"
+        >
+          <span className="opacity-75 text-[10px]">{FILTER_LABELS[key]}:</span>{" "}
+          {val}
+          <button
+            type="button"
+            onClick={() => onRemove(key)}
+            className="ml-1 hover:opacity-70 leading-none"
+          >
+            ×
+          </button>
+        </span>
+      ))}
+    </div>
+  );
+}
+
+const EMPTY = { processor: "", ram: "", graphics: "", battery: "", price: "" };
+
 function Filter() {
   const navigate = useNavigate();
   const [deviceType, setDeviceType] = useState("");
-  const [processor, setProcessor] = useState("");
-  const [ram, setRam] = useState(""); 
-  const [graphics, setGraphics] = useState("");
-  const [battery, setBattery] = useState("");
-  const [price, setPrice] = useState("");
+  const [filters, setFilters] = useState(EMPTY);
+  const [loading, setLoading] = useState(false);
+
   const filterProductURL = import.meta.env.VITE_FILTERPRODUCT_URL;
-  const sendProduct = async () => {
+
+  const setFilter = (key, val) =>
+    setFilters((prev) => ({ ...prev, [key]: val }));
+  const removeFilter = (key) => setFilter(key, "");
+
+  const handleDeviceChange = (type) => {
+    setDeviceType(type);
+    setFilters(EMPTY);
+  };
+
+  const handleClear = () => {
+    setDeviceType("");
+    setFilters(EMPTY);
+  };
+
+  const handleSearch = async () => {
+    if (!deviceType) {
+      toast.warn("Please select a device type first", {
+        position: "top-center",
+        autoClose: 3000,
+      });
+      return;
+    }
+    setLoading(true);
     try {
       const response = await axios.post(filterProductURL, {
         deviceType,
-        processor,
-        ram,
-        graphics,
-        battery,
-        price,
+        ...filters,
       });
       if (response.data.message === "No such device found") {
-        toast.error("No such products found", {
+        toast.error("No products found matching your filters", {
           position: "top-center",
           autoClose: 4000,
         });
       }
-      console.log(response.data.productType, response.data.name);
       if (response.data.productType && response.data.name) {
-        toast.success("Congo! You got a catch", {
+        toast.success("Found a match!", {
           position: "top-center",
           autoClose: 2000,
         });
@@ -39,414 +285,129 @@ function Filter() {
       }
     } catch (error) {
       console.error("Error", error.message);
+      toast.error("Something went wrong. Please try again.", {
+        position: "top-center",
+        autoClose: 3000,
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleDeviceChange = (e) => {
-    setDeviceType(e.target.value);
-    setProcessor("");
-    setRam("");
-    setGraphics("");
-    setBattery("");
-    setPrice("");
-  };
-
-  const getOptions = (type) => {
-    const options = {
-      phone: {
-        processor: [
-          "Qualcomm Snapdragon",
-          "Qualcomm Snapdragon 8 Gen 3",
-          "MediaTek Dimensity",
-          "Apple A18 Pro",
-          "Apple A17 Pro",
-          "Apple A16 Bionic",
-          "Apple A15 Bionic",
-          "Apple A14 Bionic",
-          "Apple A13 Bionic",
-          "Apple A12 Bionic",
-          "Apple A11 Bionic",
-          "Apple A10 Fusion",
-          "Samsung Exynos",
-          "Huawei Kirin",
-          "NVIDIA Tegra",
-          "Intel Atom",
-          "Rockchip",
-          "Spreadtrum",
-          "Unisoc",
-        ],
-        ram: ["4GB", "6GB", "8GB", "12GB", "16GB", "32GB"],
-        graphics: [
-          "Adreno",
-          "Apple integrated",
-          "Mali",
-          "PowerVR",
-          "NVIDIA Tegra",
-          "Qualcomm Adreno",
-          "Samsung Exynos",
-          "ASUS ROG Phone GPU",
-          "Xiaomi Black Shark GPU",
-          "Ray Tracing GPU",
-        ],
-        battery: [
-          "1000 mAh - 2000 mAh",
-          "2000 mAh - 3000 mAh",
-          "3000 mAh - 4000 mAh",
-          "4000 mAh - 5000 mAh",
-          "5000 mAh - 6000 mAh",
-          "6000 mAh - 7000 mAh",
-        ],
-        price: [
-          "< $100",
-          "$100 - $199",
-          "$200 - $299",
-          "$300 - $399",
-          "$400 - $499",
-          "$500 - $699",
-          "$700 - $899",
-          "$900 - $1,099",
-          "$1,100 - $1,299",
-          "$1,300 - $1,400",
-          "$1,400 - $1,500",
-          "$1,500 - $1,600",
-          "$1,600 - $1,700",
-          "$1,700 - $1,800",
-          "$1,800 - $1,900",
-          "$1,900 - $2,000",
-        ],
-      },
-      laptop: {
-        processor: [
-          "Intel Celeron",
-          "Intel Pentium",
-          "Intel Core",
-          "Intel Core i3",
-          "Intel Core i5",
-          "Intel Core i7",
-          "Intel Core i9",
-          "AMD Ryzen",
-          "AMD Athlon",
-          "AMD Ryzen 3",
-          "AMD Ryzen 5",
-          "AMD Ryzen 7",
-          "AMD Ryzen 9",
-          "Apple",
-          "Apple M1",
-          "Apple M1 Pro",
-          "Apple M1 Max",
-          "Apple M2",
-          "Apple M2 Pro",
-          "Apple M2 Max",
-          "Qualcomm Snapdragon 7c",
-          "Qualcomm Snapdragon 8c",
-          "Qualcomm Snapdragon 8cx",
-        ],
-        ram: ["4GB", "8GB", "16GB", "32GB", "64GB"],
-        graphics: [
-          "NVIDIA RTX",
-          "NVIDIA RTX 2050",
-          "NVIDIA RTX 2060",
-          "NVIDIA RTX 2070",
-          "NVIDIA RTX 2080",
-          "NVIDIA RTX 3050",
-          "NVIDIA RTX 3060",
-          "NVIDIA RTX 3070",
-          "NVIDIA RTX 3080",
-          "NVIDIA RTX 3090",
-          "NVIDIA RTX 4050",
-          "NVIDIA RTX 4060",
-          "NVIDIA RTX 4070",
-          "NVIDIA RTX 4080",
-          "NVIDIA RTX 4090",
-          "AMD Radeon",
-          "AMD Radeon RX 550",
-          "AMD Radeon RX 560",
-          "AMD Radeon RX 570",
-          "AMD Radeon RX 580",
-          "AMD Radeon RX 590",
-          "AMD Radeon RX 6000",
-          "AMD Radeon RX 6700 XT",
-          "AMD Radeon RX 6800",
-          "AMD Radeon RX 6800 XT",
-          "AMD Radeon RX 6900 XT",
-          "AMD Radeon Vega 8",
-          "AMD Radeon Vega 11",
-          "AMD Radeon Pro 5000",
-          "AMD Radeon HD 5000",
-          "AMD Radeon HD 6000",
-          "AMD Radeon HD 7000",
-          "AMD Radeon R7",
-          "AMD Radeon R9",
-          "AMD Radeon Graphics",
-          "Intel Iris",
-          "Intel Iris Pro",
-          "Intel Iris Xe",
-          "Intel Iris Xe Graphics",
-          "Intel Iris Plus",
-          "Intel Iris Graphics 540",
-          "Intel Iris Graphics 550",
-          "Intel Iris Graphics 620",
-          "Intel Iris Graphics 630",
-          "Intel Iris Graphics 640",
-          "Intel Iris Graphics 650",
-          "Apple M2 Integrated",
-          "Apple M1",
-          "Apple M1 Pro",
-          "Apple M1 Max",
-          "Apple M1 Ultra",
-          "Apple M2",
-          "Apple M2 Pro",
-          "Apple M2 Max",
-          "NVIDIA GTX",
-          "NVIDIA GTX 1650",
-          "NVIDIA GTX 1660",
-          "NVIDIA GTX 1660 Ti",
-          "NVIDIA GTX 1050",
-          "NVIDIA GTX 1050 Ti",
-          "NVIDIA GTX 1060",
-          "NVIDIA GTX 1070",
-          "NVIDIA GTX 1080",
-          "NVIDIA GTX 970",
-          "NVIDIA GTX 980",
-          "NVIDIA GTX 980 Ti",
-        ],
-        battery: ["30Wh - 50Wh", "50Wh - 70Wh", "70Wh - 90Wh", "90Wh - 110Wh"],
-        price: [
-          "< $100",
-          "$100 - $199",
-          "$200 - $299",
-          "$300 - $399",
-          "$400 - $499",
-          "$500 - $699",
-          "$700 - $899",
-          "$900 - $1,099",
-          "$1,100 - $1,299",
-          "$1,300 - $1,400",
-          "$1,400 - $1,500",
-          "$1,500 - $1,600",
-          "$1,600 - $1,700",
-          "$1,700 - $1,800",
-          "$1,800 - $1,900",
-          "$1,900 - $2,000",
-        ],
-      },
-      tablet: {
-        processor: [
-          "Qualcomm Snapdragon",
-          "Apple",
-          "MediaTek Dimensity",
-          "MediaTek Helio",
-          "NVIDIA Tegra",
-          "Intel Atom",
-          "Rockchip",
-          "Spreadtrum",
-          "Unisoc",
-          "Exynos",
-          "Huawei Kirin",
-          "Allwinner",
-        ],
-        ram: ["2GB", "4GB", "6GB", "8GB", "12GB"],
-        graphics: ["Apple GPU", "Adreno", "Mali", "PowerVR"],
-        battery: [
-          "1000 mAh - 2000 mAh",
-          "2000 mAh - 3000 mAh",
-          "3000 mAh - 4000 mAh",
-          "4000 mAh - 5000 mAh",
-          "5000 mAh - 6000 mAh",
-          "6000 mAh - 7000 mAh",
-        ],
-        price: [
-          "< $100",
-          "$100 - $199",
-          "$200 - $299",
-          "$300 - $399",
-          "$400 - $499",
-          "$500 - $699",
-          "$700 - $899",
-          "$900 - $1,099",
-          "$1,100 - $1,299",
-          "$1,300 - $1,400",
-          "$1,400 - $1,500",
-          "$1,500 - $1,600",
-          "$1,600 - $1,700",
-          "$1,700 - $1,800",
-          "$1,800 - $1,900",
-          "$1,900 - $2,000",
-        ],
-      },
-    };
-
-    return options[type] || {};
-  };
-
-  const currentOptions = getOptions(deviceType);
+  const currentOptions = OPTIONS[deviceType] || {};
+  const activeCount = Object.values(filters).filter(Boolean).length;
 
   return (
     <HelmetProvider>
       <Helmet>
-        <title>
-          TechR: Filter smartphones,laptops and tablets of your own choice
-        </title>
+        <title>TechR: Filter Smartphones, Laptops & Tablets</title>
         <meta
           name="description"
-          content="TechR: Filter smartphones,laptops and tablets of your own choice"
+          content="Filter smartphones, laptops, and tablets by specs and price to find your perfect device."
         />
       </Helmet>
-      <div className="min-h-screen w-full mt-8 flex flex-col items-center px-4 py-2">
-        <div className="text-black flex flex-col items-center mt-4 w-full max-w-xl">
-          <h1 className="text-xl md:text-2xl bg-black p-2 rounded-xl text-orange-500 w-full text-center">
-            Search your needs!
-          </h1>
-          <form
-            action={filterProductURL}
-            method="post"
-            className="w-full"
-            onSubmit={(e) => {
-              e.preventDefault();
-              sendProduct();
-            }}
+
+      <div className="min-h-screen w-full flex flex-col items-center px-4 py-8 bg-gray-50">
+        <div className="w-full max-w-2xl">
+          {/* Header */}
+          <div className="mb-6 text-center">
+            <h1 className="text-2xl font-bold text-gray-900">
+              Find your device
+            </h1>
+            <p className="text-sm text-gray-500 mt-1">
+              Select specs that matter to you — leave others blank
+            </p>
+          </div>
+
+          {/* Device Type Picker */}
+          <div className="bg-white rounded-2xl border border-gray-200 p-5 mb-4 shadow-sm">
+            <p className="text-sm font-semibold text-gray-700 mb-3">
+              Device type
+            </p>
+            <div className="grid grid-cols-3 gap-3">
+              {["phone", "laptop", "tablet"].map((type) => (
+                <button
+                  key={type}
+                  type="button"
+                  onClick={() => handleDeviceChange(type)}
+                  className={`flex flex-col items-center justify-center gap-1.5 py-4 rounded-xl border-2 transition-all duration-150 font-medium text-sm
+                    ${
+                      deviceType === type
+                        ? "border-orange-500 bg-orange-50 text-orange-600"
+                        : "border-gray-200 bg-white text-gray-600 hover:border-orange-300 hover:bg-orange-50/40"
+                    }`}
+                >
+                  <span className="text-2xl">{DEVICE_ICONS[type]}</span>
+                  <span className="capitalize">{type}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Filters Panel */}
+          <div
+            className={`bg-white rounded-2xl border border-gray-200 p-5 mb-4 shadow-sm transition-opacity duration-200 ${!deviceType ? "opacity-50" : ""}`}
           >
-            <div className="mt-4 border-2 border-black rounded-xl w-full mx-auto p-4">
-              <table className="w-full border-separate border-spacing-4">
-                <tbody>
-                  <tr>
-                    <td className="font-semibold whitespace-nowrap bg-indigo-200 rounded-xl p-2 text-sm md:text-lg">
-                      Device Type:
-                    </td>
-                    <td>
-                      <select
-                        name="type"
-                        className="outline-none w-full text-left rounded-lg bg-black text-sky-700 font-extrabold text-sm md:text-[16px] px-2 py-1 placeholder:text-zinc-300/80"
-                        onChange={handleDeviceChange}
-                      >
-                        <option value="">Select Device</option>
-                        <option value="phone">Phone</option>
-                        <option value="laptop">Laptop</option>
-                        <option value="tablet">Tablet</option>
-                      </select>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="font-semibold whitespace-nowrap bg-indigo-200 rounded-xl p-2 text-sm md:text-lg">
-                      Processor:
-                    </td>
-                    <td>
-                      <select
-                        name="processor"
-                        className="outline-none w-full text-left rounded-lg text-green-600 bg-black text-xs md:text-sm px-2 py-1 placeholder:text-white placeholder:font-semibold"
-                        disabled={!deviceType}
-                        value={processor}
-                        onChange={(e) => setProcessor(e.target.value)}
-                      >
-                        <option value="">Select Processor</option>
-                        {currentOptions.processor?.map((option) => (
-                          <option key={option} value={option}>
-                            {option}
-                          </option>
-                        ))}
-                      </select>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="font-semibold whitespace-nowrap bg-indigo-200 rounded-xl p-2 text-sm md:text-lg">
-                      RAM:
-                    </td>
-                    <td>
-                      <select
-                        name="ram"
-                        className="outline-none w-full text-left rounded-lg bg-black text-white text-xs md:text-sm px-2 py-1 placeholder:text-white placeholder:font-semibold"
-                        disabled={!deviceType}
-                        value={ram}
-                        onChange={(e) => setRam(e.target.value)}
-                      >
-                        <option value="">Select RAM</option>
-                        {currentOptions.ram?.map((option) => (
-                          <option key={option} value={option}>
-                            {option}
-                          </option>
-                        ))}
-                      </select>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="font-semibold whitespace-nowrap bg-indigo-200 rounded-xl p-2 text-sm md:text-lg">
-                      Graphics:
-                    </td>
-                    <td>
-                      <select
-                        name="graphics"
-                        className="outline-none w-full text-left rounded-lg text-green-600 bg-black text-xs md:text-sm px-2 py-1 placeholder:text-white placeholder:font-semibold"
-                        disabled={!deviceType}
-                        value={graphics}
-                        onChange={(e) => setGraphics(e.target.value)}
-                      >
-                        <option value="">Select Graphics</option>
-                        {currentOptions.graphics?.map((option) => (
-                          <option key={option} value={option}>
-                            {option}
-                          </option>
-                        ))}
-                      </select>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="font-semibold whitespace-nowrap bg-indigo-200 rounded-xl p-2 text-sm md:text-lg">
-                      Battery:
-                    </td>
-                    <td>
-                      <select
-                        name="battery"
-                        className="outline-none w-full text-left rounded-lg bg-black text-white text-xs md:text-sm px-2 py-1 placeholder:text-white placeholder:font-semibold"
-                        disabled={!deviceType}
-                        value={battery}
-                        onChange={(e) => setBattery(e.target.value)}
-                      >
-                        <option value="">Select Battery</option>
-                        {currentOptions.battery?.map((option) => (
-                          <option key={option} value={option}>
-                            {option}
-                          </option>
-                        ))}
-                      </select>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="font-semibold whitespace-nowrap bg-indigo-200 rounded-xl p-2 text-sm md:text-lg">
-                      Price:
-                    </td>
-                    <td>
-                      <select
-                        name="price"
-                        className="outline-none w-full text-left rounded-lg bg-black text-white text-xs md:text-sm px-2 py-1 placeholder:text-white placeholder:font-semibold"
-                        disabled={!deviceType}
-                        value={price}
-                        onChange={(e) => setPrice(e.target.value)}
-                      >
-                        <option value="">Select Price</option>
-                        {currentOptions.price?.map((option) => (
-                          <option key={option} value={option}>
-                            {option}
-                          </option>
-                        ))}
-                      </select>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+            <div className="flex items-center justify-between mb-4">
+              <p className="text-sm font-semibold text-gray-700">
+                Specifications
+                {activeCount > 0 && (
+                  <span className="ml-2 bg-orange-500 text-white text-xs px-2 py-0.5 rounded-full">
+                    {activeCount}
+                  </span>
+                )}
+              </p>
+              {activeCount > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setFilters(EMPTY)}
+                  className="text-xs text-gray-400 hover:text-red-500 transition-colors"
+                >
+                  Clear filters
+                </button>
+              )}
             </div>
-            <div className="mt-4 flex gap-2 justify-center">
-              <input
-                type="submit"
-                value="Search"
-                className="bg-sky-600 text-white p-2 rounded-xl font-semibold text-lg outline-none"
+
+            <ActiveFilters filters={filters} onRemove={removeFilter} />
+
+            {Object.keys(FILTER_LABELS).map((key) => (
+              <FilterSection
+                key={key}
+                label={FILTER_LABELS[key]}
+                options={currentOptions[key] || []}
+                value={filters[key]}
+                onChange={(val) => setFilter(key, val)}
+                disabled={!deviceType}
               />
-              <input
-                type="reset"
-                value="Clear"
-                className="bg-red-600 text-white p-2 rounded-xl font-semibold text-lg outline-none"
-              />
-            </div>
-          </form>
+            ))}
+          </div>
+
+          {/* Actions */}
+          <div className="flex gap-3">
+            <button
+              type="button"
+              onClick={handleClear}
+              className="flex-1 py-3 rounded-xl border-2 border-gray-200 text-gray-600 font-semibold text-sm hover:border-gray-300 hover:bg-gray-50 transition-all"
+            >
+              Reset all
+            </button>
+            <button
+              type="button"
+              onClick={handleSearch}
+              disabled={loading || !deviceType}
+              className={`flex-2 w-full py-3 rounded-xl font-semibold text-sm text-white transition-all
+                ${
+                  loading || !deviceType
+                    ? "bg-gray-300 cursor-not-allowed"
+                    : "bg-orange-500 hover:bg-orange-600 active:scale-[0.98] shadow-sm"
+                }`}
+              style={{ flex: 2 }}
+            >
+              {loading
+                ? "Searching…"
+                : `Search${activeCount > 0 ? ` (${activeCount} filter${activeCount > 1 ? "s" : ""})` : ""}`}
+            </button>
+          </div>
         </div>
       </div>
     </HelmetProvider>

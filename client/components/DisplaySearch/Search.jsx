@@ -1,97 +1,138 @@
-"use client";
-import React from "react";
-import { useRouter } from "next/navigation";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-const Search = (product) => {
-  const router = useRouter();
+const slugify = (text = "") => {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+};
 
-  const handleNavigate = () => {
-    router.push(`/${product.productType}/${product._id}`);
+const Search = () => {
+  const navigate = useNavigate();
+  const [query, setQuery] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSearch = async (searchTerm) => {
+    console.log("🔥 handleSearch CALLED with:", searchTerm);
+
+    const trimmed = searchTerm.trim();
+
+    if (!trimmed) {
+      console.log("⚠️ Empty search blocked");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const API_URL = import.meta.env.VITE_API_URL;
+
+      console.log("🌐 API URL from env:", API_URL);
+
+      const fullURL = `${API_URL}/products?q=${encodeURIComponent(trimmed)}`;
+
+      console.log("🚀 Fetching URL:", fullURL);
+
+      const res = await fetch(fullURL);
+
+      console.log("📡 Response status:", res.status);
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
+      const data = await res.json();
+
+      console.log("📦 API response data:", data);
+
+      if (!Array.isArray(data)) {
+        console.log("❌ Response is NOT array");
+        navigate(`/search?q=${encodeURIComponent(trimmed)}`);
+        return;
+      }
+
+      if (data.length === 0) {
+        console.log("⚠️ No products found");
+        navigate(`/search?q=${encodeURIComponent(trimmed)}`);
+        return;
+      }
+
+      // SINGLE PRODUCT
+      if (data.length === 1) {
+        const product = data[0];
+
+        console.log("🎯 Single product found:", product);
+
+        const type = slugify(product.productType || "product");
+        const name = slugify(product.name || "item");
+
+        const route = `/${type}/${name}`;
+
+        console.log("➡️ Redirecting to product page:", route);
+
+        navigate(route);
+        return;
+      }
+
+      // MULTIPLE PRODUCTS
+      console.log("📚 Multiple products found:", data.length);
+
+      const route = `/search?q=${encodeURIComponent(trimmed)}`;
+
+      console.log("➡️ Redirecting to search page:", route);
+
+      navigate(route);
+    } catch (error) {
+      console.error("💥 Search ERROR:", error);
+
+      navigate(`/search?q=${encodeURIComponent(trimmed)}`);
+    } finally {
+      setLoading(false);
+      console.log("✅ Search finished");
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    console.log("⌨️ Key pressed:", e.key);
+
+    if (e.key === "Enter") {
+      console.log("⚡ Enter detected");
+      handleSearch(query);
+    }
+  };
+
+  const handleChange = (e) => {
+    console.log("✍️ Input changed:", e.target.value);
+    setQuery(e.target.value);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("📩 Form submit triggered");
+    handleSearch(query);
   };
 
   return (
-    <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden my-8 hover:shadow-2xl transition-shadow duration-300">
-      <div className="flex flex-col md:flex-row">
-        {/* Image */}
-        <div className="md:w-1/3">
-          <img
-            src={product.images?.[0] || ""}
-            alt={product.name}
-            className="object-cover w-full h-full"
-            loading="lazy"
-          />
-        </div>
+    <div className="max-w-xl mx-auto my-6">
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          value={query}
+          placeholder={loading ? "Searching..." : "Search products..."}
+          onChange={handleChange}
+          onKeyDown={handleKeyDown}
+          disabled={loading}
+          className="w-full px-4 py-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-60"
+        />
 
-        {/* Details */}
-        <div className="md:w-2/3 p-6 flex flex-col justify-between">
-          <div>
-            {/* Title and category */}
-            <h1 className="text-3xl font-extrabold text-gray-900">
-              {product.name}
-            </h1>
-            <p className="text-sm text-indigo-600 font-semibold uppercase tracking-wide mt-1">
-              {product.item_categorie}
-            </p>
-
-            {/* Description */}
-            <p
-              className="mt-4 text-gray-700 leading-relaxed line-clamp-5"
-              title={product.blog}
-            >
-              {product.blog}
-            </p>
-
-            {/* Key specs grid */}
-            <div className="mt-6 grid grid-cols-2 md:grid-cols-3 gap-4 text-gray-800">
-              <div>
-                <span className="font-semibold">Display:</span> {product.size}{" "}
-                {product.dtype}
-              </div>
-              <div>
-                <span className="font-semibold">Processor:</span>{" "}
-                {product.processor?.[0] ||
-                  product.graphics ||
-                  product.graphicss}
-              </div>
-              <div>
-                <span className="font-semibold">RAM:</span>{" "}
-                {product.ram1 || product.ram?.[0]}
-              </div>
-              <div>
-                <span className="font-semibold">Storage:</span>{" "}
-                {product.storage1 || product.storage?.[0]}
-              </div>
-              <div>
-                <span className="font-semibold">Camera:</span>{" "}
-                {product.maincamera}
-              </div>
-              <div>
-                <span className="font-semibold">OS:</span>{" "}
-                {product.os?.join(", ") || "N/A"}
-              </div>
-            </div>
-          </div>
-
-          {/* Price and button */}
-          <div className="mt-6 flex items-center justify-between">
-            <div>
-              <span className="text-2xl font-bold text-green-600">
-                {product.price1 || product.price?.[0]}
-              </span>
-              <span className="text-sm text-gray-500 ml-2 line-through">
-                {product.price3}
-              </span>
-            </div>
-
-            <button
-              onClick={handleNavigate}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-5 py-2 rounded-md transition"
-            >
-              View Details
-            </button>
-          </div>
-        </div>
-      </div>
+        <button
+          type="submit"
+          className="mt-3 w-full bg-indigo-600 text-white py-2 rounded"
+        >
+          Search
+        </button>
+      </form>
     </div>
   );
 };

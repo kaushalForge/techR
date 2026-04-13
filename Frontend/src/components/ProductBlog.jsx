@@ -4,7 +4,6 @@ import { Helmet, HelmetProvider } from "react-helmet-async";
 import { toast } from "react-toastify";
 import CircularLoader from "../CircularLoader";
 import SideBar from "./SideBar";
-import MoreOptions from "./MoreOptions";
 import { useTargetProduct } from "../hooks/useProducts";
 
 const TYPE_LABEL = { phone: "phone", laptop: "laptop", tablet: "tablet" };
@@ -221,8 +220,6 @@ function ProductBlog() {
                   </div>
                 ))}
               </div>
-
-              <MoreOptions />
             </div>
           )}
         </div>

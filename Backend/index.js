@@ -42,7 +42,7 @@ const userRouter = require("../Backend/routes/userRouter");
 const productRouter = require("./routes/productRouter");
 const searchRouter = require("./routes/searchRouter");
 const deleteRouter = require("../Backend/routes/deleteProduct");
-const lol = require("./routes/specsFilter");
+const filterRouter = require("./routes/specsFilter");
 
 // Home Route
 app.use("/", homeRouter);
@@ -65,7 +65,7 @@ app.use("/modify", modifyRouter);
 // API routes
 app.use("/api/products", productRouter);
 app.use("/api/search", searchRouter);
-app.use("/filter", lol);
+app.use("/filter", filterRouter);
 
 const PORT = process.env.PORT || 5173;
 app.listen(PORT, () => {
