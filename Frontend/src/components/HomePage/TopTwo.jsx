@@ -9,13 +9,13 @@ const Landing = () => {
     image:
       "https://res.cloudinary.com/dsvlevzds/image/upload/v1728104678/n1rtqevggzkw91opb0dw.avif",
     note: "The newly launched iPhone 16 Pro Max features a stunning display and advanced performance making a perfect fit for a premium mobile experience!",
-    link: "/phone/iphone16promax",
+    link: "/phone/iphone-16-pro-max",
   };
   const hotDrop2 = {
     image:
       "https://res.cloudinary.com/dsvlevzds/image/upload/v1731343195/fsju9euc7urdhtn638tx.jpg",
     note: "The Samsung Galaxy S25 Ultra, Samsung's most anticipated and premium release of the year is getting rumored showcasing cutting-edge innovations and solidifying its position as a flagship leader in the smartphone market.",
-    link: "/phone/samsungs25ultra",
+    link: "/phone/samsung-s25-ultra",
   };
 
   const [show1, setShow1] = useState(false);
