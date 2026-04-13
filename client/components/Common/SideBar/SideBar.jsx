@@ -25,7 +25,7 @@ function SideBar({ flagship, midrange, budget }) {
                     className="outline-none"
                   >
                     <img
-                      src={item.image}
+                      src={item.images?.[0] || ""}
                       alt={item.name}
                       className="rounded-t-lg w-full h-full object-contain object-top outline-none"
                       loading="lazy"
@@ -66,7 +66,7 @@ function SideBar({ flagship, midrange, budget }) {
                     className="outline-none"
                   >
                     <img
-                      src={item.image}
+                      src={item.images?.[0] || ""}
                       alt={item.name}
                       className="rounded-t-lg w-full h-full object-contain object-top"
                       loading="lazy"
@@ -107,7 +107,7 @@ function SideBar({ flagship, midrange, budget }) {
                     className="outline-none"
                   >
                     <img
-                      src={item.image}
+                      src={item.images?.[0] || ""}
                       alt={item.name}
                       className="rounded-t-lg w-full h-full object-contain object-top"
                       loading="lazy"

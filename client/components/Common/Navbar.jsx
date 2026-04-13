@@ -104,7 +104,7 @@ function Navbar() {
                       {item}
                     </Link>
                   </motion.div>
-                )
+                ),
               )}
             </div>
             <form>
@@ -170,7 +170,7 @@ function Navbar() {
                       {item}
                     </Link>
                   </motion.div>
-                )
+                ),
               )}
             </div>
           </div>

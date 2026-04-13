@@ -50,6 +50,8 @@ function TabletBlog(targetTablet) {
     setFinalPrice(combined.map((item) => item.price));
   }, [targetTablet]);
 
+  const mainImage = targetTablet?.images?.[0] || "";
+
   const InfoSection = ({ label, value }) => (
     <div className="flex justify-between items-start sm:items-center w-full bg-white p-2 border border-gray-200 rounded-md shadow-sm hover:shadow-md transition duration-300 ease-in-out">
       <div className="flex items-center space-x-2">
@@ -85,9 +87,9 @@ function TabletBlog(targetTablet) {
             features of this tablet that make it a great choice for your needs.
           </p>
           <div className="flex justify-center py-4">
-            {targetTablet.image ? (
+            {mainImage ? (
               <img
-                src={targetTablet.image}
+                src={mainImage}
                 alt={targetTablet.name}
                 className="max-h-72 object-contain"
                 loading="lazy"

@@ -33,7 +33,7 @@ const LaptopsCategory = ({ laptops, title }) => {
           >
             <div className="p-4 flex justify-center">
               <img
-                src={laptop.image}
+                src={laptop.images?.[0] || ""}
                 alt={laptop.name}
                 className="w-48 h-48 object-contain rounded-md"
                 loading="lazy"

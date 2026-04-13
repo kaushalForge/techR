@@ -24,7 +24,7 @@ export default function PhonesCategory({ phones, title }) {
           >
             <div className="p-4 flex justify-center">
               <img
-                src={phone.image}
+                src={phone.images?.[0] || ""}
                 alt={phone.name}
                 className="w-48 h-48 object-contain rounded-md"
                 loading="lazy"

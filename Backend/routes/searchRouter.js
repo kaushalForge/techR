@@ -2,9 +2,9 @@ const express = require("express");
 const router = express.Router();
 const productModel = require("../models/Products");
 
-router.get("/:searchTerm", async (req, res) => {
+router.get("/", async (req, res) => {
   try {
-    const searchTerm = req.params.searchTerm;
+    const searchTerm = req.query.q;
 
     const results = await productModel.find({
       name: { $regex: searchTerm, $options: "i" },

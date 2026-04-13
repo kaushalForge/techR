@@ -1,6 +1,6 @@
 import { Space_Grotesk, Ubuntu, Poppins } from "next/font/google";
 import "./stylesheets/globals.css";
-import Navbar from "@/components/Common/Navbar";
+import NavbarGate from "@/components/Common/NavbarGate";
 import { Toaster } from "sonner";
 
 const spaceGrotesk = Space_Grotesk({
@@ -36,7 +36,7 @@ export default function RootLayout({ children }) {
         suppressHydrationWarning
         className={`${spaceGrotesk.variable} ${ubuntu.variable} ${poppins.variable} font-primary`}
       >
-        <Toaster richColors={true} /> <Navbar />
+        <Toaster richColors={true} /> <NavbarGate />
         {children}
       </body>
     </html>

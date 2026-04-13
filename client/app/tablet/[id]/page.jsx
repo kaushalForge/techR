@@ -2,10 +2,11 @@ import SideBar from "@/components/Common/SideBar/SideBar";
 import TabletBlog from "@/components/Tablets/TabletBlog";
 import fetchTabletData from "@/components/SSR/fetchSingleData/fetchTabletData";
 import fetchSidebarData from "@/components/SSR/SidebarData/fetchSidebarData";
+import API_BASE_URL from "@/lib/apiBaseUrl";
 
 const page = async ({ params }) => {
   const { id } = await params;
-  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL_TARGET_TABLET}/${id}`;
+  const url = `${API_BASE_URL}/api/products/tablet/${id}`;
   const sidebarData = await fetchSidebarData();
   const data = await fetchTabletData(url);
 

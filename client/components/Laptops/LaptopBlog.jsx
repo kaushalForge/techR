@@ -42,6 +42,8 @@ function LaptopBlog(targetLaptop) {
     processAndSet("graphic", setFinalGraphic, indexChanger);
   }, [targetLaptop, indexChanger]);
 
+  const mainImage = targetLaptop?.images?.[0] || "";
+
   function handleSpecsChange() {
     if (!targetLaptop || !targetLaptop.storage) return;
 
@@ -100,9 +102,9 @@ function LaptopBlog(targetLaptop) {
             features of this tablet that make it a great choice for your needs.
           </p>
           <div className="flex justify-center py-4">
-            {targetLaptop.image ? (
+            {mainImage ? (
               <img
-                src={targetLaptop.image}
+                src={mainImage}
                 alt={targetLaptop.name}
                 className="max-h-72 object-contain"
                 loading="lazy"

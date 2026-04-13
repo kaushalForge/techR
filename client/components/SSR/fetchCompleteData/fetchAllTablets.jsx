@@ -1,7 +1,8 @@
 import axios from "axios";
+import API_BASE_URL from "@/lib/apiBaseUrl";
 
 const fetchAllTablets = async () => {
-  const apiUrl = process.env.NEXT_PUBLIC_BACKEND_URL_ALL_TABLETS;
+  const apiUrl = `${API_BASE_URL}/api/products/tablets`;
 
   const fetchData = async (apiUrl) => {
     if (!apiUrl) {

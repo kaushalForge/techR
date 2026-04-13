@@ -15,7 +15,7 @@ const Search = (product) => {
         {/* Image */}
         <div className="md:w-1/3">
           <img
-            src={product.image}
+            src={product.images?.[0] || ""}
             alt={product.name}
             className="object-cover w-full h-full"
             loading="lazy"

@@ -40,7 +40,7 @@ const Category_Card = ({ heading, items = [] }) => {
               className="relative w-full overflow-hidden"
             >
               <img
-                src={item.image}
+                src={item.images?.[0] || ""}
                 alt={item.name}
                 loading="lazy"
                 className="object-contain w-full h-full transition-transform duration-700 ease-out group-hover:scale-105"

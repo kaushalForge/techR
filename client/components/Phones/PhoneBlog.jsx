@@ -49,6 +49,8 @@ const PhoneBlog = (targetPhone) => {
     setFinalPrice(combined.map((item) => item.price));
   }, [targetPhone]);
 
+  const mainImage = targetPhone?.images?.[0] || "";
+
   if (!targetPhone) return <p>No phone data found.</p>;
 
   const InfoSection = ({ label, value }) => (
@@ -82,9 +84,9 @@ const PhoneBlog = (targetPhone) => {
             features of this phone that make it a great choice for your needs.
           </p>
           <div className="flex justify-center py-4">
-            {targetPhone.image ? (
+            {mainImage ? (
               <img
-                src={targetPhone.image}
+                src={mainImage}
                 alt={targetPhone.name}
                 className="max-h-72 object-contain"
                 loading="lazy"

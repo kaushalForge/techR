@@ -1,10 +1,11 @@
 import axios from "axios";
+import API_BASE_URL from "@/lib/apiBaseUrl";
 
 const fetchSidebarData = async () => {
   const urls = {
-    flagship: process.env.NEXT_PUBLIC_BACKEND_URL_FLAGSHIP_PRODUCTS,
-    midrange: process.env.NEXT_PUBLIC_BACKEND_URL_MIDRANGE_PRODUCTS,
-    budget: process.env.NEXT_PUBLIC_BACKEND_URL_BUDGET_PRODUCTS,
+    flagship: `${API_BASE_URL}/api/products/flagship`,
+    midrange: `${API_BASE_URL}/api/products/midrange`,
+    budget: `${API_BASE_URL}/api/products/budget`,
   };
 
   const fetchData = async (url) => {

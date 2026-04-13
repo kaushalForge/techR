@@ -1,7 +1,8 @@
 import axios from "axios";
+import API_BASE_URL from "@/lib/apiBaseUrl";
 
 const fetchAllPhones = async () => {
-  const apiUrl = process.env.NEXT_PUBLIC_BACKEND_URL_ALL_PHONES;
+  const apiUrl = `${API_BASE_URL}/api/products/phones`;
 
   const fetchData = async (apiUrl) => {
     if (!apiUrl) {

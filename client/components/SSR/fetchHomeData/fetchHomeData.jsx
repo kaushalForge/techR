@@ -1,12 +1,13 @@
 import axios from "axios";
+import API_BASE_URL from "@/lib/apiBaseUrl";
 
 const fetchHomeData = async () => {
   const urls = {
-    budget: process.env.NEXT_PUBLIC_BACKEND_URL_BUDGET_PRODUCTS,
-    midrange: process.env.NEXT_PUBLIC_BACKEND_URL_MIDRANGE_PRODUCTS,
-    flagship: process.env.NEXT_PUBLIC_BACKEND_URL_FLAGSHIP_PRODUCTS,
-    mostPopular: process.env.NEXT_PUBLIC_BACKEND_URL_FLAGSHIP_MOST_POPULAR,
-    recommended: process.env.NEXT_PUBLIC_BACKEND_URL_RECOMMENDED_PRODUCTS,
+    budget: `${API_BASE_URL}/api/products/budget`,
+    midrange: `${API_BASE_URL}/api/products/midrange`,
+    flagship: `${API_BASE_URL}/api/products/flagship`,
+    mostPopular: `${API_BASE_URL}/api/products/mostpopular`,
+    recommended: `${API_BASE_URL}/api/products/recommended`,
   };
 
   const fetchData = async (url) => {

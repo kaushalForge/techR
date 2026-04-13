@@ -24,7 +24,7 @@ export default function TabletsCategory({ tablets, title }) {
           >
             <div className="p-4 flex justify-center">
               <img
-                src={tablet.image}
+                src={tablet.images?.[0] || ""}
                 alt={tablet.name}
                 className="w-48 h-48 object-contain rounded-md"
                 loading="lazy"
