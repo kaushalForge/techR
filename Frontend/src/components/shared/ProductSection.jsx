@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import ProductCard from "./productCard";
+import ProductCard from "./ProductCard";
 
 // ── Stagger container variants ───────────────────────────────────────────────
 const containerVariants = {
