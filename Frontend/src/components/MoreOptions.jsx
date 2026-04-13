@@ -5,15 +5,25 @@ import { useQuery } from "react-query";
 import CircularLoader from "../CircularLoader";
 import Button from "./Button";
 
-// Utility function to fetch products
+// ✅ FIXED: Always return array
 const filterProducts = async (url) => {
   try {
     const response = await axios.get(url);
-    return response.data;
+
+    const data = response.data;
+
+    // Handle all cases safely
+    if (Array.isArray(data)) return data;
+    if (Array.isArray(data?.products)) return data.products;
+
+    return []; // fallback
   } catch (error) {
     console.error("Error fetching data:", error);
+    return []; // ✅ NEVER undefined
   }
 };
+
+const toSlug = (name) => name.toLowerCase().split(" ").join("-"); // ← only change
 
 function MoreOptions() {
   const flagshipURL = import.meta.env.VITE_FLAGSHIP_URL;
@@ -37,38 +47,40 @@ function MoreOptions() {
     () => filterProducts(midrangeURL),
     { staleTime: 1000 * 60 * 5 },
   );
-
   const isLoading = loadingBudget || loadingFlagship || loadingMidrange;
+
+  // ✅ FIXED: Strict safety check
   const renderProductItems = (items) => {
-    return (items?.products || items || []).slice(0, 4).map((item, index) => (
+    if (!Array.isArray(items)) return null;
+
+    return items.slice(0, 4).map((item, index) => (
       <Link
         key={index}
-        to={`/${item.productType}/${item.name
+        to={`/${item.productType}/${toSlug(item.name)
           .toLowerCase()
           .replace(/\s+/g, "")}`}
         className="block w-full outline-none"
       >
-        <div
-          key={index}
-          className="flex flex-col items-center w-full sm:w-40 p-4 bg-white rounded-lg shadow-lg transition-transform transform hover:scale-105 hover:shadow-xl"
-          aria-label={`Product: ${item.name}`}
-        >
+        <div className="flex flex-col items-center w-full sm:w-40 p-4 bg-white rounded-lg shadow-lg transition-transform transform hover:scale-105 hover:shadow-xl">
           <img
             src={item.image}
             alt={item.name}
-            className="w-32 h-32 object-contain mb-3 transition-opacity duration-300"
+            className="w-32 h-32 object-contain mb-3"
             loading="lazy"
           />
           <div className="text-center">
             <h1 className="text-sm font-medium text-gray-800 truncate">
               {item.name}
             </h1>
-            <p className="text-lg text-black font-bold mt-1">{item.price}</p>
+            <p className="text-lg text-black font-bold mt-1">
+              {item.price || ""}
+            </p>
           </div>
         </div>
       </Link>
     ));
   };
+
   return (
     <div className="p-6 bg-gradient-to-b from-gray-50 to-gray-100 min-h-screen">
       {isLoading ? (
@@ -87,6 +99,7 @@ function MoreOptions() {
           </div>
 
           <div className="flex flex-col space-y-10">
+            {/* Flagship */}
             <div className="text-center">
               <h3 className="text-2xl font-semibold text-gray-900 mb-2">
                 <Button text="Flagship Devices" />
@@ -99,6 +112,7 @@ function MoreOptions() {
               </div>
             </div>
 
+            {/* Midrange */}
             <div className="text-center">
               <h3 className="text-2xl font-semibold text-gray-900 mb-2">
                 <Button text="Midrange Devices" />
@@ -111,6 +125,7 @@ function MoreOptions() {
               </div>
             </div>
 
+            {/* Budget */}
             <div className="text-center">
               <h3 className="text-2xl font-semibold text-gray-900 mb-2">
                 <Button text="Budget Devices" />
