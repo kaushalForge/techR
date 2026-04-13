@@ -41,12 +41,13 @@ function ProductBlog() {
   const [finalGraphic, setFinalGraphic] = useState([]);
 
   useEffect(() => {
-    const get = (key) => (product[key] || [])[indexChanger] || [];
-    setFinalPrice(get("price"));
-    setFinalRam(get("ram"));
-    setFinalStorage(get("storage"));
-    setFinalProcessor(get("processor"));
-    setFinalGraphic(get("graphic"));
+    if (product && product.price) {
+      setFinalPrice(product.price[indexChanger] || []);
+      setFinalRam(product.ram[indexChanger] || []);
+      setFinalStorage(product.storage[indexChanger] || []);
+      setFinalProcessor(product.processor[indexChanger] || []);
+      setFinalGraphic(product.graphic[indexChanger] || []);
+    }
   }, [product, indexChanger]);
 
   const handleSpecsChange = () => {
@@ -177,20 +178,21 @@ function ProductBlog() {
                     ))}
                   </div>
                   <div className="flex flex-col">
-                    {finalRam.map((ram, i) => (
-                      <div
-                        key={i}
-                        className="flex border-t border-gray-300 hover:bg-[#f7e2ff] transition-colors"
-                      >
-                        <div className="flex-1 text-center py-2">{i + 1}</div>
-                        <div className="flex-1 text-center py-2">
-                          {`${(ram || "").replace(/\s+/g, "").replace(/(B).*/i, "B")}/${(finalStorage[i] || "").replace(/\s+/g, "").replace(/(B).*/i, "B")}`}
+                    {Array.isArray(finalRam) &&
+                      finalRam.map((ram, i) => (
+                        <div
+                          key={i}
+                          className="flex border-t border-gray-300 hover:bg-[#f7e2ff] transition-colors"
+                        >
+                          <div className="flex-1 text-center py-2">{i + 1}</div>
+                          <div className="flex-1 text-center py-2">
+                            {`${(ram || "").replace(/\s+/g, "").replace(/(B).*/i, "B")}/${(finalStorage[i] || "").replace(/\s+/g, "").replace(/(B).*/i, "B")}`}
+                          </div>
+                          <div className="flex-1 text-center py-2">
+                            {finalPrice[i] || ""}
+                          </div>
                         </div>
-                        <div className="flex-1 text-center py-2">
-                          {finalPrice[i] || ""}
-                        </div>
-                      </div>
-                    ))}
+                      ))}
                   </div>
                 </div>
               </div>
