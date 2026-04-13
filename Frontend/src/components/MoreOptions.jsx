@@ -23,25 +23,24 @@ function MoreOptions() {
   const { isLoading: loadingBudget, data: budget = [] } = useQuery(
     ["budget", budgetURL],
     () => filterProducts(budgetURL),
-    { staleTime: 1000 * 60 * 5 }
+    { staleTime: 1000 * 60 * 5 },
   );
 
   const { isLoading: loadingFlagship, data: flagship = [] } = useQuery(
     ["flagship", flagshipURL],
     () => filterProducts(flagshipURL),
-    { staleTime: 1000 * 60 * 5 }
+    { staleTime: 1000 * 60 * 5 },
   );
 
   const { isLoading: loadingMidrange, data: midrange = [] } = useQuery(
     ["midrange", midrangeURL],
     () => filterProducts(midrangeURL),
-    { staleTime: 1000 * 60 * 5 }
+    { staleTime: 1000 * 60 * 5 },
   );
 
   const isLoading = loadingBudget || loadingFlagship || loadingMidrange;
-
   const renderProductItems = (items) => {
-    return items.slice(0, 4).map((item, index) => (
+    return (items?.products || items || []).slice(0, 4).map((item, index) => (
       <Link
         key={index}
         to={`/${item.productType}/${item.name

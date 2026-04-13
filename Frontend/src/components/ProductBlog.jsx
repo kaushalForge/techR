@@ -199,7 +199,7 @@ function ProductBlog() {
 
               {/* Descriptions */}
               <div className="py-4">
-                {product.descriptions?.map((item, i) => (
+                {product?.descriptions?.map((item, i) => (
                   <div key={i} className="py-2 flex flex-col gap-2">
                     {item.heading && (
                       <h1 className="text-lg md:text-xl font-bold">

@@ -8,7 +8,7 @@ function Filter() {
   const navigate = useNavigate();
   const [deviceType, setDeviceType] = useState("");
   const [processor, setProcessor] = useState("");
-  const [ram, setRam] = useState("");
+  const [ram, setRam] = useState(""); 
   const [graphics, setGraphics] = useState("");
   const [battery, setBattery] = useState("");
   const [price, setPrice] = useState("");
