@@ -1,5 +1,5 @@
 const express = require("express");
-const router = express();
+const router = express.Router();
 const upload = require("../config/multer-config");
 const productModel = require("../models/Products");
 const { modifyProducts } = require("../controllers/modifyController");
