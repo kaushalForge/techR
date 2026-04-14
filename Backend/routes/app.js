@@ -1,11 +1,14 @@
 const express = require("express");
 const router = express.Router();
+const axios = require("axios"); // You need axios or node-fetch
 
 router.get("/", async (req, res) => {
+  const backendURL = process.env.BACKEND_URL || "http://localhost:5000";
+  const frontendURL = process.env.FRONTEND_URL || "http://localhost:3000";
+
   try {
-    const { data: products } = await axios.get(
-      "http://localhost:3000/api/products",
-    );
+    // ✅ CORRECT: Use axios.get() instead of fetch
+    const { data: products } = await axios.get(`${backendURL}/api/products`);
 
     const totalProducts = products.length;
 
@@ -18,16 +21,22 @@ router.get("/", async (req, res) => {
       phonesCount,
       laptopsCount,
       tabletsCount,
+      backendURL,
+      frontendURL,
     });
   } catch (error) {
-    console.log(error);
+    console.error("Error fetching products:", error.message);
 
+    // Still render with fallback data
     res.render("Home", {
       totalProducts: 0,
       phonesCount: 0,
       laptopsCount: 0,
       tabletsCount: 0,
+      frontendURL,
+      backendURL,
     });
   }
 });
+
 module.exports = router;

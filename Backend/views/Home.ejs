@@ -4,10 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TechR Admin | Control Panel</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800;900&display=swap"
-      rel="stylesheet"
-    />
+
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Override tailwind config to enforce dark mode and remove clutter -->
     <style>
@@ -347,8 +344,8 @@
         <div
           class="text-right text-[11px] text-gray-500 mt-4 border-t border-gray-800/50 pt-3"
         >
-          ⚡ data sourced from localhost:5000/api/products · productType =
-          phone, laptop, tablet
+          ⚡ data sourced from /api/products · productType = phone, laptop,
+          tablet
         </div>
       </div>
 
@@ -374,6 +371,7 @@
     <div id="globalToast" class="toast-notification"></div>
 
     <script>
+      const apiURL = "<%= backendURL %>/api/products";
       // ===================== DARK THEME: ULTRA CLEAN & PERSISTENT ==================
       (function () {
         const html = document.documentElement;
@@ -427,12 +425,10 @@
       }
       window.showToast = showToast;
 
-      // ------------------- FETCH REAL PRODUCTS FROM API (localhost:5000/api/products) ------------------
       let allProductsCache = []; // store all products for stats and table
-
       async function fetchProductsAndRender() {
         try {
-          const response = await fetch("http://localhost:5000/api/products");
+          const response = await fetch(apiURL);
           if (!response.ok) throw new Error(`HTTP ${response.status}`);
           const products = await response.json();
           if (!Array.isArray(products)) throw new Error("Invalid data format");
@@ -547,8 +543,6 @@
         );
       }, 35000);
 
-      // additional dynamic interaction: for delete & add, they redirect to other pages, but we ensure stats update when coming back.
-      // also expose global so that if other pages modify, after navigation back we reload. page show event.
       window.addEventListener("pageshow", (event) => {
         if (event.persisted || document.visibilityState === "visible") {
           fetchProductsAndRender();
@@ -557,13 +551,6 @@
       document.addEventListener("visibilitychange", () => {
         if (!document.hidden) fetchProductsAndRender();
       });
-
-      console.log(
-        "🔥 DARK ADMIN DASHBOARD — live data from localhost:5000/api/products, filtered by productType (phone, laptop, tablet)",
-      );
-
-      // override for navbar buttons? Not needed but we ensure consistent dark background even after dynamic content
-      // final: clean modern design, no legacy fluff, fully dark-centric, real product counts.
     </script>
   </body>
 </html>
