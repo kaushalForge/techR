@@ -1,196 +1,234 @@
-import React, { useState, useEffect } from "react";
-import { FaSearch, FaHome } from "react-icons/fa";
+import React, { useState, useEffect, useRef } from "react";
+import { FaSearch, FaHome, FaTimes } from "react-icons/fa";
 import { CiMobile1 } from "react-icons/ci";
 import { AiOutlineLaptop } from "react-icons/ai";
 import { FaTabletScreenButton } from "react-icons/fa6";
 import { IoMenu, IoInformationCircle } from "react-icons/io5";
-import { RxCross2 } from "react-icons/rx";
 import { LuSlidersHorizontal } from "react-icons/lu";
+import { FiTrendingUp } from "react-icons/fi";
+import { MdOutlineClose } from "react-icons/md";
 import axios from "axios";
-import { easeInOut, motion, AnimatePresence } from "framer-motion";
-import { useNavigate, Link } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import News from "./News";
 
 function Navbar() {
   const navigate = useNavigate();
+  const location = useLocation();
+
   const [inputValue, setInputValue] = useState("");
   const [show, setShow] = useState(false);
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [searchSuggestions, setSearchSuggestions] = useState([]);
+
+  const searchRef = useRef(null);
+  const inputRef = useRef(null);
+
   const backendURL = import.meta.env.VITE_SEARCH_URL;
 
-  const handleSearch = async (event) => {
-    if (event.key !== "Enter") return;
-    const query = inputValue.trim().toLowerCase();
-    if (!query) return;
+  const popularSearches = [
+    "iPhone 15",
+    "MacBook Pro",
+    "Samsung Galaxy",
+    "iPad Pro",
+    "Gaming Laptop",
+  ];
+
+  // 🔥 SEARCH FUNCTION (FIXED)
+  const handleSearch = async (query) => {
+    const q = query?.trim().toLowerCase();
+    if (!q) return;
 
     try {
-      const res = await axios.get(
-        `${backendURL}/?q=${encodeURIComponent(query)}`,
-      );
+      const res = await axios.get(`${backendURL}/?q=${encodeURIComponent(q)}`);
       const results = res.data;
+
       if (!Array.isArray(results) || results.length === 0) {
-        navigate(`/search?q=${query}`);
+        navigate(`/search?q=${q}`);
         return;
       }
+
       if (results.length === 1) {
         const item = results[0];
-        const slug = item.name.toLowerCase().split(" ").join("");
+        const slug = item.name.toLowerCase().replace(/\s+/g, "");
         navigate(`/${item.productType}/${slug}`);
         return;
       }
-      navigate(`/search?q=${query}`);
-    } catch (err) {
-      navigate(`/search?q=${query}`);
+
+      navigate(`/search?q=${q}`);
+    } catch {
+      navigate(`/search?q=${q}`);
     }
+
+    setInputValue("");
+    setIsSearchFocused(false);
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") handleSearch(inputValue);
+  };
+
+  // 🔥 "/" KEY FIX
   useEffect(() => {
-    const handleFocus = (event) => {
-      if (event.key === "/") {
-        event.preventDefault();
-        document.querySelector("#searchedText")?.focus();
+    const handleSlash = (e) => {
+      if (e.key === "/" && document.activeElement !== inputRef.current) {
+        e.preventDefault();
+        inputRef.current?.focus();
       }
     };
-    window.addEventListener("keydown", handleFocus);
-    return () => window.removeEventListener("keydown", handleFocus);
+    window.addEventListener("keydown", handleSlash);
+    return () => window.removeEventListener("keydown", handleSlash);
   }, []);
 
+  useEffect(() => {
+    setShow(false);
+  }, [location]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setIsSearchFocused(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    if (inputValue.length > 1) {
+      setSearchSuggestions(
+        popularSearches.filter((item) =>
+          item.toLowerCase().includes(inputValue.toLowerCase()),
+        ),
+      );
+    } else {
+      setSearchSuggestions([]);
+    }
+  }, [inputValue]);
+
+  const navItems = [
+    { name: "Home", path: "/", icon: FaHome },
+    { name: "Phone", path: "/phone", icon: CiMobile1 },
+    { name: "Laptop", path: "/laptop", icon: AiOutlineLaptop },
+    { name: "Tablet", path: "/tablet", icon: FaTabletScreenButton },
+    { name: "Filter", path: "/filter", icon: LuSlidersHorizontal },
+    { name: "About", path: "/about", icon: IoInformationCircle },
+  ];
+
+  function TechRLogo({ size = 32 }) {
+    return (
+      <svg width={size} height={size} viewBox="0 0 40 40">
+        <polygon
+          points="20,2 36,11 36,29 20,38 4,29 4,11"
+          fill="#0f0f0f"
+          stroke="#3b82f6"
+          strokeWidth="1.5"
+        />
+        <text x="20" y="26" textAnchor="middle" fontSize="16" fill="white">
+          T
+        </text>
+      </svg>
+    );
+  }
+
   return (
-    <div className="relative">
-      {/* MAIN NAV CONTAINER */}
-      <nav className="fixed top-0 w-full z-[100] h-14 bg-zinc-950/80 backdrop-blur-xl border-b border-white/10 flex items-center justify-center">
-        <div className="w-full max-w-7xl px-6 flex items-center justify-between gap-4">
-          {/* LOGO SECTION */}
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => setShow(!show)}
-              className="lap:hidden p-2 hover:bg-white/10 rounded-full transition-colors"
-            >
-              {show ? (
-                <RxCross2 className="text-white text-2xl" />
-              ) : (
-                <IoMenu className="text-white text-2xl" />
-              )}
+    <div>
+      {/* NAVBAR */}
+      <nav className="fixed top-0 w-full z-[100] h-16 flex items-center justify-center border-b border-white/20 backdrop-blur-xl">
+        {/* 🔥 Gradient */}
+        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-white/80 via-blue-50/70 to-white/80" />
+
+        {/* 🔥 Gloss */}
+        <div className="absolute inset-0 -z-10 bg-gradient-to-b from-white/60 via-transparent to-transparent opacity-70" />
+
+        {/* Shine line */}
+        <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white to-transparent" />
+
+        <div className="w-full max-w-7xl px-4 md:px-8 flex items-center justify-between">
+          {/* LEFT */}
+          <div className="flex items-center gap-3">
+            <button onClick={() => setShow(!show)} className="lg:hidden p-2">
+              {show ? <FaTimes /> : <IoMenu />}
             </button>
 
-            <Link to="/" className="flex items-center outline-none group">
-              {["T", "e", "c", "h", "R"].map((char, index) => (
-                <motion.span
-                  key={index}
-                  initial={{ y: 10, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: index * 0.05, ease: easeInOut }}
-                  className={`text-white text-2xl font-black tracking-tighter ${char === "R" ? "text-indigo-500" : ""}`}
-                >
-                  {char}
-                </motion.span>
-              ))}
+            <Link to="/" className="flex items-center gap-2">
+              <TechRLogo />
+              <span className="font-bold text-lg">
+                Tech<span className="text-blue-600">R</span>
+              </span>
             </Link>
           </div>
 
-          {/* DESKTOP LINKS */}
-          <div className="hidden lap:flex items-center gap-1">
-            {["Home", "Phone", "Laptop", "Tablet", "Filter", "About"].map(
-              (item, index) => (
+          {/* NAV ITEMS */}
+          <div className="hidden lg:flex gap-2">
+            {navItems.map((item, i) => {
+              const Icon = item.icon;
+              const isActive = location.pathname === item.path;
+
+              return (
                 <Link
-                  key={index}
-                  to={
-                    index === 0
-                      ? "/"
-                      : `/${item.toLowerCase().replace(/\s+/g, "")}`
-                  }
-                  className="px-4 py-2 text-zinc-400 hover:text-white font-medium text-sm flex items-center gap-2 transition-all duration-300 hover:bg-white/5 rounded-full"
+                  key={i}
+                  to={item.path}
+                  className={`px-3 py-2 rounded-lg text-sm flex items-center gap-2 transition
+                  ${
+                    isActive
+                      ? "bg-blue-50 text-blue-600"
+                      : "text-gray-600 hover:bg-gray-100"
+                  }`}
                 >
-                  <span className="opacity-70">
-                    {index === 0 && <FaHome size={16} />}
-                    {index === 1 && <CiMobile1 size={18} />}
-                    {index === 2 && <AiOutlineLaptop size={18} />}
-                    {index === 3 && <FaTabletScreenButton size={16} />}
-                    {index === 4 && <LuSlidersHorizontal size={16} />}
-                    {index === 5 && <IoInformationCircle size={18} />}
-                  </span>
-                  {item}
+                  <Icon size={14} />
+                  {item.name}
                 </Link>
-              ),
-            )}
+              );
+            })}
           </div>
 
-          {/* SEARCH BAR */}
-          <div className="flex relative items-center group">
-            <div className="absolute left-3 text-zinc-400 group-focus-within:text-white transition-colors">
-              <FaSearch size={14} />
-            </div>
+          {/* SEARCH */}
+          <div ref={searchRef} className="relative">
+            <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+
             <input
-              id="searchedText"
-              type="text"
-              placeholder="Search..."
-              className="bg-zinc-800/50 border border-white/10 text-white pl-10 pr-12 py-2 rounded-full text-sm w-48 lg:w-64 focus:w-80 outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all placeholder:text-zinc-500"
+              ref={inputRef}
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
-              onKeyDown={handleSearch}
+              onKeyDown={handleKeyDown}
+              onFocus={() => setIsSearchFocused(true)}
+              placeholder="Search..."
+              className="pl-10 pr-10 py-2 w-56 md:w-72 bg-gray-100 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
             />
-            <div className="absolute right-3 hidden lg:block">
-              <kbd className="bg-zinc-700 text-zinc-400 text-[10px] px-1.5 py-0.5 rounded border border-white/10 uppercase font-sans">
-                /
-              </kbd>
-            </div>
+
+            {/* Suggestions */}
+            <AnimatePresence>
+              {isSearchFocused && searchSuggestions.length > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, y: -5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  className="absolute top-full mt-2 w-full bg-white border rounded-xl shadow-lg z-50"
+                >
+                  {searchSuggestions.map((s, i) => (
+                    <button
+                      key={i}
+                      onClick={() => handleSearch(s)}
+                      className="w-full text-left px-4 py-2 hover:bg-gray-100 flex gap-2 items-center"
+                    >
+                      <FiTrendingUp className="text-blue-500" />
+                      {s}
+                    </button>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </div>
 
-        {/* NEWS COMPONENT INTEGRATION */}
-        <div className="absolute bottom-[-0.5px] w-full">
+        {/* 🔥 NEWS BAR BACK */}
+        <div className="absolute bottom-[-0.5px] left-0 right-0">
           <News />
         </div>
       </nav>
-      {/* MOBILE OVERLAY */}
-      <AnimatePresence>
-        {show && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="fixed inset-0 z-[90] bg-zinc-950 pt-24 px-6 lap:hidden"
-          >
-            <div className="flex flex-col gap-2">
-              {["Home", "Phone", "Laptop", "Tablet", "Filter", "About"].map(
-                (item, index) => (
-                  <Link
-                    key={index}
-                    to={
-                      index === 0
-                        ? "/"
-                        : `/${item.toLowerCase().replace(/\s+/g, "")}`
-                    }
-                    onClick={() => setShow(false)}
-                    className="flex items-center justify-between p-4 bg-zinc-900 rounded-2xl border border-white/5 text-xl font-semibold text-white active:scale-95 transition-transform"
-                  >
-                    <span className="flex items-center gap-4">
-                      {index === 0 && <FaHome className="text-indigo-400" />}
-                      {index === 1 && <CiMobile1 className="text-indigo-400" />}
-                      {index === 2 && (
-                        <AiOutlineLaptop className="text-indigo-400" />
-                      )}
-                      {index === 3 && (
-                        <FaTabletScreenButton className="text-indigo-400" />
-                      )}
-                      {index === 4 && (
-                        <LuSlidersHorizontal className="text-indigo-400" />
-                      )}
-                      {index === 5 && (
-                        <IoInformationCircle className="text-indigo-400" />
-                      )}
-                      {item}
-                    </span>
-                    <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-zinc-500">
-                      →
-                    </div>
-                  </Link>
-                ),
-              )}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-      <div className="h-16"></div> {/* Spacer for fixed nav */}
+
+      <div className="h-16" />
     </div>
   );
 }

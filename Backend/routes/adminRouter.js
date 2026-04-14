@@ -8,7 +8,6 @@ const productModel = require("../models/Products");
 router.get("/products", async (req, res) => {
   try {
     const products = await productModel.find({});
-    console.log(`✅ Admin API: Found ${products.length} products`);
     res.status(200).json(products);
   } catch (error) {
     console.error("Error fetching all products:", error);
