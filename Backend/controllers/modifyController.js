@@ -90,22 +90,23 @@ module.exports.modifyProducts = async (req, res) => {
       mostsold: mostsold === "true" ? "true" : "false",
       mostpopular: mostpopular === "true" ? "true" : "false",
       recommended: recommended === "true" ? "true" : "false",
-      isPublished: isPublished === "true" ? "true" : "false",
+      isPublished: isPublished === "true",
     };
 
     await productModel.findOneAndUpdate(
-      { _id: id },
+      { _id: id }, // check if exists
       {
-        latest: updatedData.latest,
-        mostsold: updatedData.mostsold,
-        mostpopular: updatedData.mostpopular,
-        recommended: updatedData.recommended,
+        latest: latest === "true",
+        mostsold: mostsold === "true",
+        mostpopular: mostpopular === "true",
+        recommended: recommended === "true",
+        isPublished: isPublished === "true",
+
         descriptions,
         item_categorie,
         productType,
         targetaudience,
         popularity,
-        isPublished,
         name,
         dimension,
         build,
@@ -133,6 +134,10 @@ module.exports.modifyProducts = async (req, res) => {
         price: formattedPrice,
         image: imageURL,
         blog,
+      },
+      {
+        new: true, // return updated doc
+        upsert: true, // 🔥 create if not exists
       },
     );
 

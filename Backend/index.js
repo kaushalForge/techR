@@ -65,6 +65,7 @@ app.use("/modify", modifyRouter);
 
 // API routes
 app.use("/api/products", productRouter);
+app.use("/api/admin", adminRouter);
 app.use("/api/search", searchRouter);
 app.use("/filter", filterRouter);
 

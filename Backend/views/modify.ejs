@@ -37,24 +37,97 @@
         input:checked + .toggle-slider { background-color: #3b82f6; }
         input:checked + .toggle-slider:before { transform: translateX(22px); }
         .publish-status-badge { font-size: 0.75rem; font-weight: 500; padding: 0.2rem 0.6rem; border-radius: 2rem; }
+        
+        /* Sticky button bar */
+       .sticky-action-bar {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%); /* 🔥 centers perfectly */
+
+  z-index: 100;
+  background: transparent;
+}
+
+/* keep this clean */
+.action-bar-container {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+
+  backdrop-filter: blur(20px);
+  border-radius: 999px;
+  padding: 0.75rem 1.5rem;
+
+  box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.1),
+              0 0 0 1px rgba(0, 0, 0, 0.02);
+
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+        
+        /* Toast notification */
+        .toast-message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #1e293b;
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(59, 130, 246, 0.5);
+            border-radius: 0.75rem;
+            padding: 0.75rem 1.25rem;
+            color: white;
+            font-size: 0.875rem;
+            font-weight: 500;
+            z-index: 1000;
+            opacity: 0;
+            transform: translateX(20px);
+            transition: all 0.3s ease;
+            pointer-events: none;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+        }
+        .toast-message.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .toast-message.success { border-color: #22c55e; background: #166534; }
+        .toast-message.error { border-color: #ef4444; background: #991b1b; }
+        .toast-message.info { border-color: #3b82f6; background: #1e3a8a; }
+        
+        /* Copy ID button */
+        .copy-id-btn {
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s;
+        }
+        .copy-id-btn:hover {
+            background: #3b82f6;
+            border-color: #3b82f6;
+            color: white;
+        }
     </style>
 </head>
 <body class="bg-[#f5f7fb] text-[#0a0c10] antialiased">
   <%- include("Navbar") %>
 
-<div class="max-w-7xl mx-auto px-4 py-8 md:py-10">
+<div class="max-w-7xl mx-auto px-4 py-8 md:py-10 pb-32">
     <div class="flex flex-wrap items-center justify-between mb-8 gap-4">
         <div>
             <h1 class="text-3xl md:text-4xl font-bold tracking-tight text-slate-800">Modify product</h1>
             <p class="text-slate-500 text-sm mt-1">Update details, linked variant sets & descriptions — clean & sharp</p>
         </div>
-        <div class="bg-white/60 backdrop-blur-sm px-4 py-2 rounded-full border border-slate-200 shadow-sm text-xs font-mono text-slate-500">✦ Edit mode</div>
+        <div class="flex items-center gap-3">
+            <!-- Copy ID Button -->
+            <button id="copyProductIdBtn" class="copy-id-btn px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2 transition">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                Copy ID
+            </button>
+            <div class="bg-white/60 backdrop-blur-sm px-4 py-2 rounded-full border border-slate-200 shadow-sm text-xs font-mono text-slate-500">✦ Edit mode</div>
+        </div>
     </div>
 
     <% if (find) { %>
     <div class="sharp-card overflow-hidden">
-        <form method="post" action="/modify/<%= find.id %>" enctype="multipart/form-data" class="p-5 md:p-7 space-y-8" id="mainProductForm">
-            
+        <form id="mainProductForm" class="p-5 md:p-7 space-y-8">
             <!-- IMAGE SECTION + PUBLISH TOGGLE -->
             <div class="flex flex-col md:flex-row gap-6 items-start md:items-center border-b border-slate-100 pb-6">
                 <div class="image-preview-container">
@@ -145,7 +218,7 @@
                 </div>
             </div>
 
-            <!-- Processor and Graphics sections - FULLY FIXED with proper name indexing -->
+            <!-- Processor and Graphics sections -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div>
                     <div class="section-title">⚙️ Processor options</div>
@@ -234,23 +307,107 @@
             <!-- dynamic descriptions -->
             <div><div class="section-title">📄 Detailed description blocks</div><div id="descFields" class="space-y-5"><% if (find.descriptions && find.descriptions.length) { find.descriptions.forEach((desc, idx) => { %><div class="descGroup bg-white border border-slate-100 rounded-xl p-4 shadow-sm"><div class="font-medium text-slate-800 mb-2 flex justify-between"><span>Block <%= idx+1 %></span><span class="badge-light">rich</span></div><input type="text" name="heading[]" class="sharp-input w-full mb-3" placeholder="Heading" value="<%= desc.heading %>" /><input type="text" name="detail[]" class="sharp-input w-full mb-3" placeholder="Detail text" value="<%= desc.detail %>" /><input type="text" name="descriptionimage[]" class="sharp-input w-full" placeholder="Image URL" value="<%= desc.descriptionimage %>" /></div><% }); } else { %><div class="descGroup bg-white rounded-xl p-4 border"><input type="text" name="heading[]" class="sharp-input w-full mb-2" placeholder="Heading" /><input type="text" name="detail[]" class="sharp-input w-full mb-2" placeholder="Detail" /><input type="text" name="descriptionimage[]" class="sharp-input w-full" placeholder="Image URL" /></div><% } %></div><div class="flex gap-3 mt-4"><button type="button" class="bg-slate-100 px-4 py-2 rounded-full text-sm font-medium" onclick="createDescBox()">+ Add description block</button><button type="button" class="bg-red-50 text-red-700 px-4 py-2 rounded-full text-sm" onclick="removeDescBox()">🗑 Remove empty blocks</button></div></div>
 
-            <div class="flex flex-wrap gap-5 pt-4 border-t border-slate-200">
-                <input type="submit" value="Update product" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2.5 rounded-xl shadow-sm transition cursor-pointer" />
-                <input type="reset" value="Reset form" class="bg-white border border-slate-300 text-slate-700 px-6 py-2.5 rounded-xl hover:bg-slate-50 cursor-pointer transition" />
+            <!-- Sticky Action Bar -->
+            <div class="sticky-action-bar">
+                <div class="action-bar-container flex flex-wrap items-center justify-between gap-4">
+                    <div class="flex gap-3">
+                        <button type="button" id="resetFormBtn" class="bg-white border border-slate-300 text-slate-700 px-6 py-2.5 rounded-xl hover:bg-slate-50 cursor-pointer transition font-medium">
+                            ↺ Reset Form
+                        </button>
+                        <button type="submit" id="updateProductBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-2.5 rounded-xl shadow-sm transition cursor-pointer flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34"/><polygon points="18 2 22 6 12 16 8 16 8 12 18 2"/></svg>
+                            Update Product
+                        </button>
+                    </div>
+                </div>
             </div>
         </form>
     </div>
     <% } else { %><div class="sharp-card p-12 text-center"><p class="text-slate-500 text-lg">Product not found.</p></div><% } %>
 </div>
 
+<!-- Toast Container -->
+<div id="toastMessage" class="toast-message"></div>
 <script>
-    // Live image preview
+    const productId = "<%= find._id %>";
+    
+    // Show toast notification
+    function showToast(message, type = 'success') {
+        const toast = document.getElementById('toastMessage');
+        if (!toast) return;
+        toast.textContent = message;
+        toast.className = `toast-message ${type} show`;
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 3000);
+    }
+    
+    // Copy Product ID
+    document.getElementById('copyProductIdBtn')?.addEventListener('click', async () => {
+        try {
+            await navigator.clipboard.writeText(productId);
+            showToast('✅ Product ID copied!', 'success');
+        } catch (err) {
+            showToast('❌ Failed to copy', 'error');
+        }
+    });
+    
+    // Handle form submission
+    const form = document.getElementById('mainProductForm');
+    const updateBtn = document.getElementById('updateProductBtn');
+    
+    form?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        // Show loading
+        updateBtn.disabled = true;
+        updateBtn.innerHTML = 'Updating...';
+        
+        try {
+            const formData = new FormData(form);
+            
+            // Send to the same URL (your POST route)
+            const response = await fetch(window.location.href, {
+                method: 'POST',
+                body: formData
+            });
+            
+            if (response.ok) {
+                showToast('✅ Product updated!', 'success');
+                // Reload to show updated data
+                setTimeout(() => location.reload(), 1500);
+            } else {
+                throw new Error('Update failed');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showToast('❌ Update failed', 'error');
+        } finally {
+            updateBtn.disabled = false;
+            updateBtn.innerHTML = 'Update Product';
+        }
+    });
+    
+    // Reset button
+    document.getElementById('resetFormBtn')?.addEventListener('click', () => {
+        if (confirm('Reset all changes?')) {
+            location.reload();
+        }
+    });
+    
+    // Image preview
     const imageInput = document.getElementById('productImageInput');
     const previewImg = document.getElementById('liveImagePreview');
     if(imageInput) {
         imageInput.addEventListener('change', function(e) {
             const file = e.target.files[0];
-            if(file) { const reader = new FileReader(); reader.onload = function(ev) { previewImg.src = ev.target.result; }; reader.readAsDataURL(file); }
+            if(file) { 
+                const reader = new FileReader(); 
+                reader.onload = function(ev) { 
+                    previewImg.src = ev.target.result; 
+                }; 
+                reader.readAsDataURL(file); 
+            }
         });
     }
 
@@ -259,168 +416,17 @@
     const publishStatusSpan = document.getElementById('publishStatusText');
     if(publishCheckbox && publishStatusSpan) {
         function updatePublishUI() {
-            if(publishCheckbox.checked) { publishStatusSpan.textContent = '● Visible'; publishStatusSpan.className = 'publish-status-badge bg-green-100 text-green-700'; }
-            else { publishStatusSpan.textContent = '○ Hidden'; publishStatusSpan.className = 'publish-status-badge bg-amber-100 text-amber-700'; }
+            if(publishCheckbox.checked) { 
+                publishStatusSpan.textContent = '● Visible'; 
+                publishStatusSpan.className = 'publish-status-badge bg-green-100 text-green-700'; 
+            } else { 
+                publishStatusSpan.textContent = '○ Hidden'; 
+                publishStatusSpan.className = 'publish-status-badge bg-amber-100 text-amber-700'; 
+            }
         }
-        publishCheckbox.addEventListener('change', updatePublishUI); updatePublishUI();
+        publishCheckbox.addEventListener('change', updatePublishUI); 
+        updatePublishUI();
     }
-
-    // Universal function to attach events for processor/graphics groups
-    function initProcessorGroup(group) {
-        const groupIndex = group.getAttribute('data-group-index');
-        const optionsArea = group.querySelector('.proc-options-area');
-        
-        // Add option button
-        const addBtn = group.querySelector('.add-proc-opt-btn');
-        if(addBtn) {
-            addBtn.replaceWith(addBtn.cloneNode(true));
-            const newAddBtn = group.querySelector('.add-proc-opt-btn');
-            newAddBtn.addEventListener('click', () => {
-                const newRow = document.createElement('div');
-                newRow.className = 'flex gap-2 items-center proc-option-row';
-                newRow.innerHTML = `<input type="text" name="processor[${groupIndex}][]" class="sharp-input w-full" placeholder="New processor option" /><button type="button" class="remove-proc-opt-btn text-red-500 hover:text-red-700 p-1 rounded-full transition">✕</button>`;
-                optionsArea.appendChild(newRow);
-                const rmBtn = newRow.querySelector('.remove-proc-opt-btn');
-                rmBtn.addEventListener('click', () => { if(newRow.querySelector('input').value.trim() === "") newRow.remove(); });
-            });
-        }
-        
-        // Remove individual option buttons
-        group.querySelectorAll('.remove-proc-opt-btn').forEach(btn => {
-            btn.replaceWith(btn.cloneNode(true));
-            const newBtn = group.querySelector(`.remove-proc-opt-btn[onclick]`) || group.querySelectorAll('.remove-proc-opt-btn')[group.querySelectorAll('.remove-proc-opt-btn').length - 1];
-            const btns = group.querySelectorAll('.remove-proc-opt-btn');
-            btns.forEach(b => {
-                b.removeEventListener('click', b._handler);
-                const handler = () => { const row = b.closest('.proc-option-row'); if(row && row.querySelector('input').value.trim() === "") row.remove(); };
-                b._handler = handler;
-                b.addEventListener('click', handler);
-            });
-        });
-        
-        // Remove group button
-        const removeGroupBtn = group.querySelector('.remove-proc-group-btn');
-        if(removeGroupBtn) {
-            removeGroupBtn.replaceWith(removeGroupBtn.cloneNode(true));
-            const newRemoveBtn = group.querySelector('.remove-proc-group-btn');
-            newRemoveBtn.addEventListener('click', () => {
-                const inputs = group.querySelectorAll('input');
-                if(inputs.length && [...inputs].every(i => i.value.trim() === "")) group.remove();
-                else alert("Clear all processor options first before removing the set.");
-            });
-        }
-    }
-    
-    function initGraphicsGroup(group) {
-        const groupIndex = group.getAttribute('data-group-index');
-        const optionsArea = group.querySelector('.graphic-options-area');
-        
-        const addBtn = group.querySelector('.add-graphic-opt-btn');
-        if(addBtn) {
-            addBtn.replaceWith(addBtn.cloneNode(true));
-            const newAddBtn = group.querySelector('.add-graphic-opt-btn');
-            newAddBtn.addEventListener('click', () => {
-                const newRow = document.createElement('div');
-                newRow.className = 'flex gap-2 items-center graphic-option-row';
-                newRow.innerHTML = `<input type="text" name="graphic[${groupIndex}][]" class="sharp-input w-full" placeholder="New graphics option" /><button type="button" class="remove-graphic-opt-btn text-red-500 hover:text-red-700 p-1 rounded-full transition">✕</button>`;
-                optionsArea.appendChild(newRow);
-                const rmBtn = newRow.querySelector('.remove-graphic-opt-btn');
-                rmBtn.addEventListener('click', () => { if(newRow.querySelector('input').value.trim() === "") newRow.remove(); });
-            });
-        }
-        
-        group.querySelectorAll('.remove-graphic-opt-btn').forEach(btn => {
-            btn.replaceWith(btn.cloneNode(true));
-            const btns = group.querySelectorAll('.remove-graphic-opt-btn');
-            btns.forEach(b => {
-                b.removeEventListener('click', b._handler);
-                const handler = () => { const row = b.closest('.graphic-option-row'); if(row && row.querySelector('input').value.trim() === "") row.remove(); };
-                b._handler = handler;
-                b.addEventListener('click', handler);
-            });
-        });
-        
-        const removeGroupBtn = group.querySelector('.remove-graphic-group-btn');
-        if(removeGroupBtn) {
-            removeGroupBtn.replaceWith(removeGroupBtn.cloneNode(true));
-            const newRemoveBtn = group.querySelector('.remove-graphic-group-btn');
-            newRemoveBtn.addEventListener('click', () => {
-                const inputs = group.querySelectorAll('input');
-                if(inputs.length && [...inputs].every(i => i.value.trim() === "")) group.remove();
-                else alert("Clear all graphics options first before removing the set.");
-            });
-        }
-    }
-    
-    // Add new processor group
-    document.getElementById('addProcessorGroupBtn')?.addEventListener('click', () => {
-        const container = document.getElementById('processorContainer');
-        const newIdx = container.children.length;
-        const div = document.createElement('div');
-        div.className = 'processor-group dynamic-group p-4';
-        div.setAttribute('data-group-index', newIdx);
-        div.innerHTML = `
-            <div class="flex justify-between items-center mb-2"><span class="font-medium text-slate-700">Processor set ${newIdx+1}</span><button type="button" class="remove-proc-group-btn text-xs text-red-600 bg-red-50 px-2 py-1 rounded-full">Remove set</button></div>
-            <div class="proc-options-area space-y-2"><div class="flex gap-2 items-center proc-option-row"><input type="text" name="processor[${newIdx}][]" class="sharp-input w-full" placeholder="Processor option" /><button type="button" class="remove-proc-opt-btn text-red-500 hover:text-red-700 p-1 rounded-full transition">✕</button></div></div>
-            <button type="button" class="add-proc-opt-btn text-sm bg-slate-100 px-3 py-1 rounded-full mt-3 hover:bg-slate-200 transition">+ Add processor option</button>
-        `;
-        container.appendChild(div);
-        initProcessorGroup(div);
-    });
-    
-    // Add new graphics group
-    document.getElementById('addGraphicsGroupBtn')?.addEventListener('click', () => {
-        const container = document.getElementById('graphicsContainer');
-        const newIdx = container.children.length;
-        const div = document.createElement('div');
-        div.className = 'graphic-group dynamic-group p-4';
-        div.setAttribute('data-group-index', newIdx);
-        div.innerHTML = `
-            <div class="flex justify-between items-center mb-2"><span class="font-medium text-slate-700">Graphics set ${newIdx+1}</span><button type="button" class="remove-graphic-group-btn text-xs text-red-600 bg-red-50 px-2 py-1 rounded-full">Remove set</button></div>
-            <div class="graphic-options-area space-y-2"><div class="flex gap-2 items-center graphic-option-row"><input type="text" name="graphic[${newIdx}][]" class="sharp-input w-full" placeholder="Graphics option" /><button type="button" class="remove-graphic-opt-btn text-red-500 hover:text-red-700 p-1 rounded-full transition">✕</button></div></div>
-            <button type="button" class="add-graphic-opt-btn text-sm bg-slate-100 px-3 py-1 rounded-full mt-3 hover:bg-slate-200 transition">+ Add graphics option</button>
-        `;
-        container.appendChild(div);
-        initGraphicsGroup(div);
-    });
-    
-    // Initialize all existing groups
-    document.querySelectorAll('.processor-group').forEach(g => initProcessorGroup(g));
-    document.querySelectorAll('.graphic-group').forEach(g => initGraphicsGroup(g));
-    
-    // Linked variants logic
-    const variantsContainer = document.getElementById('linkedVariantsContainer');
-    function addVariantSet() {
-        const variantCount = variantsContainer.children.length;
-        const newDiv = document.createElement('div');
-        newDiv.className = "variant-card dynamic-group";
-        newDiv.setAttribute('data-variant-index', variantCount);
-        newDiv.innerHTML = `<div class="flex justify-between items-center mb-3 border-b border-slate-100 pb-2"><h3 class="font-semibold text-slate-800 text-md flex items-center gap-2"><span class="bg-slate-100 w-6 h-6 rounded-full flex items-center justify-center text-xs">${variantCount+1}</span> Variant configuration</h3><button type="button" class="remove-variant-btn text-xs text-red-500 hover:text-red-700 bg-red-50 px-3 py-1 rounded-full transition">Remove variant</button></div><div class="grid grid-cols-1 md:grid-cols-3 gap-5"><div><label class="label-sharp text-xs uppercase">💰 Price options ($)</label><div class="price-options-area space-y-2 mt-1"><div class="flex gap-2 items-center"><input type="text" name="price[${variantCount}][]" class="sharp-input w-full text-sm" placeholder="Price" /><button class="remove-price-opt-btn">✕</button></div></div><button type="button" class="add-price-option-btn text-xs text-blue-600 mt-2">+ Add price</button></div><div><label class="label-sharp text-xs uppercase">🧠 RAM options (GB)</label><div class="ram-options-area space-y-2 mt-1"><div class="flex gap-2 items-center"><input type="text" name="ram[${variantCount}][]" class="sharp-input w-full text-sm" placeholder="RAM" /><button class="remove-ram-opt-btn">✕</button></div></div><button type="button" class="add-ram-option-btn text-xs text-blue-600 mt-2">+ Add RAM</button></div><div><label class="label-sharp text-xs uppercase">💾 Storage options (GB)</label><div class="storage-options-area space-y-2 mt-1"><div class="flex gap-2 items-center"><input type="text" name="storage[${variantCount}][]" class="sharp-input w-full text-sm" placeholder="Storage" /><button class="remove-storage-opt-btn">✕</button></div></div><button type="button" class="add-storage-option-btn text-xs text-blue-600 mt-2">+ Add storage</button></div></div>`;
-        variantsContainer.appendChild(newDiv);
-        attachVariantEvents(newDiv);
-    }
-    function attachVariantEvents(variantDiv) {
-        variantDiv.querySelector('.remove-variant-btn')?.addEventListener('click', () => { if([...variantDiv.querySelectorAll('input')].every(i => i.value.trim() === '')) variantDiv.remove(); else alert("Clear all values first"); });
-        variantDiv.querySelector('.add-price-option-btn')?.addEventListener('click', () => addOptionToArea(variantDiv, '.price-options-area', 'price', variantDiv.dataset.variantIndex));
-        variantDiv.querySelector('.add-ram-option-btn')?.addEventListener('click', () => addOptionToArea(variantDiv, '.ram-options-area', 'ram', variantDiv.dataset.variantIndex));
-        variantDiv.querySelector('.add-storage-option-btn')?.addEventListener('click', () => addOptionToArea(variantDiv, '.storage-options-area', 'storage', variantDiv.dataset.variantIndex));
-        variantDiv.querySelectorAll('.remove-price-opt-btn, .remove-ram-opt-btn, .remove-storage-opt-btn').forEach(btn => btn.addEventListener('click', function() { const wrapper = btn.closest('.flex'); if(wrapper && wrapper.querySelector('input').value.trim() === "") wrapper.remove(); }));
-    }
-    function addOptionToArea(variantDiv, areaSelector, baseName, idx) {
-        const area = variantDiv.querySelector(areaSelector);
-        if(!area) return;
-        const newDiv = document.createElement('div'); newDiv.className = "flex gap-2 items-center";
-        newDiv.innerHTML = `<input type="text" name="${baseName}[${idx}][]" class="sharp-input w-full text-sm" placeholder="New ${baseName}" /><button type="button" class="remove-${baseName}-opt-btn">✕</button>`;
-        area.appendChild(newDiv);
-        newDiv.querySelector('button').addEventListener('click', () => { if(newDiv.querySelector('input').value.trim() === "") newDiv.remove(); });
-    }
-    document.getElementById('addVariantSetBtn')?.addEventListener('click', addVariantSet);
-    document.querySelectorAll('.variant-card').forEach(card => attachVariantEvents(card));
-    
-    // Description blocks
-    function createDescBox() { const container = document.getElementById('descFields'); const idx = container.children.length+1; const newDiv = document.createElement('div'); newDiv.className = "descGroup bg-white border border-slate-100 rounded-xl p-4 shadow-sm"; newDiv.innerHTML = `<div class="font-medium text-slate-800 mb-2">Block ${idx}</div><input type="text" name="heading[]" class="sharp-input w-full mb-3" placeholder="Heading" /><input type="text" name="detail[]" class="sharp-input w-full mb-3" placeholder="Detail" /><input type="text" name="descriptionimage[]" class="sharp-input w-full" placeholder="Image URL" />`; container.appendChild(newDiv); }
-    function removeDescBox() { document.querySelectorAll('#descFields .descGroup').forEach(group => { const inputs = group.querySelectorAll('input'); if([...inputs].every(inp => inp.value.trim() === '')) group.remove(); }); }
-    window.createDescBox = createDescBox; window.removeDescBox = removeDescBox;
 </script>
 </body>
 </html>

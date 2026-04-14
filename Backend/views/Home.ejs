@@ -57,31 +57,6 @@
         filter: brightness(1.08);
         transform: scale(0.98);
       }
-      .toast-notification {
-        position: fixed;
-        bottom: 24px;
-        right: 24px;
-        background: #1e293b;
-        backdrop-filter: blur(12px);
-        border-left: 4px solid #10b981;
-        padding: 12px 20px;
-        border-radius: 60px;
-        font-size: 0.85rem;
-        font-weight: 500;
-        color: #e2e8f0;
-        z-index: 1000;
-        opacity: 0;
-        transform: translateX(40px);
-        transition:
-          opacity 0.25s,
-          transform 0.25s;
-        pointer-events: none;
-        box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.5);
-      }
-      .toast-notification.show {
-        opacity: 1;
-        transform: translateX(0);
-      }
       /* modern scroll */
       ::-webkit-scrollbar {
         width: 6px;
@@ -98,10 +73,6 @@
       a {
         cursor: pointer;
       }
-      .action-icon {
-        transition: all 0.2s;
-      }
-      /* remove default link underlines */
       a {
         text-decoration: none;
       }
@@ -116,10 +87,10 @@
         <h1
           class="text-5xl md:text-6xl font-black tracking-tight bg-gradient-to-r from-slate-100 via-cyan-200 to-blue-400 bg-clip-text text-transparent"
         >
-          Manipulate Items
+          Admin Dashboard
         </h1>
-        <p class="text-gray-400 mt-2 text-base border-l-3 border-cyan-500 pl-4">
-          product engine · live metrics & real inventory control
+        <p class="text-gray-400 mt-2 text-base border-l-3 border-cyan-500">
+          Mange inventory, view stats, and keep your product catalog up to date.
         </p>
       </div>
 
@@ -307,19 +278,14 @@
         <div class="flex items-center justify-between mb-5 flex-wrap gap-3">
           <div>
             <h3 class="text-xl font-bold text-white flex items-center gap-2">
-              📡 Real‑time product feed
+              🧾 Products List
             </h3>
-            <p class="text-gray-400 text-sm">
-              latest entries from
-              <span class="text-cyan-400">/api/products</span> — dynamic
-              filtering by type
-            </p>
           </div>
           <button
             id="refreshDataBtn"
             class="text-xs bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded-full transition-all flex items-center gap-1"
           >
-            ⟳ Sync now
+            ⟳ Refresh now
           </button>
         </div>
         <div class="overflow-x-auto">
@@ -341,47 +307,17 @@
             </tbody>
           </table>
         </div>
-        <div
-          class="text-right text-[11px] text-gray-500 mt-4 border-t border-gray-800/50 pt-3"
-        >
-          ⚡ data sourced from /api/products · productType = phone, laptop,
-          tablet
-        </div>
-      </div>
-
-      <!-- minimalist quick tip panel (removed clutter, kept essence) -->
-      <div
-        class="mt-8 glass-card p-5 flex flex-wrap justify-between items-center gap-3"
-      >
-        <div class="flex gap-4 text-xs text-gray-300">
-          <span class="flex items-center gap-1"
-            >✨ <span>Add/delete syncs inventory</span></span
-          >
-          <span class="flex items-center gap-1"
-            >🌗 <span>dark theme persistent</span></span
-          >
-          <span class="flex items-center gap-1"
-            >🔗 <span>update sitemap after changes</span></span
-          >
-        </div>
-        <div class="text-cyan-400 text-xs">admin ready · zero bloat</div>
       </div>
     </main>
 
-    <div id="globalToast" class="toast-notification"></div>
-
     <script>
-      const apiURL = "<%= backendURL %>/api/products";
-      // ===================== DARK THEME: ULTRA CLEAN & PERSISTENT ==================
+      const apiURL = "<%= backendURL %>/api/admin/products";
+
+      // ===================== DARK THEME ==================
       (function () {
         const html = document.documentElement;
         const stored = localStorage.getItem("theme_dark_admin");
-        const prefersDark = window.matchMedia(
-          "(prefers-color-scheme: dark)",
-        ).matches;
-        // we enforce dark always? But we also give toggle to switch? but the requirement says "modern darkkk theme removing unnecessary things"
-        // So we force dark + user can toggle to light? to give flexibility but default is hard DARK.
-        // However to respect UX we set dark always, but toggle can switch to light if user wants (optional but minimal)
+
         const setTheme = (isDark) => {
           if (isDark) {
             html.classList.add("dark");
@@ -391,41 +327,27 @@
             html.classList.remove("dark");
             document.body.style.backgroundColor = "#f1f5f9";
             document.body.style.color = "#0f172a";
-            // adjust card backgrounds for light mode? But we want dark theme primary. but we remove complexity
-            // just in case toggle still works but primary design is dark. keep it minimal.
           }
           localStorage.setItem("theme_dark_admin", isDark ? "dark" : "light");
         };
-        // initial: default dark (true)
+
         let isDarkMode = true;
         if (stored === "light") isDarkMode = false;
         else if (stored === "dark") isDarkMode = true;
-        else isDarkMode = true; // enforce dark default
+        else isDarkMode = true;
         setTheme(isDarkMode);
+
         const toggleBtn = document.getElementById("themeToggleDark");
         if (toggleBtn) {
           toggleBtn.addEventListener("click", () => {
             isDarkMode = !isDarkMode;
             setTheme(isDarkMode);
-            showToast(
-              `Theme switched to ${isDarkMode ? "deep dark" : "light"} mode`,
-              true,
-            );
           });
         }
       })();
 
-      // Toast helper
-      function showToast(message, isSuccess = true) {
-        const toast = document.getElementById("globalToast");
-        if (!toast) return;
-        toast.innerHTML = `<span class="flex items-center gap-2">${isSuccess ? "✓" : "⚠️"} ${message}</span>`;
-        toast.classList.add("show");
-        setTimeout(() => toast.classList.remove("show"), 2700);
-      }
-      window.showToast = showToast;
+      let allProductsCache = [];
 
-      let allProductsCache = []; // store all products for stats and table
       async function fetchProductsAndRender() {
         try {
           const response = await fetch(apiURL);
@@ -438,56 +360,56 @@
           let phones = 0,
             laptops = 0,
             tablets = 0;
+
           for (let p of products) {
-            const type = (
-              p.productType ||
-              p.type ||
-              p.category ||
-              ""
-            ).toLowerCase();
-            if (type === "phone" || type === "phones") phones++;
-            else if (type === "laptop" || type === "laptops") laptops++;
-            else if (type === "tablet" || type === "tablets") tablets++;
-            else {
-              // fallback: check if name includes? but keep exact match from spec: productType filter.
-              // also some api may have 'productType' field, handle both.
-              if (p.productType === "phone") phones++;
-              else if (p.productType === "laptop") laptops++;
-              else if (p.productType === "tablet") tablets++;
+            // Use productType as the primary field
+            const productType = p.productType || "";
+
+            if (productType === "phone") {
+              phones++;
+            } else if (productType === "laptop") {
+              laptops++;
+            } else if (productType === "tablet") {
+              tablets++;
             }
           }
+
           // update stat cards
           document.getElementById("statTotal").innerText = products.length;
           document.getElementById("statPhones").innerText = phones;
           document.getElementById("statLaptops").innerText = laptops;
           document.getElementById("statTablets").innerText = tablets;
 
-          // render table: show max 8 latest items (most recent first based on id or any)
+          // render table: show max 8 latest items
           const tableBody = document.getElementById("productTableBody");
           if (!tableBody) return;
           const sorted = [...products].reverse().slice(0, 8);
+
           if (sorted.length === 0) {
             tableBody.innerHTML =
               '<tr><td colspan="4" class="text-center py-8 text-gray-400">📭 No products found in inventory</td></tr>';
             return;
           }
+
           tableBody.innerHTML = sorted
             .map((prod) => {
-              let displayType = prod.productType || prod.type || "generic";
+              let displayType = prod.productType || "generic";
               if (displayType === "phone") displayType = "📱 Phone";
               else if (displayType === "laptop") displayType = "💻 Laptop";
               else if (displayType === "tablet") displayType = "📟 Tablet";
+
               const prodId = prod._id || prod.id || "N/A";
               const name = prod.name || prod.title || "Unnamed product";
+
               return `
               <tr class="border-b border-gray-800/40 hover:bg-white/5 transition">
                 <td class="py-3 font-medium text-white">${escapeHtml(name)}</td>
                 <td class="py-3 text-cyan-300">${escapeHtml(displayType)}</td>
-                <td class="py-3 text-gray-400 font-mono text-xs">${escapeHtml(prodId.substring(0, 12))}..</td>
+                <td class="py-3 text-gray-400 font-mono text-xs">${escapeHtml(String(prodId).substring(0, 12))}..</td>
                 <td class="py-3 text-right">
                   <button class="copyIdBtn text-xs bg-gray-700/60 hover:bg-gray-600 rounded-full px-3 py-1 transition" data-id="${prodId}">📋 Copy ID</button>
                 </td>
-              </tr>
+               </tr>
             `;
             })
             .join("");
@@ -497,14 +419,10 @@
             btn.addEventListener("click", (e) => {
               const id = btn.getAttribute("data-id");
               if (id) {
-                navigator.clipboard
-                  .writeText(id)
-                  .then(() => showToast(`Copied ID: ${id}`, true))
-                  .catch(() => showToast("failed to copy", false));
+                navigator.clipboard.writeText(id);
               }
             });
           });
-          showToast(`Loaded ${products.length} products from API`, true);
         } catch (err) {
           console.error("API fetch error:", err);
           document.getElementById("statTotal").innerText = "0";
@@ -513,8 +431,7 @@
           document.getElementById("statTablets").innerText = "0";
           const tableBody = document.getElementById("productTableBody");
           if (tableBody)
-            tableBody.innerHTML = `<tr><td colspan="4" class="text-center py-8 text-red-400">⚠️ Failed to connect to backend: ${err.message}<br>Make sure server runs on http://localhost:5000/api/products</td></tr>`;
-          showToast(`API error: ${err.message}`, false);
+            tableBody.innerHTML = `<tr><td colspan="4" class="text-center py-8 text-red-400">⚠️ Failed to connect to backend: ${err.message}<br>Make sure server runs on ${apiURL}</td></tr>`;
         }
       }
 
@@ -530,13 +447,14 @@
 
       // initial load
       fetchProductsAndRender();
+
       const refreshBtn = document.getElementById("refreshDataBtn");
       if (refreshBtn)
         refreshBtn.addEventListener("click", () => {
           fetchProductsAndRender();
         });
 
-      // optional periodic subtle background refresh (every 35 seconds)
+      // optional periodic refresh (every 35 seconds)
       setInterval(() => {
         fetchProductsAndRender().catch((e) =>
           console.warn("auto refresh failed", e),
