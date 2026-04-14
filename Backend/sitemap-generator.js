@@ -1,4 +1,3 @@
-require("dotenv").config();
 const express = require("express");
 const router = express.Router();
 const { SitemapStream, streamToPromise } = require("sitemap");
@@ -6,7 +5,7 @@ const productModel = require("../Backend/models/Products");
 const fs = require("fs");
 const path = require("path");
 
-const domainURL = process.env.domainURL || "https://yourdomain.com";
+const domainURL = process.env.domainURL;
 
 const frontendPublicDir = path.join(__dirname, "../Frontend/public");
 
@@ -34,10 +33,6 @@ const findNames = async () => {
         tablet.push(slug);
       }
     });
-
-    console.log(
-      `📊 Sitemap Stats - Phones: ${phone.length}, Laptops: ${laptop.length}, Tablets: ${tablet.length}`,
-    );
 
     return { phone, laptop, tablet };
   } catch (error) {
@@ -109,7 +104,6 @@ router.get("/", async (req, res) => {
     // Write sitemap to file
     const filePath = path.join(publicDir, "sitemap.xml");
     fs.writeFileSync(filePath, xml, "utf8");
-    console.log(`✅ Sitemap generated successfully at ${filePath}`);
 
     // Send response
     res.header("Content-Type", "application/xml");
