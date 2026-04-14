@@ -7,7 +7,7 @@ router.get("/", async (req, res) => {
   const frontendURL = process.env.FRONTEND_URL || "http://localhost:3000";
 
   try {
-    // Fetch products from your backend API
+
     const response = await axios.get(`${backendURL}/api/admin/products`);
     const products = response.data;
 
@@ -30,10 +30,6 @@ router.get("/", async (req, res) => {
     const tabletsCount = products.filter(
       (p) => p.productType === "tablet",
     ).length;
-
-    console.log(
-      `📊 Stats - Total: ${totalProducts}, Phones: ${phonesCount}, Laptops: ${laptopsCount}, Tablets: ${tabletsCount}`,
-    );
 
     res.render("Home", {
       totalProducts,
